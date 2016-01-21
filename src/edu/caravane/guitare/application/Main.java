@@ -1,4 +1,4 @@
-package edu.rissermaroix.olivier.application;
+package edu.caravane.guitare.application;
 
 import java.io.File;
 

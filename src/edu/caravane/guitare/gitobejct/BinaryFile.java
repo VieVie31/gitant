@@ -1,4 +1,4 @@
-package edu.rissermaroix.olivier.gitobejct;
+package edu.caravane.guitare.gitobejct;
 
 import java.io.ByteArrayOutputStream;  
 import java.io.IOException; 
@@ -20,10 +20,8 @@ public class BinaryFile {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);  
         byte[] buffer = new byte[1024];  
 
-        while (!inflater.finished()) {  
-            int count = inflater.inflate(buffer);  
-            outputStream.write(buffer, 0, count);  
-        }  
+        while (!inflater.finished())
+            outputStream.write(buffer, 0, inflater.inflate(buffer)); 
 
         outputStream.close();  
         return outputStream.toByteArray();
@@ -31,9 +29,5 @@ public class BinaryFile {
 	
 	public static byte[] decompress(String path) throws IOException, DataFormatException {
 		return decompress(read(path));
-	}
-	
-	public static void main(String[] args) {
-		System.out.println("coucou");
 	}
 }
