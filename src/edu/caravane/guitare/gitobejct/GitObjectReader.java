@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
+
 //16h35 -> 16h46
 //15h36 -> 16h20
+//16h55 -> 17h25
 public class GitObjectReader {
 	protected String id;
 	protected byte[] array;
 	protected int index;
+	protected String type;
+	protected boolean isGitObject;
 	
 	/**
 	 * Simple structure containing an extracted object, 
@@ -39,6 +43,9 @@ public class GitObjectReader {
 		
 		array = BinaryFile.decompress(path);
 		index = 0;
+		
+		type = extractWhileNotSP(0).obj;
+		isGitObject = isBlob() || isTree() || isTag() || isCommit();
 	}
 	
 	/**
@@ -75,7 +82,7 @@ public class GitObjectReader {
 	 * @param  index position for starting to decode
 	 * @return a DataObject containing the safeString
 	 */
-	protected DataObject<String> extractSafeString(int index) throws Exception { //this function has never be tested !!!
+	protected DataObject<String> extractSafeString(int index) throws Exception {
 		int i = index;
 		
 		byte[] forbiden = {0x00, 0x0a, 0x3c, 0x3e};
@@ -130,15 +137,100 @@ public class GitObjectReader {
         return new DataObject<Integer>(number, index, i - index);
 	}
 	
+	/**
+	 * This function return the firsts sequence of char not containing <SP>
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return the type of the git object if is a git object else random bytes
+	 */
+	public String getType() {
+		return type;
+	}
+	
+	/**
+	 * This function return the size of the git object
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return the size of the git object
+	 */
+	public int getSize() {
+		return extractBase10Number(getType().length() + 1).obj;
+	}
+	
+	/**
+	 * This function says if the byte array is a git object.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return true if the header is one of a git object else false
+	 */
+	public boolean isGitObject() {
+		return isGitObject;
+	}
+	
+	/**
+	 * This function says if the byte array is a Blob object.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return true if the array is a blob else false
+	 */
+	public boolean isBlob() {
+		return getType().equals("blob");
+	}
+	
+	/**
+	 * This function says if the byte array is a Tree object.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return true if the array is a tree object else false.
+	 */
+	public boolean isTree() {
+		return type.equals("tree");
+	}
+	
+	/**
+	 * This function says if the byte array is a Tag object.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return true if the array is a tag object.
+	 */
+	public boolean isTag() {
+		return type.equals("tag");
+	}
+	
+	/**
+	 * This function says if the byte array is a Commit object.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return true if the array is a commit array else false.
+	 */
+	public boolean isCommit() {
+		return type.equals("commit");
+	}
+	
 	public static void main(String[] args) throws Exception {
 		//tests...
 		GitObjectReader gitObjectReader;
-		gitObjectReader = new GitObjectReader("/Users/mac/Desktop/test.bin");
-		System.out.println(gitObjectReader.extractWhileNotSP(0).obj + "coucou");
+		gitObjectReader = new GitObjectReader("/Users/mac/Desktop/1a/e303d4423b181ef8d6b36d1a16c1e106a10809");
+		/*System.out.println(gitObjectReader.extractWhileNotSP(0).obj + "coucou");
 		System.out.println(gitObjectReader.extractWhileNotSP(0).len);
 		gitObjectReader.index += gitObjectReader.extractWhileNotSP(0).len;
 		gitObjectReader.index ++; //ignore space
 		System.out.println(gitObjectReader.extractBase10Number(gitObjectReader.index).obj);
 		System.out.println(gitObjectReader.extractBase10Number(gitObjectReader.index).len);
+		
+		System.out.println(gitObjectReader.extractSafeString(0).obj);
+		System.out.println(gitObjectReader.extractSafeString(0).len);*/
+		
+		System.out.println(gitObjectReader.id);
+		System.out.println(gitObjectReader.getType());
+		System.out.println(gitObjectReader.isTree());
+		System.out.println(gitObjectReader.getSize());
 	}
 }
