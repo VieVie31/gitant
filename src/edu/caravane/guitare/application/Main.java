@@ -54,8 +54,12 @@ public class Main extends Application {
 
 		//start 18h40 -> 20h25
 		//      21h19 -> 21h46
-		//temporaire... structure a changer... example de codes pour drang and drop et tout...
-		//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		/*// appliquer du css avec :
+		 * scene.getStylesheets().
+		 * add(getClass().
+		 * 		getResource("application.css").
+		 * 		toExternalForm());
+		 */
 		this.primaryStage = primaryStage;
 
 		Parent root;
