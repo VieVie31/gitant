@@ -48,4 +48,8 @@ public class TreeEntry {
 	public String getSha1() {
 		return this.sha1;
 	}
+	
+	public String toString() {
+		return String.format("%06o %s %s", octalMode, name, sha1);
+	}
 }

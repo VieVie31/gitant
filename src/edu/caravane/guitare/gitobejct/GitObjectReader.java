@@ -1,8 +1,11 @@
 package edu.caravane.guitare.gitobejct;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 public class GitObjectReader {
 	protected String id;
@@ -93,7 +96,7 @@ public class GitObjectReader {
 				!byteArrayContainsOneOfThose(forbiden, array[i++]));
 		
 		return new DataObject<String>(
-				new String(Arrays.copyOfRange(array, 0, i - 1)),
+				new String(Arrays.copyOfRange(array, index, i - 1)),
 				index, i - index - 1);
 	}
 	
@@ -148,7 +151,7 @@ public class GitObjectReader {
 		StringBuilder sb = new StringBuilder();
 		
 		for (int i = index; i < index + 20; i++)
-			sb.append(String.format("%02x", array[i] & 0xff));
+			sb.append(String.format("%02x", (byte) array[i] & 0xff));
 		
 		return new DataObject<String>(sb.toString(), index, 20);
 	}
@@ -170,6 +173,23 @@ public class GitObjectReader {
 			number = (number << 3) | ((array[i++] - '0') & 0x0f);
 		
 		return new DataObject<Integer>(number, index, i - index);
+	}
+	
+	public DataObject<TreeEntry> extractTreeEntry(int index) throws Exception {
+		int i = index;
+		
+		DataObject<Integer> chmod;
+		DataObject<String> name;
+		DataObject<String> sha1;
+		
+		chmod = extractFileGitCHMOD(i);
+		name = extractSafeString(i + chmod.len + 1);
+		
+		sha1 = extractSHA1Binary(name.startIndex + 1 +  name.len);
+		
+		return new DataObject<TreeEntry>(
+				new TreeEntry(chmod.obj, name.obj, sha1.obj),
+				i, i + chmod.len + name.len + sha1.len);
 	}
 	
 	/**
@@ -274,9 +294,15 @@ public class GitObjectReader {
 		System.out.println("type : " + gitObjectReader.getType());
 		System.out.println("size : " + gitObjectReader.getSize());
 		gitObjectReader.index = gitObjectReader.getContentIndex(); // for content decoding
-		System.out.println("chmod : " + String.
+		/*System.out.println("chmod : " + String.
 				format("%o", gitObjectReader.
 						extractFileGitCHMOD(gitObjectReader.index - 1).
-							obj));
+							obj));*/
+		System.out.println("-----");
+		System.out.println(gitObjectReader.index);
+		System.out.println(gitObjectReader.extractTreeEntry(gitObjectReader.index - 1).obj);
+		System.out.println();
+		int tmp = gitObjectReader.extractTreeEntry(gitObjectReader.index - 1).len;
+		System.out.println(gitObjectReader.extractTreeEntry(gitObjectReader.index - 2 + tmp).obj);
 	}
 }
