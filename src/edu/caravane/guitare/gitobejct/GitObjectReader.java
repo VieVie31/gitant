@@ -89,7 +89,8 @@ public class GitObjectReader {
 				|| t == ';' || t == 0x22 || t == 0x27)
 			throw new Exception(); //msg d'erreur plus tard
 		
-		while (!byteArrayContainsOneOfThose(forbiden, array[i++]));
+		while (i < array.length && //plutot important
+				!byteArrayContainsOneOfThose(forbiden, array[i++]));
 		
 		return new DataObject<String>(
 				new String(Arrays.copyOfRange(array, 0, i - 1)),
@@ -127,7 +128,8 @@ public class GitObjectReader {
 		int i  = index;
 		
 		Integer number = 0;
-        while ('0' <= (char) array[i] && (char) array[i] <= '9')
+        while (i < array.length && //plutot important
+        		'0' <= (char) array[i] && (char) array[i] <= '9')
             number = number * 10 + (array[i++] - '0');
         
         return new DataObject<Integer>(number, index, i - index);
@@ -163,7 +165,8 @@ public class GitObjectReader {
 		int i = index;
 		
 		Integer number = 0;
-		while ('0' <= (char) array[i] && (char) array[i] <= '9')
+		while (i < array.length //plutot important
+				&& '0' <= (char) array[i] && (char) array[i] <= '9')
 			number = (number << 3) | ((array[i++] - '0') & 0x0f);
 		
 		return new DataObject<Integer>(number, index, i - index);
