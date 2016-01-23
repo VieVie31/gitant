@@ -134,6 +134,24 @@ public class GitObjectReader {
 	}
 	
 	/**
+	 * This function return the nex 20 bytes and return the reprenseation as
+	 * string.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @param  index the starting position for extraction
+	 * @return
+	 */
+	protected DataObject<String> extractSHA1Binary(int index) {		
+		StringBuilder sb = new StringBuilder();
+		
+		for (int i = index; i < index + 20; i++)
+			sb.append(String.format("%02x", array[i] & 0xff));
+		
+		return new DataObject<String>(sb.toString(), index, 20);
+	}
+	
+	/**
 	 * This function return the firsts sequence of char not containing <SP>
 	 * 
 	 * @author VieVie31
