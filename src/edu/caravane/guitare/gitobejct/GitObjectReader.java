@@ -152,6 +152,24 @@ public class GitObjectReader {
 	}
 	
 	/**
+	 * This function return the chmod of a file (using the octal mode)
+	 * 
+	 * @author VieVie31
+	 *
+	 * @param  index for starting to decode
+	 * @return
+	 */
+	protected DataObject<Integer> extractFileGitCHMOD(int index) {
+		int i = index;
+		
+		Integer number = 0;
+		while ('0' <= (char) array[i] && (char) array[i] <= '9')
+			number = (number << 3) | ((array[i++] - '0') & 0x0f);
+		
+		return new DataObject<Integer>(number, index, i - index);
+	}
+	
+	/**
 	 * This function return the firsts sequence of char not containing <SP>
 	 * 
 	 * @author VieVie31
@@ -171,6 +189,20 @@ public class GitObjectReader {
 	 */
 	public int getSize() {
 		return extractBase10Number(getType().length() + 1).obj;
+	}
+	
+	/**
+	 * This function return the position of the first byte after the header.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return the index position for decoding content.
+	 */
+	public int getContentIndex() {
+		return getType().length() + 1 // <SP>
+				+ (int) (Math.log10(getSize()) + 1) //the len of size in str
+				+ 1 // <NULL>
+				+ 1; // for positionning after the header
 	}
 	
 	/**
@@ -232,19 +264,16 @@ public class GitObjectReader {
 		//tests...
 		GitObjectReader gitObjectReader;
 		gitObjectReader = new GitObjectReader("/Users/mac/Desktop/1a/e303d4423b181ef8d6b36d1a16c1e106a10809");
-		/*System.out.println(gitObjectReader.extractWhileNotSP(0).obj + "coucou");
-		System.out.println(gitObjectReader.extractWhileNotSP(0).len);
-		gitObjectReader.index += gitObjectReader.extractWhileNotSP(0).len;
-		gitObjectReader.index ++; //ignore space
-		System.out.println(gitObjectReader.extractBase10Number(gitObjectReader.index).obj);
-		System.out.println(gitObjectReader.extractBase10Number(gitObjectReader.index).len);
 		
-		System.out.println(gitObjectReader.extractSafeString(0).obj);
-		System.out.println(gitObjectReader.extractSafeString(0).len);*/
+		/*for (byte b : gitObjectReader.array)
+			System.out.print((char) b); */
 		
-		System.out.println(gitObjectReader.id);
-		System.out.println(gitObjectReader.getType());
-		System.out.println(gitObjectReader.isTree());
-		System.out.println(gitObjectReader.getSize());
+		System.out.println("type : " + gitObjectReader.getType());
+		System.out.println("size : " + gitObjectReader.getSize());
+		gitObjectReader.index = gitObjectReader.getContentIndex(); // for content decoding
+		System.out.println("chmod : " + String.
+				format("%o", gitObjectReader.
+						extractFileGitCHMOD(gitObjectReader.index - 1).
+							obj));
 	}
 }
