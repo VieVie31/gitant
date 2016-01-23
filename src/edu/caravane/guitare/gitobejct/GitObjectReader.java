@@ -1,14 +1,9 @@
 package edu.caravane.guitare.gitobejct;
 
 import java.io.IOException;
-import java.nio.channels.ScatteringByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
-
-import com.sun.glass.ui.TouchInputSupport;
-import com.sun.org.apache.bcel.internal.generic.GOTO;
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 public class GitObjectReader {
 	protected String id;
