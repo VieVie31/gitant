@@ -1,10 +1,13 @@
 package edu.caravane.guitare.gitobejct;
 
 import java.io.IOException;
+import java.nio.channels.ScatteringByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
+import com.sun.glass.ui.TouchInputSupport;
+import com.sun.org.apache.bcel.internal.generic.GOTO;
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 public class GitObjectReader {
@@ -147,13 +150,14 @@ public class GitObjectReader {
 	 * @param  index the starting position for extraction
 	 * @return
 	 */
-	protected DataObject<String> extractSHA1Binary(int index) {		
+	protected DataObject<String> extractSHA1Binary(int index) {	
+		int i = index;
 		StringBuilder sb = new StringBuilder();
 		
-		for (int i = index; i < index + 20; i++)
+		for (; i < index + 20; i++)
 			sb.append(String.format("%02x", (byte) array[i] & 0xff));
 		
-		return new DataObject<String>(sb.toString(), index, 20);
+		return new DataObject<String>(sb.toString(), index, i - index);
 	}
 	
 	/**
@@ -175,7 +179,19 @@ public class GitObjectReader {
 		return new DataObject<Integer>(number, index, i - index);
 	}
 	
-	public DataObject<TreeEntry> extractTreeEntry(int index) throws Exception {
+	/**
+	 * This function extract the next tree entry from the index.
+	 * A tree entry is composed by :
+	 * <CHMOD> <SP> <FILE_NAME> <NULL> <BINARY_SHA1_ID>
+	 * 
+	 * @author VieVie31
+	 *
+	 * @param  index for starting to decode
+	 * @return a tree entry
+	 * @throws Exception
+	 */
+	protected DataObject<TreeEntry> extractTreeEntry(int index) 
+			throws Exception {
 		int i = index;
 		
 		DataObject<Integer> chmod;
@@ -183,13 +199,43 @@ public class GitObjectReader {
 		DataObject<String> sha1;
 		
 		chmod = extractFileGitCHMOD(i);
-		name = extractSafeString(i + chmod.len + 1);
+		i += chmod.len;
 		
-		sha1 = extractSHA1Binary(name.startIndex + 1 +  name.len);
+		i++; //+1 pour l'espace
+		name = extractSafeString(i);
+		i += name.len;
+		i++; //+1 pour <NULL>
+		
+		sha1 = extractSHA1Binary(i);
 		
 		return new DataObject<TreeEntry>(
 				new TreeEntry(chmod.obj, name.obj, sha1.obj),
-				i, i + chmod.len + name.len + sha1.len);
+				index, i + sha1.len - index);
+	}
+	
+	/**
+	 * This function extract all the tree entries from the index to the
+	 * end of the arrray.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @param  index for starting to decode
+	 * @return an ArrayList made of TreeEntry
+	 * @throws Exception
+	 */
+	protected ArrayList<TreeEntry> extractTreeEntries(int index) 
+			throws Exception {
+		ArrayList<TreeEntry> tList = new ArrayList<TreeEntry>();
+		
+		int i = index;
+		
+		while (i < array.length - 20) {
+			DataObject<TreeEntry> doTreeEntry = this.extractTreeEntry(i);
+			i += doTreeEntry.len;
+			tList.add(doTreeEntry.obj);
+		}
+		
+		return tList;
 	}
 	
 	/**
@@ -224,8 +270,7 @@ public class GitObjectReader {
 	public int getContentIndex() {
 		return getType().length() + 1 // <SP>
 				+ (int) (Math.log10(getSize()) + 1) //the len of size in str
-				+ 1 // <NULL>
-				+ 1; // for positionning after the header
+				+ 1; // <NULL>
 	}
 	
 	/**
@@ -285,24 +330,12 @@ public class GitObjectReader {
 	
 	public static void main(String[] args) throws Exception {
 		//tests...
-		GitObjectReader gitObjectReader;
-		gitObjectReader = new GitObjectReader("/Users/mac/Desktop/1a/e303d4423b181ef8d6b36d1a16c1e106a10809");
+		GitObjectReader gor;
+		gor = new GitObjectReader("/Users/mac/Desktop/1a/e303d4423b181ef8d6b36d1a16c1e106a10809");
 		
-		/*for (byte b : gitObjectReader.array)
-			System.out.print((char) b); */
+		gor.index = gor.getContentIndex();
+		for (TreeEntry tEntry : gor.extractTreeEntries(gor.index))
+			System.out.println(tEntry);
 		
-		System.out.println("type : " + gitObjectReader.getType());
-		System.out.println("size : " + gitObjectReader.getSize());
-		gitObjectReader.index = gitObjectReader.getContentIndex(); // for content decoding
-		/*System.out.println("chmod : " + String.
-				format("%o", gitObjectReader.
-						extractFileGitCHMOD(gitObjectReader.index - 1).
-							obj));*/
-		System.out.println("-----");
-		System.out.println(gitObjectReader.index);
-		System.out.println(gitObjectReader.extractTreeEntry(gitObjectReader.index - 1).obj);
-		System.out.println();
-		int tmp = gitObjectReader.extractTreeEntry(gitObjectReader.index - 1).len;
-		System.out.println(gitObjectReader.extractTreeEntry(gitObjectReader.index - 2 + tmp).obj);
 	}
 }
