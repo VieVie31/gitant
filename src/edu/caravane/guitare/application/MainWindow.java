@@ -14,7 +14,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.application.Application;
 
-//12h01 -> 12h43
 public class MainWindow extends Application {
 
 	public void start(Stage primaryStage, String[] args) throws Exception {

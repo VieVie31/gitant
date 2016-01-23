@@ -1,8 +1,6 @@
 package edu.caravane.guitare.gitobejct;
 
 public class GitTag extends GitObject{
-	
-	//10h45 -> 11h03 sylvain
 	private String type = "tag";
 	private String tagName;
 	private byte[] data;

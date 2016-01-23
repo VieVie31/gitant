@@ -7,8 +7,6 @@ import java.nio.file.Files;
 import java.util.zip.DataFormatException;  
 import java.util.zip.Inflater; 
 
-//13h55 -> 14h05
-//16h00 -> 16h18
 /**
  * 
  * @author VieVie31

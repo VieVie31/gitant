@@ -2,7 +2,6 @@ package edu.caravane.guitare.gitobejct;
 
 import java.util.HashMap;
 
-//18h19 -> 18h26
 public class GitObjectsIndex {
 	protected HashMap<String, GitObject> hashMap;
 	

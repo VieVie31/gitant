@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-
-//16h35 -> 16h46
-//15h36 -> 16h20
-//16h55 -> 17h25
 public class GitObjectReader {
 	protected String id;
 	protected byte[] array;

@@ -51,9 +51,6 @@ public class Main extends Application {
 
 	@Override
 	public void start(final Stage primaryStage) throws Exception {
-
-		//start 18h40 -> 20h25
-		//      21h19 -> 21h46
 		/*// appliquer du css avec :
 		 * scene.getStylesheets().
 		 * add(getClass().
