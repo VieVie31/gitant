@@ -3,11 +3,9 @@ package edu.caravane.guitare.application;
 import java.io.File;
 
 import javafx.fxml.*;
-import javafx.geometry.Pos;
 import javafx.stage.*;
 import javafx.scene.*;
 import javafx.event.*;
-import javafx.scene.text.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.application.Application;
@@ -113,15 +111,12 @@ public class Main extends Application {
 			@Override
 			public void handle(DragEvent event) {
 				Dragboard db = event.getDragboard();
-				boolean success = false;
 				if (db.hasFiles()) {
 					event.setDropCompleted(true);
 					event.consume();
 
-					String filePath = null;
 					//on ne traite qu'un seul dossier donc on prend le premier
 					File file = db.getFiles().get(0);
-					filePath = file.getAbsolutePath();
 
 					//si c'est un fichier simple on ne traite pas ces merdes...
 					if (file.isFile()) return; //faire une popup d'erreur ?

@@ -1,17 +1,8 @@
 package edu.caravane.guitare.application;
 
-import java.io.File;
-
-import javax.xml.stream.events.StartDocument;
-
 import javafx.fxml.*;
-import javafx.geometry.Pos;
 import javafx.stage.*;
 import javafx.scene.*;
-import javafx.event.*;
-import javafx.scene.text.*;
-import javafx.scene.input.*;
-import javafx.scene.layout.*;
 import javafx.application.Application;
 
 public class MainWindow extends Application {

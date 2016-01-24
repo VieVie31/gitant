@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-import com.sun.org.apache.bcel.internal.generic.GOTO;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import com.sun.org.apache.bcel.internal.generic.ReturnaddressType;
-import com.sun.org.apache.xpath.internal.operations.And;
 
 public class GitObjectReader {
 	protected String id;
@@ -172,7 +168,6 @@ public class GitObjectReader {
 	 */
 	protected DataObject<String> extractSHA1String(int index) throws Exception {
 		int i = index;
-		StringBuilder sb = new StringBuilder();
 		
 		for(; i < index + 40; i++)
 			if ((array[i] > '9' || array[i] < '0') 
