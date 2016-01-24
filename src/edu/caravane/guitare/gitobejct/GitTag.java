@@ -1,17 +1,32 @@
 package edu.caravane.guitare.gitobejct;
 
 public class GitTag extends GitObject{
-	private String type = "tag";
-	private String tagName;
-	private byte[] data;
-	private int index;
+	protected static String type = "tag";
+	protected String tagName;
+	protected byte[] data;
+	protected int index;
+	protected GitInfo tagger;
 	
-	public int getId() {
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return The id of the object
+	 */
+	@Override
+	int getId() {
 		return this.index;
 	}
 
-	@Override
-	byte[] getData() {
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return the datas from a tag object
+	 */
+	public byte[] getData() {
 		return this.data;
 	}
 
@@ -19,4 +34,51 @@ public class GitTag extends GitObject{
 	int getSize() {
 		return 0;
 	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return the tag name from a tag object
+	 */
+	public String getTagName() {
+		return this.tagName;
+	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return the tagger of a tag object
+	 */
+	public GitInfo getTagger() {
+		return this.tagger;
+	}
+
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return the type of the object
+	 */
+	@Override
+	String getType() {
+		return GitTag.type;
+	}
+	
+	/**
+	 * Setter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return void
+	 */
+	@Override
+	void setId(int i) {
+		this.index = i;
+	}
+
 }
