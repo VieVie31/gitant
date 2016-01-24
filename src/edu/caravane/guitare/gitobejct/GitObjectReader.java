@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
+import com.sun.org.apache.bcel.internal.generic.GOTO;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.sun.org.apache.bcel.internal.generic.ReturnaddressType;
+import com.sun.org.apache.xpath.internal.operations.And;
+
 public class GitObjectReader {
 	protected String id;
 	protected byte[] array;
@@ -138,12 +143,12 @@ public class GitObjectReader {
 	
 	/**
 	 * This function return the nex 20 bytes and return the reprenseation as
-	 * string.
+	 * string in lower case.
 	 * 
 	 * @author VieVie31
 	 *
 	 * @param  index the starting position for extraction
-	 * @return
+	 * @return a DataObject containing the SAH1 as string in lower case
 	 */
 	protected DataObject<String> extractSHA1Binary(int index) {	
 		int i = index;
@@ -153,6 +158,30 @@ public class GitObjectReader {
 			sb.append(String.format("%02x", (byte) array[i] & 0xff));
 		
 		return new DataObject<String>(sb.toString(), index, i - index);
+	}
+	
+	/**
+	 * This function return the next 40 chars and return the representation as
+	 * String in lower case.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @param  index for starting to extract the sha1
+	 * @return a DataObject containing the SHA1 as string in lower case
+	 * @throws an exception if the chars are not in hexa (lower case)
+	 */
+	protected DataObject<String> extractSHA1String(int index) throws Exception {
+		int i = index;
+		StringBuilder sb = new StringBuilder();
+		
+		for(; i < index + 40; i++)
+			if ((array[i] > '9' || array[i] < '0') 
+					&& (array[i] < 'a' || array[i] > 'f'))
+				throw new Exception(); //message d'erreur plus tard
+		
+		return new DataObject<String>(
+				new String(Arrays.copyOfRange(array, index, index + 40)),
+				index, 40);
 	}
 	
 	/**
@@ -173,6 +202,7 @@ public class GitObjectReader {
 		
 		return new DataObject<Integer>(number, index, i - index);
 	}
+	
 	
 	/**
 	 * This function extract the next tree entry from the index.
@@ -208,6 +238,7 @@ public class GitObjectReader {
 				index, i + sha1.len - index);
 	}
 	
+	
 	/**
 	 * This function extract all the tree entries from the index to the
 	 * end of the arrray.
@@ -233,6 +264,30 @@ public class GitObjectReader {
 		return tList;
 	}
 	
+	
+	/**
+	 * This function return the time zone offset of a date in secondes.
+	 * For example : +0100 means : +01h00 
+	 * 
+	 * @author VieVie31
+	 *
+	 * @param  index for starting to decode
+	 * @return the offset in seconds.
+	 */
+	protected DataObject<Integer> extractTzOffset(int index) {
+		int i = index;
+		
+		i++; //ignore the sign the sign for the moment...
+		DataObject<Integer> tzOffset = extractBase10Number(i);
+		int mins = tzOffset.obj % 100;
+		int hours = tzOffset.obj / 100;
+		tzOffset.obj = hours * 3600 + mins * 60; //convert to seconds
+		
+		return new DataObject<Integer>(
+				tzOffset.obj * ((array[index] == '+') ? 1 : -1), //take the sign
+				index, 1 + tzOffset.len); //+1 for the sign
+	}
+	
 	/**
 	 * This function return the firsts sequence of char not containing <SP>
 	 * 
@@ -244,6 +299,7 @@ public class GitObjectReader {
 		return type;
 	}
 	
+	
 	/**
 	 * This function return the size of the git object
 	 * 
@@ -254,6 +310,7 @@ public class GitObjectReader {
 	public int getSize() {
 		return extractBase10Number(getType().length() + 1).obj;
 	}
+	
 	
 	/**
 	 * This function return the position of the first byte after the header.
@@ -268,6 +325,7 @@ public class GitObjectReader {
 				+ 1; // <NULL>
 	}
 	
+	
 	/**
 	 * This function says if the byte array is a git object.
 	 * 
@@ -278,6 +336,7 @@ public class GitObjectReader {
 	public boolean isGitObject() {
 		return isGitObject;
 	}
+	
 	
 	/**
 	 * This function says if the byte array is a Blob object.
@@ -290,6 +349,7 @@ public class GitObjectReader {
 		return getType().equals("blob");
 	}
 	
+	
 	/**
 	 * This function says if the byte array is a Tree object.
 	 * 
@@ -300,6 +360,7 @@ public class GitObjectReader {
 	public boolean isTree() {
 		return type.equals("tree");
 	}
+	
 	
 	/**
 	 * This function says if the byte array is a Tag object.
@@ -312,6 +373,7 @@ public class GitObjectReader {
 		return type.equals("tag");
 	}
 	
+	
 	/**
 	 * This function says if the byte array is a Commit object.
 	 * 
@@ -323,14 +385,27 @@ public class GitObjectReader {
 		return type.equals("commit");
 	}
 	
+	
 	public static void main(String[] args) throws Exception {
 		//tests...
+		/*
 		GitObjectReader gor;
-		gor = new GitObjectReader("/Users/mac/Desktop/1a/e303d4423b181ef8d6b36d1a16c1e106a10809");
+		gor = new GitObjectReader("/Users/mac/Desktop/test_tree.bin");
 		
 		gor.index = gor.getContentIndex();
 		for (TreeEntry tEntry : gor.extractTreeEntries(gor.index))
 			System.out.println(tEntry);
+		*/
+		
+		GitObjectReader gor;
+		gor = new GitObjectReader("/Users/mac/Desktop/test_commit.bin");
+		
+		for (byte b : gor.array)
+			System.out.print(b == 0 ? "<NULL>" : (char) b);
+		
+		System.out.println(gor.getContentIndex());
+		System.out.println(gor.extractSHA1String(16).obj);
+		System.out.println(gor.extractTzOffset(158).obj);
 		
 	}
 }
