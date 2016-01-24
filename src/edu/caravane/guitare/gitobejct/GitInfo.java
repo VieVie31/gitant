@@ -3,8 +3,7 @@ package edu.caravane.guitare.gitobejct;
 public class GitInfo {
 	protected String name;
 	protected String mail;
-	protected int dateTimeStamp;
-	protected int UTC;
+	protected int dateTime;
 	
 	public GitInfo(String name, String mail) {
 		this.name = name;

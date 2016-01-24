@@ -1,26 +1,22 @@
 package edu.caravane.guitare.gitobejct;
 
-public class GitBlob extends GitObject{
+public class GitBlob extends GitObject {
 	protected static String type = "blob";
 	protected int index;
-	protected byte[] data;
+	protected String adresse;
 	
-	
-	public GitBlob(byte[] d) {
-		this.data = d;
+	public GitBlob() {
+		//T0D0
 	}
 	
-	/**
-	 * Getter
-	 * 
-	 * @author Sylvain
-	 *
-	 * @return the datas from a blob object
-	 */
-	public byte[] getData() {
-		return this.data;
+	public String getAdresse() {
+		return this.adresse;
 	}
-
+	
+	public void setAdresse(String adresse) {
+		this.adresse = adresse;
+	}
+ 
 	@Override
 	int getSize() {
 		//T0D0

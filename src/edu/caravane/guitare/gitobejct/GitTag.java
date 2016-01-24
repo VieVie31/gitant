@@ -1,6 +1,6 @@
 package edu.caravane.guitare.gitobejct;
 
-public class GitTag extends GitObject{
+public class GitTag extends GitObject {
 	protected static String type = "tag";
 	protected String tagName;
 	protected byte[] data;

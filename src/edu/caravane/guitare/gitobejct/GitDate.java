@@ -3,7 +3,7 @@ package edu.caravane.guitare.gitobejct;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class GitDate extends Timestamp{
+public class GitDate extends Timestamp {
 	protected int offset;
 	
 	@SuppressWarnings("deprecation")

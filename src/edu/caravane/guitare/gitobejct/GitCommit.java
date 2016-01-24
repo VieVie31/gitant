@@ -1,6 +1,6 @@
 package edu.caravane.guitare.gitobejct;
 
-public class GitCommit extends GitObject{
+public class GitCommit extends GitObject {
 	protected static String type = "commit";
 	protected String treeld;
 	protected String[] parentListId;
