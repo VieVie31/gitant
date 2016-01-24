@@ -2,14 +2,11 @@ package edu.caravane.guitare.gitobejct;
 
 public abstract class GitObject {
 	protected String type;
-	protected int size, dataIndex;
-	protected byte[] data;
+	protected int size, dataIndex, index;
 	protected boolean dataSave;
-	protected int index;
-	
-	abstract byte[] getData();
 	
 	abstract int getSize();
-	
 	abstract int getId();
+	abstract String getType();
+	abstract void setId(int i);
 }
