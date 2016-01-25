@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
+import javafx.scene.text.Text;
+
 
 public class GitObjectReader {
 	protected String id;
@@ -308,6 +310,17 @@ public class GitObjectReader {
 	
 	
 	/**
+	 * This function return the id of the git object
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return the id of the git object
+	 */
+	public String getId() {
+		return this.id;
+	}
+	
+	/**
 	 * This function return the position of the first byte after the header.
 	 * 
 	 * @author VieVie31
@@ -381,16 +394,33 @@ public class GitObjectReader {
 	}
 	
 	
+	/**
+	 * This function decode the git tree objects and return an instance of
+	 * the tree decoded.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return a GitTree decoded from this sequence of bytes
+	 * @throws Exception if the object is not a tree
+	 */
+	public GitTree buildTree() throws Exception {
+		if (!getType().equals("tree"))
+			throw new Exception(); //message plus tard
+		
+		return new GitTree(getSize(), getId(), 
+				extractTreeEntries(getContentIndex()));
+	}
+	
 	public static void main(String[] args) throws Exception {
 		//tests...
-		/*
+		
 		GitObjectReader gor;
 		gor = new GitObjectReader("/Users/mac/Desktop/test_tree.bin");
 		
-		gor.index = gor.getContentIndex();
-		for (TreeEntry tEntry : gor.extractTreeEntries(gor.index))
+		GitTree gitTree = gor.buildTree();
+		for (TreeEntry tEntry : gitTree.listEntry())
 			System.out.println(tEntry);
-		*/
+		/*
 		
 		GitObjectReader gor;
 		gor = new GitObjectReader("/Users/mac/Desktop/test_commit.bin");
@@ -401,6 +431,6 @@ public class GitObjectReader {
 		System.out.println(gor.getContentIndex());
 		System.out.println(gor.extractSHA1String(16).obj);
 		System.out.println(gor.extractTzOffset(158).obj);
-		
+		*/
 	}
 }

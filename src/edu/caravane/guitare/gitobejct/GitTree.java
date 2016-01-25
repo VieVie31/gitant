@@ -8,7 +8,7 @@ public class GitTree extends GitObject {
 	protected ArrayList<TreeEntry> lstEntr;
 	
 	public GitTree(int size, String sha1, ArrayList<TreeEntry> lstEntr) {
-		this.lstEntr = new ArrayList<TreeEntry>();
+		this.lstEntr = lstEntr;
 		this.size = size;
 		this.sha1 = sha1;
 	}
