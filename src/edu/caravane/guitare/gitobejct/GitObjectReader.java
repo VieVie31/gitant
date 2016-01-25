@@ -64,7 +64,7 @@ public class GitObjectReader {
 		while (array[i++] != (byte) ' ');
 		
         return  new DataObject<String>(
-        			new String(Arrays.copyOfRange(array, 0, i - 1)),
+        			new String(Arrays.copyOfRange(array, index, i - 1)),
         			index, i - index - 1);
 	}
 	
@@ -309,6 +309,35 @@ public class GitObjectReader {
 	}
 	
 	/**
+	 * This function extract a lot of git infos in a commit object.
+	 * A git info is composed by : 
+	 * 	-	name   + email  + date
+	 * 	-	String + String + GitDate
+	 * 
+	 * @author VieVie31
+	 *
+	 * @param  index for startig to decode
+	 * @return a GitInfo object
+	 * @throws Exception if the operation is impossible
+	 */
+	protected DataObject<GitInfo> extractInfo(int index) throws Exception {
+		int i = index;
+		
+		DataObject<String> name = extractWhileNotSP(i);
+		i += name.len;
+		i += 2; //' ' + '<'
+		DataObject<String> mail = extractSafeString(i);
+		i += mail.len;
+		i += 2; //'>' + ' '
+		DataObject<GitDate> date = extractDate(i);
+		i += date.len + 1; //date.len + <LF>
+		
+		return new DataObject<GitInfo>(
+				new GitInfo(name.obj, mail.obj, date.obj),
+				index, i - index);
+	}
+	
+	/**
 	 * This function return the firsts sequence of char not containing <SP>
 	 * 
 	 * @author VieVie31
@@ -478,7 +507,7 @@ public class GitObjectReader {
 		gor = new GitObjectReader("Annexes/tests/test_commit.bin");
 		System.out.println(new String(gor.array));
 		System.out.println(gor.extractDate(147).obj);//extract 1st GitDate
+		System.out.println(gor.extractInfo(112).obj);
 		
-		System.out.println((char) gor.array[105]);
 	}
 }

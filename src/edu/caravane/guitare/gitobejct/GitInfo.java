@@ -54,6 +54,6 @@ public class GitInfo {
 	//Body
 	
 	public String toString() {
-		return String.format(name, mail);
+		return String.format("%s %s %s", name, mail, date.toString());
 	}
 }
