@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-
 
 public class GitObjectReader {
 	protected String id;
@@ -307,7 +305,7 @@ public class GitObjectReader {
 		DataObject<Integer> tzOffset = extractTzOffset(i);
 		
 		return new DataObject<GitDate>(new GitDate(timestamp.obj, tzOffset.obj),
-				index, i + tzOffset.len);
+				index, i + tzOffset.len - index);
 	}
 	
 	/**
@@ -480,5 +478,7 @@ public class GitObjectReader {
 		gor = new GitObjectReader("Annexes/tests/test_commit.bin");
 		System.out.println(new String(gor.array));
 		System.out.println(gor.extractDate(147).obj);//extract 1st GitDate
+		
+		System.out.println((char) gor.array[105]);
 	}
 }
