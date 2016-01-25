@@ -6,5 +6,6 @@ public class TestViewer {
 	//et une fois tout fini on importera ce package dans l'apprlication
 	//principale...
 	//Toutes les classes que tu fais doivent etre crees dans ce package...
-	//coucouu
+	//coucou
+	// J'aime le fromage de chèvre
 }
