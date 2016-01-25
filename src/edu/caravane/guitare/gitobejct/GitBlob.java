@@ -6,7 +6,7 @@ public class GitBlob extends GitObject {
 	protected int size;
 	protected int index;
 	
-	public GitBlob(String sha1, int size, int index,String path) {
+	public GitBlob(String sha1, int size, int index, String path) {
 		this.size = size;
 		this.path = path;
 		this.index = index;

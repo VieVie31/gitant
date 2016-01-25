@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-import javafx.scene.text.Text;
-
 
 public class GitObjectReader {
 	protected String id;
 	protected byte[] array;
 	protected int index;
 	protected String type;
+	protected String path;
 	protected boolean isGitObject;
 	
 	/**
@@ -38,6 +37,8 @@ public class GitObjectReader {
 	
 	public GitObjectReader(String path) 
 			throws IOException, DataFormatException {
+		this.path = path;
+		
 		String[] str = path.split("/");
 		id = str[str.length - 2] + str[str.length - 1];
 		
@@ -411,26 +412,45 @@ public class GitObjectReader {
 				extractTreeEntries(getContentIndex()));
 	}
 	
+	/**
+	 * This function decode the git blob object and return an instnace of 
+	 * the blob decoded.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public GitBlob buildBlob() throws Exception {
+		if (!getType().equals("blob"))
+			throw new Exception(); //message plus tard
+		
+		return new GitBlob(getId(), getSize(), getContentIndex(), path);
+	}
+	
 	public static void main(String[] args) throws Exception {
 		//tests...
 		
 		GitObjectReader gor;
-		gor = new GitObjectReader("/Users/mac/Desktop/test_tree.bin");
+		gor = new GitObjectReader("Annexes/tests/test_tree.bin");
+		
 		
 		GitTree gitTree = gor.buildTree();
+		System.out.println("Test TreeObject...");
+		System.out.println(String.format("Size : %d", gitTree.getSize()));
 		for (TreeEntry tEntry : gitTree.listEntry())
 			System.out.println(tEntry);
-		/*
 		
-		GitObjectReader gor;
-		gor = new GitObjectReader("/Users/mac/Desktop/test_commit.bin");
 		
-		for (byte b : gor.array)
-			System.out.print(b == 0 ? "<NULL>" : (char) b);
+		System.out.println("---------");
 		
-		System.out.println(gor.getContentIndex());
-		System.out.println(gor.extractSHA1String(16).obj);
-		System.out.println(gor.extractTzOffset(158).obj);
-		*/
+		gor = new GitObjectReader("Annexes/tests/test_blob.bin");
+		
+		GitBlob gitBlob = gor.buildBlob();
+		System.out.println("Test BlobObject...");
+		System.out.println(String.format("Size : %d", gitBlob.getSize()));
+		System.out.println(String.format("Index position data : %d", 
+				gitBlob.getIndex()));
+		
 	}
 }
