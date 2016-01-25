@@ -1,26 +1,41 @@
 package edu.caravane.guitare.gitobejct;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 public class GitDate extends Timestamp {
+	protected int date;
 	protected int offset;
 	
-	@SuppressWarnings("deprecation")
-	public GitDate(long time) {
-		super(time);
+	public GitDate(int date) {
+		super(date);
+		this.offset = 0;
 	}
 	
-	public void setOffset(int off) {
-		this.offset = off;
+	public GitDate(int date, int offset) {
+		super(date + offset);
+		this.offset = offset;
+		this.date = date + offset;
+	}
+	
+	//getter
+	
+	public int getDate() {
+		return this.date;
 	}
 	
 	public int getOffset() {
 		return this.offset;
 	}
 	
-	@Override
-	public int compareTo(Date o) {
-		return super.compareTo(o);
+	public int getDateWithoutOffset() {
+		return this.date - this.offset;
+	}
+	
+	public int compareTo(GitDate date) {
+		return super.compareTo(date);
+	}
+	
+	public int compareToWithOffset(GitDate dateWithOff) {
+		return super.compareTo(dateWithOff);
 	}
 }

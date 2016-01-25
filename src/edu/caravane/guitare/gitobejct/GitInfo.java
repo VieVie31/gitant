@@ -1,14 +1,22 @@
 package edu.caravane.guitare.gitobejct;
 
 public class GitInfo {
-	protected String name;
-	protected String mail;
-	protected int dateTime;
+	protected final String name;
+	protected final String mail;
+	protected GitDate date;
 	
 	public GitInfo(String name, String mail) {
 		this.name = name;
 		this.mail = mail;
 	}
+	
+	public GitInfo(String name, String mail, GitDate date) {
+		this.name = name;
+		this.mail = mail;
+		this.date = date;
+	}
+	
+	//Getter
 	
 	/**
 	 * Getter
@@ -28,9 +36,22 @@ public class GitInfo {
 	 *
 	 * @return the user mail
 	 */
-	public String getMai() {
+	public String getMail() {
 		return this.mail;
 	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return the date
+	 */
+	public GitDate getDate() {
+		return this.date;
+	}
+	
+	//Body
 	
 	public String toString() {
 		return String.format(name, mail);

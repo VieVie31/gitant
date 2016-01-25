@@ -3,42 +3,16 @@ import java.util.*;
 
 public class GitTree extends GitObject {
 	protected static String type = "tree";
-	protected int index;
+	protected int size;
 	protected ArrayList<TreeEntry> lstEntr;
 	
-	public GitTree() {
-		lstEntr = new ArrayList<TreeEntry>();
+	public GitTree(ArrayList<TreeEntry> lstEntr, int size) {
+		this.lstEntr = new ArrayList<TreeEntry>();
+		this.size = size;
 	}
 	
-	/**
-	 * Getter
-	 * 
-	 * @author Sylvain
-	 *
-	 * @return The list of the entry
-	 */
-	public ArrayList<TreeEntry> getData() {
-		return this.lstEntr;
-	}
-
-	@Override
-	int getSize() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/**
-	 * Getter
-	 * 
-	 * @author Sylvain
-	 *
-	 * @return The id of the object
-	 */
-	@Override
-	int getId() {
-		return this.index;
-	}
-
+	//Getter
+	
 	/**
 	 * Getter
 	 * 
@@ -52,16 +26,40 @@ public class GitTree extends GitObject {
 	}
 	
 	/**
-	 * Setter
+	 * Getter
 	 * 
 	 * @author Sylvain
 	 *
-	 * @return void
+	 * @return the size of the object
 	 */
 	@Override
-	void setId(int i) {
-		this.index = i;	
+	int getSize() {
+		return this.size;
 	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return The list of the entry
+	 */
+	public ArrayList<TreeEntry> listEntry() {
+		return this.lstEntr;
+	}
+	
+	//Setter
+	
+	@Override
+	void setSize(int size) {
+		this.size = size;
+	}
+	
+	public void setListEntry(ArrayList<TreeEntry> listEntry) {
+		this.lstEntr = listEntry;
+	}
+	
+	//Body
 	
 	public void addEntry(TreeEntry te) {
 		this.lstEntr.add(te);

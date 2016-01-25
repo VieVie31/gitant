@@ -2,38 +2,18 @@ package edu.caravane.guitare.gitobejct;
 
 public class GitBlob extends GitObject {
 	protected static String type = "blob";
+	protected String path;
+	protected int size;
 	protected int index;
-	protected String adresse;
 	
-	public GitBlob() {
-		//T0D0
-	}
-	
-	public String getAdresse() {
-		return this.adresse;
-	}
-	
-	public void setAdresse(String adresse) {
-		this.adresse = adresse;
+	public GitBlob(String path, int size, int index) {
+		this.size = size;
+		this.path = path;
+		this.index = index;
 	}
  
-	@Override
-	int getSize() {
-		//T0D0
-		return 0;
-	}
-
-	/**
-	 * Getter
-	 * 
-	 * @author Sylvain
-	 *
-	 * @return the id of the object
-	 */
-	@Override
-	int getId() {
-		return this.index;
-	}
+	// Getter
+	
 	
 	/**
 	 * Getter
@@ -48,14 +28,56 @@ public class GitBlob extends GitObject {
 	}
 	
 	/**
-	 * Setter
+	 * Getter
 	 * 
 	 * @author Sylvain
 	 *
-	 * @return void
+	 * @return the size of the object
 	 */
 	@Override
-	void setId(int i) {
-		this.index = i;
+	int getSize() {
+		return this.size;
 	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return the position where the data start
+	 */
+	public int getIndex() {
+		return this.index;
+	}
+
+	//TODO
+	public int getId() {
+		return 0;
+	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return the path of the object
+	 */
+	public String getPath() {
+		return this.path;
+	}
+	
+	//setter
+	@Override
+	void setSize(int size) {
+		this.size = size;
+	}
+	
+	public void setindex(int index) {
+		this.index = index;
+	}
+	
+	public void setPath(String path) {
+		this.path = path;
+	}
+	
 }

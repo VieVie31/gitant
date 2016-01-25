@@ -1,24 +1,45 @@
 package edu.caravane.guitare.gitobejct;
 
+import java.util.ArrayList;
+
 public class GitTag extends GitObject {
 	protected static String type = "tag";
+	protected int size;
+	protected ArrayList<Byte> data;
 	protected String tagName;
-	protected byte[] data;
-	protected int index;
 	protected GitInfo tagger;
+	
+	public GitTag(String tagName, int size) {
+		this.tagName = tagName;
+		this.size = size;
+	}
+	
+	//Getter
 	
 	/**
 	 * Getter
 	 * 
 	 * @author Sylvain
 	 *
-	 * @return The id of the object
+	 * @return the type of the object
 	 */
 	@Override
-	int getId() {
-		return this.index;
+	String getType() {
+		return GitTag.type;
 	}
-
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return the size of the object
+	 */
+	@Override
+	int getSize() {
+		return this.size;
+	}
+	
 	/**
 	 * Getter
 	 * 
@@ -26,15 +47,10 @@ public class GitTag extends GitObject {
 	 *
 	 * @return the datas from a tag object
 	 */
-	public byte[] getData() {
+	public ArrayList<Byte> getData() {
 		return this.data;
 	}
 
-	@Override
-	int getSize() {
-		return 0;
-	}
-	
 	/**
 	 * Getter
 	 * 
@@ -57,28 +73,33 @@ public class GitTag extends GitObject {
 		return this.tagger;
 	}
 
-	/**
-	 * Getter
-	 * 
-	 * @author Sylvain
-	 *
-	 * @return the type of the object
-	 */
+	//Setter
+	
 	@Override
-	String getType() {
-		return GitTag.type;
+	void setSize(int size) {
+		this.size = size;
 	}
 	
-	/**
-	 * Setter
-	 * 
-	 * @author Sylvain
-	 *
-	 * @return void
-	 */
-	@Override
-	void setId(int i) {
-		this.index = i;
+	public void setData(ArrayList<Byte> data) {
+		this.data = data;
+	}
+	
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
+	}
+	
+	public void setTagger(GitInfo tagger) {
+		this.tagger = tagger;
+	}
+	
+	//Body
+	
+	public void addData(Byte data) {
+		this.data.add(data);
+	}
+	
+	public void removeData(int index) {
+		this.data.remove(index);
 	}
 
 }

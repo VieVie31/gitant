@@ -1,36 +1,35 @@
 package edu.caravane.guitare.gitobejct;
 
+import java.util.ArrayList;
+
 public class GitCommit extends GitObject {
 	protected static String type = "commit";
-	protected String treeld;
-	protected String[] parentListId;
+	protected int size;
+	protected String treeId;
+	protected ArrayList<String> parentListId;
 	protected GitInfo autor;
 	protected GitInfo commiter;
-	protected int index;
 	
-	public GitCommit(String treeld, String[] parentLstId, GitInfo autor, GitInfo commiter) {
-		this.treeld = treeld;
+	public GitCommit(String treeId, ArrayList<String> parentLstId, GitInfo autor, GitInfo commiter, int size) {
+		this.treeId = treeId;
 		this.parentListId = parentLstId;
 		this.autor = autor;
 		this.commiter = commiter;
+		this.size = size;
 	}
 
-	@Override
-	int getSize() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	//Getter
+	
 	/**
 	 * Getter
 	 * 
 	 * @author Sylvain
 	 *
-	 * @return The id of the object
+	 * @return the type of the object
 	 */
 	@Override
-	int getId() {
-		return this.index;
+	String getType() {
+		return GitCommit.type;
 	}
 	
 	/**
@@ -38,10 +37,22 @@ public class GitCommit extends GitObject {
 	 * 
 	 * @author Sylvain
 	 *
-	 * @return The treeld of the object
+	 * @return the size of the object
 	 */
-	public String getTreeld(){
-		return this.treeld;
+	@Override
+	int getSize() {
+		return this.size;
+	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return The treeId of the object
+	 */
+	public String getTreeId(){
+		return this.treeId;
 	}
 	
 	/**
@@ -51,7 +62,7 @@ public class GitCommit extends GitObject {
 	 *
 	 * @return The list of id from the object's parents
 	 */
-	public String[] getParentListId() {
+	public ArrayList<String> getParentListId() {
 		return this.parentListId;
 	}
 	
@@ -77,28 +88,35 @@ public class GitCommit extends GitObject {
 		return this.commiter;
 	}
 
-	/**
-	 * Getter
-	 * 
-	 * @author Sylvain
-	 *
-	 * @return the type of the object
-	 */
+	//Setter
 	@Override
-	String getType() {
-		return GitCommit.type;
+	void setSize(int size) {
+		this.size = size;
 	}
 	
-	/**
-	 * Setter
-	 * 
-	 * @author Sylvain
-	 *
-	 * @return void
-	 */
-	@Override
-	void setId(int i) {
-		this.index = i;		
+	public void setTreeId(String treeId) {
+		this.treeId = treeId;
 	}
-
+	
+	public void setParentListId(ArrayList<String> parentListId) {
+		this.parentListId = parentListId;
+	}
+	
+	public void setAutor(GitInfo autor) {
+		this.autor = autor;
+	}
+	
+	public void setCommiter(GitInfo commiter) {
+		this.commiter = commiter;
+	}
+	
+	//body
+	
+	public void addParentId(String parentId) {
+		this.parentListId.add(parentId);
+	}
+	
+	public void removeParentId(int index) {
+		this.parentListId.remove(index);
+	}
 }
