@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 
 public class GitObjectReader {
 	protected String id;
@@ -287,6 +289,28 @@ public class GitObjectReader {
 	}
 	
 	/**
+	 * This function return the date extracted from the current index position.
+	 * A date is composed by : the timestamp and the time zone offset.
+	 * @see GitDate
+	 * 
+	 * @author VieVie31
+	 *
+	 * @param  index for starting to decode
+	 * @return a GitDate
+	 */
+	protected DataObject<GitDate> extractDate(int index) {
+		int i = index;
+		
+		DataObject<Integer> timestamp = extractBase10Number(i);
+		i += timestamp.len;
+		i++; //for <SP>
+		DataObject<Integer> tzOffset = extractTzOffset(i);
+		
+		return new DataObject<GitDate>(new GitDate(timestamp.obj, tzOffset.obj),
+				index, i + tzOffset.len);
+	}
+	
+	/**
 	 * This function return the firsts sequence of char not containing <SP>
 	 * 
 	 * @author VieVie31
@@ -430,7 +454,6 @@ public class GitObjectReader {
 	
 	public static void main(String[] args) throws Exception {
 		//tests...
-		
 		GitObjectReader gor;
 		gor = new GitObjectReader("Annexes/tests/test_tree.bin");
 		
@@ -451,5 +474,11 @@ public class GitObjectReader {
 		System.out.println(String.format("Size : %d", gitBlob.getSize()));
 		System.out.println(new String(gitBlob.getData()));
 		
+		
+		System.out.println("---------");
+		
+		gor = new GitObjectReader("Annexes/tests/test_commit.bin");
+		System.out.println(new String(gor.array));
+		System.out.println(gor.extractDate(147).obj);//extract 1st GitDate
 	}
 }

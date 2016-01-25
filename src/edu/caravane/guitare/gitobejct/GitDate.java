@@ -38,4 +38,8 @@ public class GitDate extends Timestamp {
 	public int compareToWithOffset(GitDate dateWithOff) {
 		return super.compareTo(dateWithOff);
 	}
+	
+	public String toString() { //temporaire plus propre plus tard...
+		return String.format("%d %d", date, offset);
+	}
 }
