@@ -4,11 +4,13 @@ import java.util.*;
 public class GitTree extends GitObject {
 	protected static String type = "tree";
 	protected int size;
+	protected String sha1;
 	protected ArrayList<TreeEntry> lstEntr;
 	
-	public GitTree(ArrayList<TreeEntry> lstEntr, int size) {
+	public GitTree(int size, String sha1, ArrayList<TreeEntry> lstEntr) {
 		this.lstEntr = new ArrayList<TreeEntry>();
 		this.size = size;
+		this.sha1 = sha1;
 	}
 	
 	//Getter
@@ -42,6 +44,18 @@ public class GitTree extends GitObject {
 	 * 
 	 * @author Sylvain
 	 *
+	 * @return the id of the object
+	 */
+	@Override
+	String getId() {
+		return this.sha1;
+	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
 	 * @return The list of the entry
 	 */
 	public ArrayList<TreeEntry> listEntry() {
@@ -53,6 +67,11 @@ public class GitTree extends GitObject {
 	@Override
 	void setSize(int size) {
 		this.size = size;
+	}
+	
+	@Override
+	void setId(String sha1) {
+		this.sha1 = sha1;
 	}
 	
 	public void setListEntry(ArrayList<TreeEntry> listEntry) {

@@ -5,17 +5,18 @@ import java.util.ArrayList;
 public class GitCommit extends GitObject {
 	protected static String type = "commit";
 	protected int size;
-	protected String treeId;
+	protected String treeId, sha1;
 	protected ArrayList<String> parentListId;
 	protected GitInfo autor;
 	protected GitInfo commiter;
 	
-	public GitCommit(String treeId, ArrayList<String> parentLstId, GitInfo autor, GitInfo commiter, int size) {
+	public GitCommit(int size, String sha1, String treeId, ArrayList<String> parentLstId, GitInfo autor, GitInfo commiter) {
 		this.treeId = treeId;
 		this.parentListId = parentLstId;
 		this.autor = autor;
 		this.commiter = commiter;
 		this.size = size;
+		this.sha1 = sha1;
 	}
 
 	//Getter
@@ -42,6 +43,18 @@ public class GitCommit extends GitObject {
 	@Override
 	int getSize() {
 		return this.size;
+	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return the id of the object
+	 */
+	@Override
+	String getId() {
+		return this.sha1;
 	}
 	
 	/**
@@ -92,6 +105,11 @@ public class GitCommit extends GitObject {
 	@Override
 	void setSize(int size) {
 		this.size = size;
+	}
+	
+	@Override
+	void setId(String sha1) {
+		this.sha1 = sha1;
 	}
 	
 	public void setTreeId(String treeId) {

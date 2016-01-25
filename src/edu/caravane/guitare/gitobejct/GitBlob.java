@@ -2,14 +2,15 @@ package edu.caravane.guitare.gitobejct;
 
 public class GitBlob extends GitObject {
 	protected static String type = "blob";
-	protected String path;
+	protected String path, sha1;
 	protected int size;
 	protected int index;
 	
-	public GitBlob(String path, int size, int index) {
+	public GitBlob(String sha1, int size, int index,String path) {
 		this.size = size;
 		this.path = path;
 		this.index = index;
+		this.sha1 = sha1;
 	}
  
 	// Getter
@@ -44,15 +45,22 @@ public class GitBlob extends GitObject {
 	 * 
 	 * @author Sylvain
 	 *
+	 * @return the id of the object
+	 */
+	@Override
+	String getId() {
+		return this.sha1;
+	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
 	 * @return the position where the data start
 	 */
 	public int getIndex() {
 		return this.index;
-	}
-
-	//TODO
-	public int getId() {
-		return 0;
 	}
 	
 	/**
@@ -70,6 +78,11 @@ public class GitBlob extends GitObject {
 	@Override
 	void setSize(int size) {
 		this.size = size;
+	}
+	
+	@Override
+	void setId(String sha1) {
+		this.sha1 = sha1;
 	}
 	
 	public void setindex(int index) {

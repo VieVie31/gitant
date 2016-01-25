@@ -6,12 +6,13 @@ public class GitTag extends GitObject {
 	protected static String type = "tag";
 	protected int size;
 	protected ArrayList<Byte> data;
-	protected String tagName;
+	protected String tagName, sha1;
 	protected GitInfo tagger;
 	
-	public GitTag(String tagName, int size) {
+	public GitTag(int size, String sha1, String tagName) {
 		this.tagName = tagName;
 		this.size = size;
+		this.sha1 = sha1;
 	}
 	
 	//Getter
@@ -38,6 +39,18 @@ public class GitTag extends GitObject {
 	@Override
 	int getSize() {
 		return this.size;
+	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @author Sylvain
+	 *
+	 * @return the id of the object
+	 */
+	@Override
+	String getId() {
+		return this.sha1;
 	}
 	
 	/**
@@ -78,6 +91,11 @@ public class GitTag extends GitObject {
 	@Override
 	void setSize(int size) {
 		this.size = size;
+	}
+	
+	@Override
+	void setId(String sha1) {
+		this.sha1 = sha1;
 	}
 	
 	public void setData(ArrayList<Byte> data) {
