@@ -449,8 +449,7 @@ public class GitObjectReader {
 		GitBlob gitBlob = gor.buildBlob();
 		System.out.println("Test BlobObject...");
 		System.out.println(String.format("Size : %d", gitBlob.getSize()));
-		System.out.println(String.format("Index position data : %d", 
-				gitBlob.getIndex()));
+		System.out.println(new String(gitBlob.getData()));
 		
 	}
 }

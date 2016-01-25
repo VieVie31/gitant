@@ -1,5 +1,9 @@
 package edu.caravane.guitare.gitobejct;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.zip.DataFormatException;
+
 public class GitBlob extends GitObject {
 	protected static String type = "blob";
 	protected String path, sha1;
@@ -61,6 +65,19 @@ public class GitBlob extends GitObject {
 	 */
 	public int getIndex() {
 		return this.index;
+	}
+	
+	/**
+	 * This function return a byet array containing the data of the blob object
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return the data of blob object
+	 */
+	public byte[] getData() throws IOException, DataFormatException {
+		byte[] arrayFileContent = BinaryFile.decompress(path); 
+		return Arrays.copyOfRange(arrayFileContent, 
+				getIndex(), arrayFileContent.length);
 	}
 	
 	/**
