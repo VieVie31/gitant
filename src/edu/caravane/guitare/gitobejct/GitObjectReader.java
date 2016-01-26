@@ -336,6 +336,14 @@ public class GitObjectReader {
 				index, i - index);
 	}
 	
+	/**
+	 * This function return the list of the parent(s) of a commit.
+	 * @author VieVie31
+	 *
+	 * @param  index for starting to decode
+	 * @return bananas !! :p
+	 * @throws Exception if a problem occured
+	 */
 	protected DataObject<ArrayList<String>> extractCommitParents(int index) 
 			throws Exception {
 		int i = index;
@@ -486,7 +494,7 @@ public class GitObjectReader {
 	 * 
 	 * @author VieVie31
 	 *
-	 * @return
+	 * @return a GitBlob object
 	 * @throws Exception
 	 */
 	public GitBlob buildBlob() throws Exception {
@@ -496,6 +504,15 @@ public class GitObjectReader {
 		return new GitBlob(getId(), getSize(), getContentIndex(), path);
 	}
 	
+	/**
+	 * This function decode the git commit objecy and return an instance of
+	 * the commit decoded.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return a GitCommit object
+	 * @throws Exception
+	 */
 	public GitCommit buildCommit() throws Exception {
 		if (!getType().equals("commit"))
 			throw new Exception();
@@ -547,6 +564,9 @@ public class GitObjectReader {
 		System.out.println("---------");
 		
 		gor = new GitObjectReader("Annexes/tests/test_commit.bin");
+		System.out.println(gor.buildCommit());
+		
+		gor = new GitObjectReader("Annexes/tests/test_commit2.bin");
 		System.out.println(gor.buildCommit());
 	}
 }
