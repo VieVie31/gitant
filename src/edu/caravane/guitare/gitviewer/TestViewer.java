@@ -1,4 +1,4 @@
-package application;
+package edu.caravane.guitare.gitviewer;
 	
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -9,7 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 
 
-public class Main extends Application {
+public class TestViewer extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -18,7 +18,7 @@ public class Main extends Application {
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setTitle("Viewer !");
 			primaryStage.setScene(scene);
-			ImageView imageAffiche = new ImageView(new Image(Main.class.getResourceAsStream("images/Aile de Mort VS Electromage.jpg")));
+			ImageView imageAffiche = new ImageView(new Image(TestViewer.class.getResourceAsStream("images/Aile de Mort VS Electromage.jpg")));
 			root.getChildren().add(imageAffiche);
 			primaryStage.show();
 		} catch(Exception e) {
