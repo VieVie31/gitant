@@ -9,14 +9,18 @@ public class GitCommit extends GitObject {
 	protected ArrayList<String> parentListId;
 	protected GitInfo autor;
 	protected GitInfo commiter;
+	protected byte[] data;
 	
-	public GitCommit(int size, String sha1, String treeId, ArrayList<String> parentLstId, GitInfo autor, GitInfo commiter) {
+	public GitCommit(int size, String sha1, String treeId, 
+			ArrayList<String> parentLstId, GitInfo autor, 
+			GitInfo commiter, byte[] data) {
 		this.treeId = treeId;
 		this.parentListId = parentLstId;
 		this.autor = autor;
 		this.commiter = commiter;
 		this.size = size;
 		this.sha1 = sha1;
+		this.data = data;
 	}
 
 	//Getter
@@ -136,5 +140,15 @@ public class GitCommit extends GitObject {
 	
 	public void removeParentId(int index) {
 		this.parentListId.remove(index);
+	}
+	
+	public String toString() {
+		String s = String.format("tree : %s\n", treeId);
+		for (String st : parentListId)
+			s += String.format("parent : %s\n", st);
+		s += "Author   : " + autor.toString() + "\n";
+		s += "Commiter : " + commiter.toString() + "\n";
+		s += new String(data);
+		return s;
 	}
 }

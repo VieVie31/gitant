@@ -2,6 +2,7 @@ package edu.caravane.guitare.gitobejct;
 
 import java.sql.Timestamp;
 
+@SuppressWarnings("serial")
 public class GitDate extends Timestamp {
 	protected int date;
 	protected int offset;

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-
 public class GitObjectReader {
 	protected String id;
 	protected byte[] array;
@@ -337,6 +336,24 @@ public class GitObjectReader {
 				index, i - index);
 	}
 	
+	protected DataObject<ArrayList<String>> extractCommitParents(int index) 
+			throws Exception {
+		int i = index;
+		
+		ArrayList<String> parents = new ArrayList<String>();
+		
+		while (array[i] == 'p') { //content parent...
+			i += 6; //'parent'
+			i++; //<SP>
+			DataObject<String> ph = extractSHA1String(i);
+			parents.add(ph.obj);
+			i += ph.len; //len of the sha1 40
+			i++; //<LF>
+		}
+		
+		return new DataObject<ArrayList<String>>(parents, index, i - index);
+	}
+	
 	/**
 	 * This function return the firsts sequence of char not containing <SP>
 	 * 
@@ -479,6 +496,31 @@ public class GitObjectReader {
 		return new GitBlob(getId(), getSize(), getContentIndex(), path);
 	}
 	
+	public GitCommit buildCommit() throws Exception {
+		if (!getType().equals("commit"))
+			throw new Exception();
+		
+		index = getContentIndex() + 5; //"tree" + <SP>
+		DataObject<String> tEntry = extractSHA1String(index);
+		index += tEntry.len;
+		index++; //<SP>
+		
+		DataObject<ArrayList<String>> pLst = extractCommitParents(index);
+		index += pLst.len;
+		
+		index += 7; //'author' + <SP>
+		DataObject<GitInfo> author = extractInfo(index);
+		index += author.len;
+		
+		index += 10; //'committer' + <SP>
+		DataObject<GitInfo> commiter = extractInfo(index);
+		index += commiter.len;
+		
+		return new GitCommit(getSize(), getId(), 
+				tEntry.obj, pLst.obj, author.obj, commiter.obj,
+				Arrays.copyOfRange(array, index, array.length));
+	}
+	
 	public static void main(String[] args) throws Exception {
 		//tests...
 		GitObjectReader gor;
@@ -505,9 +547,6 @@ public class GitObjectReader {
 		System.out.println("---------");
 		
 		gor = new GitObjectReader("Annexes/tests/test_commit.bin");
-		System.out.println(new String(gor.array));
-		System.out.println(gor.extractDate(147).obj);//extract 1st GitDate
-		System.out.println(gor.extractInfo(112).obj);
-		
+		System.out.println(gor.buildCommit());
 	}
 }
