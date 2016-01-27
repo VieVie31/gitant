@@ -29,7 +29,6 @@ public class Main extends Application {
 	 * @throws an exception if there is no object
 	 */
 	protected String[] searchGitObject(String path) throws Exception {
-		// code temporaire avant qu'eloan ne fasse la fonction
 		Queue<String> filePasTrie = new LinkedList<String>();
 		filePasTrie.add(path);
 		File[] cur;
@@ -37,24 +36,23 @@ public class Main extends Application {
 		File git = new File(path);
 		int indexLongueur = 0;
 		boolean drap = false;
-		while (filePasTrie.size()!=0 && drap==false) {
 
+		while (filePasTrie.size() != 0 && drap == false) {
 			current = new File(filePasTrie.element());
-			if (current.isDirectory()){
+			if (current.isDirectory()) {
 				cur = current.listFiles();
-				for(File f : cur){
-
-					if (f.getAbsolutePath().contains("/.git/objects/")){
-
-						indexLongueur = f.getAbsolutePath().indexOf("git/objects/")+"git/objects/".length();
-
-						git = new File(f.getAbsolutePath().substring(0, indexLongueur));
+				for (File f : cur) {
+					if (f.getAbsolutePath().contains("/.git/objects/")) {
+						indexLongueur = f.
+								getAbsolutePath().
+								indexOf("git/objects/") + "git/objects/".
+								length();
+						git = new File(f.getAbsolutePath().
+								substring(0, indexLongueur));
 						drap = true;
 						break;
-					}
-
-					else if (f.isDirectory() && f.listFiles().length!=0){
-
+					} else if (f.isDirectory()
+							&& f.listFiles().length != 0) {
 						filePasTrie.add(f.toString());
 					}
 				}
@@ -63,29 +61,23 @@ public class Main extends Application {
 		}
 
 		ArrayList<String> listg = new ArrayList<String>();
-		if (drap==true){
-			System.out.println("entré du for");
-			for (File f : git.listFiles()){
-				if (f.isDirectory() && f.listFiles().length>1){
-					
-					for (File ff : f.listFiles()){
+		if (drap == true) {
+			for (File f : git.listFiles()) {
+				if (f.isDirectory() && f.listFiles().length > 1) {
+					for (File ff : f.listFiles()) {
 						listg.add(ff.toString());
 					}
-				}
-				else if(f.isDirectory() && f.listFiles().length==1){
+				} else if(f.isDirectory() && f.listFiles().length == 1) {
 					listg.add(f.listFiles()[0].toString());
 				}
 			}
-			System.out.println("sortie du for");
 		}
 		String listgit[] = new String[listg.size()];
-		for(int i =0;i<listg.size();i++){
+		for(int i = 0; i < listg.size(); i++) {
 			listgit[i] = listg.get(i);
-			System.out.println(listgit[i]);
 		}
-
 		return listgit;
-		//la fonction ne devra jamais renvoyer null !!
+		//faire exception si ya pas de git
 	}
 
 	/**
