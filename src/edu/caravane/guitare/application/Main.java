@@ -1,6 +1,9 @@
 package edu.caravane.guitare.application;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javafx.fxml.*;
 import javafx.stage.*;
@@ -18,7 +21,7 @@ public class Main extends Application {
 	 * This function take a path ans search in each folder
 	 * recursively the first .git directory and return the list
 	 * of git objects in the  .git/object/* as String.
-	 * 
+	 *
 	 * @author Eloan
 	 *
 	 * @param  path of the file to explore
@@ -27,15 +30,68 @@ public class Main extends Application {
 	 */
 	protected String[] searchGitObject(String path) throws Exception {
 		// code temporaire avant qu'eloan ne fasse la fonction
-		String[] tmp = new String[1];
-		tmp[0] = path;
-		return tmp; //la fonction ne devra jamais renvoyer null !!
+		Queue<String> filePasTrie = new LinkedList<String>();
+		filePasTrie.add(path);
+		File[] cur;
+		File current = new File(path);
+		File git = new File(path);
+		int indexLongueur = 0;
+		boolean drap = false;
+		while (filePasTrie.size()!=0 && drap==false) {
+
+			current = new File(filePasTrie.element());
+			if (current.isDirectory()){
+				cur = current.listFiles();
+				for(File f : cur){
+
+					if (f.getAbsolutePath().contains("/.git/objects/")){
+
+						indexLongueur = f.getAbsolutePath().indexOf("git/objects/")+"git/objects/".length();
+
+						git = new File(f.getAbsolutePath().substring(0, indexLongueur));
+						drap = true;
+						break;
+					}
+
+					else if (f.isDirectory() && f.listFiles().length!=0){
+
+						filePasTrie.add(f.toString());
+					}
+				}
+				filePasTrie.remove();
+			}
+		}
+
+		ArrayList<String> listg = new ArrayList<String>();
+		if (drap==true){
+			System.out.println("entré du for");
+			for (File f : git.listFiles()){
+				if (f.isDirectory() && f.listFiles().length>1){
+					
+					for (File ff : f.listFiles()){
+						listg.add(ff.toString());
+					}
+				}
+				else if(f.isDirectory() && f.listFiles().length==1){
+					listg.add(f.listFiles()[0].toString());
+				}
+			}
+			System.out.println("sortie du for");
+		}
+		String listgit[] = new String[listg.size()];
+		for(int i =0;i<listg.size();i++){
+			listgit[i] = listg.get(i);
+			System.out.println(listgit[i]);
+		}
+
+		return listgit;
+		//la fonction ne devra jamais renvoyer null !!
 	}
 
 	/**
 	 * Start the main window, the git objects' explorer, and hide this
 	 * current drag & drop window;
-	 * 
+	 *
 	 * @author VieVie31
 	 *
 	 * @param  path
@@ -69,7 +125,7 @@ public class Main extends Application {
 			/**
 			 * When the window is clicked the user can choose the directory
 			 * to scan for exploring the git objects.
-			 * 
+			 *
 			 * @author VieVie31
 			 */
 			@Override
@@ -90,12 +146,12 @@ public class Main extends Application {
 		dragPane.setOnDragOver(new EventHandler<DragEvent>() {
 			/**
 			 * Enable the drag and drop function for files transfert.
-			 * 
+			 *
 			 * @author VieVie31
 			 */
 			@Override
 			public void handle(DragEvent event) {
-				if (event.getDragboard().hasFiles()) 
+				if (event.getDragboard().hasFiles())
 					event.acceptTransferModes(TransferMode.COPY);
 				else event.consume();
 			}
@@ -105,7 +161,7 @@ public class Main extends Application {
 			/**
 			 * When something is dropped, if it's a directory we open it in
 			 * the git objects' explorer. Else ignore.
-			 * 
+			 *
 			 * @author VieVie31
 			 */
 			@Override
