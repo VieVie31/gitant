@@ -91,17 +91,6 @@ public class GitBlob extends GitObject {
 		return this.path;
 	}
 	
-	//setter
-	@Override
-	void setSize(int size) {
-		this.size = size;
-	}
-	
-	@Override
-	void setId(String sha1) {
-		this.sha1 = sha1;
-	}
-	
 	public void setindex(int index) {
 		this.index = index;
 	}

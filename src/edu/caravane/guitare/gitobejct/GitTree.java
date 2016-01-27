@@ -62,17 +62,6 @@ public class GitTree extends GitObject {
 		return this.lstEntr;
 	}
 	
-	//Setter
-	
-	@Override
-	void setSize(int size) {
-		this.size = size;
-	}
-	
-	@Override
-	void setId(String sha1) {
-		this.sha1 = sha1;
-	}
 	
 	public void setListEntry(ArrayList<TreeEntry> listEntry) {
 		this.lstEntr = listEntry;

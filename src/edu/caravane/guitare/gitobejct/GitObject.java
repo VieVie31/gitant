@@ -8,6 +8,4 @@ public abstract class GitObject {
 	abstract String getType();
 	abstract int getSize();
 	abstract String getId();
-	abstract void setSize(int size);
-	abstract void setId(String sha1);
 }

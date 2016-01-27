@@ -104,17 +104,6 @@ public class GitCommit extends GitObject {
 	public GitInfo getCommiter() {
 		return this.commiter;
 	}
-
-	//Setter
-	@Override
-	void setSize(int size) {
-		this.size = size;
-	}
-	
-	@Override
-	void setId(String sha1) {
-		this.sha1 = sha1;
-	}
 	
 	public void setTreeId(String treeId) {
 		this.treeId = treeId;

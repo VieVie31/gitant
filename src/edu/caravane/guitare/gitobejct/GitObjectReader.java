@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
+
 public class GitObjectReader {
 	protected String id;
 	protected byte[] array;
@@ -65,6 +66,24 @@ public class GitObjectReader {
         return  new DataObject<String>(
         			new String(Arrays.copyOfRange(array, index, i - 1)),
         			index, i - index - 1);
+	}
+	
+	/** This funciton extract all symbols in the array fron the index position
+	 * until the symbol encontred is <LF> (\n).
+	 * 
+	 * @author VieVie31
+	 *
+	 * @param  index position for starting to decode
+	 * @return a DataObject containing the decoded object
+	 */
+	protected DataObject<String> extractWhileNotLF(int index) {
+		int i = index;
+		
+		while (array[i++] != (byte) '\n');
+		
+       return  new DataObject<String>(
+       			new String(Arrays.copyOfRange(array, index, i - 1)),
+       			index, i - index - 1);
 	}
 	
 	/**
@@ -532,10 +551,50 @@ public class GitObjectReader {
 		index += 10; //'committer' + <SP>
 		DataObject<GitInfo> commiter = extractInfo(index);
 		index += commiter.len;
+		index++; //<LF>
 		
 		return new GitCommit(getSize(), getId(), 
 				tEntry.obj, pLst.obj, author.obj, commiter.obj,
 				Arrays.copyOfRange(array, index, array.length));
+	}
+	
+	/**
+	 * This function decode the git tag objact and return an instance of
+	 * the tag decodded.
+	 * 
+	 * @author VieVie31
+	 *
+	 * @return a GitTagObject
+	 * @throws Exception
+	 */
+	public GitTag builTag() throws Exception {
+		if (!getType().equals("tag"))
+			throw new Exception();
+		
+		index = getContentIndex() + 7; //"object" + <SP>
+		DataObject<String> hexObjId = extractSHA1String(index);
+		index += hexObjId.len;
+		index++; //<SP>
+		
+		index += 5; //"type" + <SP>
+		DataObject<String> type = extractWhileNotLF(index);
+		index += type.len;
+		index++; //<LF>
+		
+		index += 4; //"tag" + <SP>
+		DataObject<String> tagName = extractWhileNotLF(index);
+		index += tagName.len;
+		index++; //<LF>
+		
+		index += 7; //"tagger" + <SP>
+		DataObject<GitInfo> tagger = extractInfo(index);
+		index += tagger.len;
+		index++; //<LF>
+		
+		byte[] data = Arrays.copyOfRange(array, index, array.length);
+		
+		return new GitTag(getSize(), getId(), 
+				hexObjId.obj, type.obj, tagName.obj, tagger.obj, data);
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -568,5 +627,10 @@ public class GitObjectReader {
 		
 		gor = new GitObjectReader("Annexes/tests/test_commit2.bin");
 		System.out.println(gor.buildCommit());
+		
+		System.out.println("---------");
+		
+		gor = new GitObjectReader("Annexes/tests/test_tag.bin");
+		System.out.println(gor.builTag());
 	}
 }

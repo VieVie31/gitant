@@ -1,18 +1,23 @@
 package edu.caravane.guitare.gitobejct;
 
-import java.util.ArrayList;
-
 public class GitTag extends GitObject {
 	protected static String type = "tag";
 	protected int size;
-	protected ArrayList<Byte> data;
 	protected String tagName, sha1;
+	protected String objHexId;
 	protected GitInfo tagger;
+	protected String tagType;
+	protected byte[] data;
 	
-	public GitTag(int size, String sha1, String tagName) {
+	public GitTag(int size, String sha1, String objHexId, String tagType,
+			String tagName, GitInfo tagger, byte[] data) {
 		this.tagName = tagName;
 		this.size = size;
 		this.sha1 = sha1;
+		this.objHexId = objHexId;
+		this.tagType = tagType;
+		this.tagger = tagger;
+		this.data = data;
 	}
 	
 	//Getter
@@ -60,7 +65,7 @@ public class GitTag extends GitObject {
 	 *
 	 * @return the datas from a tag object
 	 */
-	public ArrayList<Byte> getData() {
+	public byte[] getData() {
 		return this.data;
 	}
 
@@ -85,39 +90,14 @@ public class GitTag extends GitObject {
 	public GitInfo getTagger() {
 		return this.tagger;
 	}
-
-	//Setter
 	
-	@Override
-	void setSize(int size) {
-		this.size = size;
+	public String toString() {
+		String s = "";
+		s += "object : " + objHexId + "\n";
+		s += "tag type : " + tagType + "\n";
+		s += "tag name : " + tagName + "\n";
+		s += "tagger : " + tagger.toString() + "\n";
+		s += new String(data);
+		return s;
 	}
-	
-	@Override
-	void setId(String sha1) {
-		this.sha1 = sha1;
-	}
-	
-	public void setData(ArrayList<Byte> data) {
-		this.data = data;
-	}
-	
-	public void setTagName(String tagName) {
-		this.tagName = tagName;
-	}
-	
-	public void setTagger(GitInfo tagger) {
-		this.tagger = tagger;
-	}
-	
-	//Body
-	
-	public void addData(Byte data) {
-		this.data.add(data);
-	}
-	
-	public void removeData(int index) {
-		this.data.remove(index);
-	}
-
 }
