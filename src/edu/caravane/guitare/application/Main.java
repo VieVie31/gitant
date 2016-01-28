@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-
 import javafx.fxml.*;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -16,6 +15,8 @@ import javafx.application.Application;
 
 public class Main extends Application {
 	protected Stage primaryStage;
+	protected final String osBarre = 
+			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
 
 	/**
 	 * This function take a path ans search in each folder
@@ -36,48 +37,53 @@ public class Main extends Application {
 		File git = new File(path);
 		int indexLongueur = 0;
 		boolean drap = false;
-
 		while (filePasTrie.size() != 0 && drap == false) {
 			current = new File(filePasTrie.element());
+			
 			if (current.isDirectory()) {
 				cur = current.listFiles();
 				for (File f : cur) {
-					if (f.getAbsolutePath().contains("/.git/objects/")) {
-						indexLongueur = f.
-								getAbsolutePath().
-								indexOf("git/objects/") + "git/objects/".
-								length();
+					if (f.getAbsolutePath().contains(
+							osBarre + ".git" + osBarre + "objects" + osBarre)) {
+						indexLongueur = f.getAbsolutePath().indexOf(
+								"git" + osBarre + "objects" + osBarre) 
+								+("git" + osBarre + "objects" + osBarre).length();
+
 						git = new File(f.getAbsolutePath().
 								substring(0, indexLongueur));
+						
 						drap = true;
 						break;
-					} else if (f.isDirectory()
-							&& f.listFiles().length != 0) {
-						filePasTrie.add(f.toString());
-					}
+					} else if (f.isDirectory() && f.listFiles().length != 0) 
+						filePasTrie.add(f.toString());	
 				}
 				filePasTrie.remove();
 			}
 		}
-
+		// Exception pas levée pour une raison inconnue
+		if (!git.getAbsolutePath().contains(".git"))
+			throw new Exception();
+		
 		ArrayList<String> listg = new ArrayList<String>();
-		if (drap == true) {
+		if (drap == true){
 			for (File f : git.listFiles()) {
 				if (f.isDirectory() && f.listFiles().length > 1) {
-					for (File ff : f.listFiles()) {
+					for (File ff : f.listFiles()) 
 						listg.add(ff.toString());
-					}
-				} else if(f.isDirectory() && f.listFiles().length == 1) {
-					listg.add(f.listFiles()[0].toString());
-				}
+				} else if(f.isDirectory() && f.listFiles().length == 1) 
+					listg.add(f.listFiles()[0].toString());	
 			}
 		}
+		
 		String listgit[] = new String[listg.size()];
-		for(int i = 0; i < listg.size(); i++) {
+		
+		for(int i =0;i<listg.size();i++) 
 			listgit[i] = listg.get(i);
-		}
+		
+		if(listgit.length == 0)
+			throw new Exception();
+		
 		return listgit;
-		//faire exception si ya pas de git
 	}
 
 	/**
