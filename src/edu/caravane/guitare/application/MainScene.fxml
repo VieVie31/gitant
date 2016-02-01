@@ -36,10 +36,11 @@
                <children>
                   <TableView layoutX="35.0" layoutY="75.0" prefHeight="370.0" prefWidth="371.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
-                      <TableColumn editable="false" prefWidth="75.0" text="SHA-1" />
-                      <TableColumn editable="false" prefWidth="75.0" text="Type" />
-                        <TableColumn editable="false" prefWidth="75.0" text="Nom" />
-                        <TableColumn editable="false" prefWidth="75.0" text="Size" />
+                      <TableColumn fx:id = "SHA1" editable="false" prefWidth="75.0" text="SHA-1" />
+                      <TableColumn fx:id = "Type" editable="false" prefWidth="75.0" text="Type" />
+                        <TableColumn fx:id = "Nom" editable="false" prefWidth="75.0" text="Nom" />
+                        <TableColumn fx:id = "Size" editable="false" prefWidth="75.0" text="Size" />
+                        <TableColumn fx:id = "Date" editable="false" prefWidth="75.0" text="Date" />
                     </columns>
                   </TableView>
                </children>
