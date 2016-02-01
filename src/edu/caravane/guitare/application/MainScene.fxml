@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.caravane.guitare.application.GitObjectController" >
    <children>
       <MenuBar layoutX="14.0" layoutY="7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -23,7 +23,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TextField layoutX="418.0" layoutY="64.0" prefHeight="26.0" prefWidth="125.0" promptText="I search..." AnchorPane.rightAnchor="55.0" AnchorPane.topAnchor="1.0" />
+      <TextField fx:id="searchEntry" layoutX="418.0" layoutY="64.0" prefHeight="26.0" prefWidth="125.0" promptText="I search..." AnchorPane.rightAnchor="55.0" AnchorPane.topAnchor="1.0" />
       <MenuButton layoutX="484.0" layoutY="35.0" mnemonicParsing="false" prefWidth="50.0" text="In" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="1.0">
         <items>
           <MenuItem mnemonicParsing="false" text="SHA1" />
@@ -34,7 +34,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <TableView layoutX="35.0" layoutY="75.0" prefHeight="370.0" prefWidth="371.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TableView fx:id="objectTable" layoutX="35.0" layoutY="75.0" prefHeight="370.0" prefWidth="371.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
                       <TableColumn fx:id = "SHA1" editable="false" prefWidth="75.0" text="SHA-1" />
                       <TableColumn fx:id = "Type" editable="false" prefWidth="75.0" text="Type" />

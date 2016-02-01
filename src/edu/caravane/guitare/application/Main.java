@@ -19,7 +19,7 @@ public class Main extends Application {
 			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
 
 	/**
-	 * This function take a path ans search in each folder
+	 * This function take a path and search in each folder
 	 * recursively the first .git directory and return the list
 	 * of git objects in the  .git/object/* as String.
 	 *
