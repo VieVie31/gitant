@@ -60,7 +60,7 @@ public class Main extends Application {
 				filePasTrie.remove();
 			}
 		}
-		// Exception pas levée pour une raison inconnue
+		// Exception pas levee pour une raison inconnue
 		if (!git.getAbsolutePath().contains(".git"))
 			throw new Exception("Il n'existe pas de .git dans le repertoire");
 		
