@@ -62,7 +62,9 @@ public class Main extends Application {
 		}
 		// Exception pas levée pour une raison inconnue
 		if (!git.getAbsolutePath().contains(".git"))
-			throw new Exception();
+			throw new Exception("Il n'existe pas de .git dans le repertoire");
+		
+		
 		
 		ArrayList<String> listg = new ArrayList<String>();
 		if (drap == true){
@@ -137,7 +139,9 @@ public class Main extends Application {
 
 				try {
 					startMainWindow(selectedDir.getAbsolutePath());
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
 			}
 		});
 
@@ -177,7 +181,9 @@ public class Main extends Application {
 					else {
 						try {
 							startMainWindow(file.getAbsolutePath());
-						} catch (Exception e) {}
+						} catch (Exception e) {
+							System.out.println(e.getMessage());
+						}
 					}
 
 				} else event.setDropCompleted(true);
