@@ -15,8 +15,9 @@ public class MainWindow extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Parent root;
-		root = FXMLLoader.load(getClass().getResource("MainScene.fxml"));  ;
+		root = FXMLLoader.load(getClass().getResource("MainScene.fxml"));  
 		Scene scene = new Scene(root);
+
 		
 		primaryStage.setTitle("GitExplorer");
 		primaryStage.setMinWidth(600);
