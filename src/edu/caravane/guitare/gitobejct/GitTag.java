@@ -8,7 +8,7 @@ public class GitTag extends GitObject {
 	protected GitInfo tagger;
 	protected String tagType;
 	protected byte[] data;
-	
+
 	public GitTag(int size, String sha1, String objHexId, String tagType,
 			String tagName, GitInfo tagger, byte[] data) {
 		this.tagName = tagName;
@@ -19,12 +19,10 @@ public class GitTag extends GitObject {
 		this.tagger = tagger;
 		this.data = data;
 	}
-	
-	//Getter
-	
+
 	/**
 	 * Getter
-	 * 
+	 *
 	 * @author Sylvain
 	 *
 	 * @return the type of the object
@@ -33,10 +31,10 @@ public class GitTag extends GitObject {
 	String getType() {
 		return GitTag.type;
 	}
-	
+
 	/**
 	 * Getter
-	 * 
+	 *
 	 * @author Sylvain
 	 *
 	 * @return the size of the object
@@ -45,10 +43,10 @@ public class GitTag extends GitObject {
 	int getSize() {
 		return this.size;
 	}
-	
+
 	/**
 	 * Getter
-	 * 
+	 *
 	 * @author Sylvain
 	 *
 	 * @return the id of the object
@@ -57,10 +55,10 @@ public class GitTag extends GitObject {
 	String getId() {
 		return this.sha1;
 	}
-	
+
 	/**
 	 * Getter
-	 * 
+	 *
 	 * @author Sylvain
 	 *
 	 * @return the datas from a tag object
@@ -71,7 +69,7 @@ public class GitTag extends GitObject {
 
 	/**
 	 * Getter
-	 * 
+	 *
 	 * @author Sylvain
 	 *
 	 * @return the tag name from a tag object
@@ -79,10 +77,10 @@ public class GitTag extends GitObject {
 	public String getTagName() {
 		return this.tagName;
 	}
-	
+
 	/**
 	 * Getter
-	 * 
+	 *
 	 * @author Sylvain
 	 *
 	 * @return the tagger of a tag object
@@ -90,7 +88,7 @@ public class GitTag extends GitObject {
 	public GitInfo getTagger() {
 		return this.tagger;
 	}
-	
+
 	public String toString() {
 		String s = "";
 		s += "object : " + objHexId + "\n";
