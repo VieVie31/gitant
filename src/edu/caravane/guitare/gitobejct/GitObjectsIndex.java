@@ -3,9 +3,16 @@ package edu.caravane.guitare.gitobejct;
 import java.util.HashMap;
 
 public class GitObjectsIndex {
+	protected static GitObjectsIndex instance;
 	protected HashMap<String, GitObject> hashMap;
 	
-	public GitObjectsIndex() {
+	public static GitObjectsIndex getInstance() {
+		if (instance == null)
+			instance = new GitObjectsIndex();
+		return instance;
+	}
+	
+	private GitObjectsIndex() {
 		hashMap = new HashMap<String, GitObject>();
 	}
 	
