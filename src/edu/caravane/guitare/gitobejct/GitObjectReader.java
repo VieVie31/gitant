@@ -597,6 +597,39 @@ public class GitObjectReader {
 				hexObjId.obj, type.obj, tagName.obj, tagger.obj, data);
 	}
 	
+	/**
+	 * This function build any type of git object, blob, commit, tag, tree
+	 * and return an instance of the object decoded.
+	 * 
+	 * @author VieVie31
+	 * 
+	 * @return a GitObject decoded
+	 * @throws Exception
+	 */
+	public GitObject builGitObject() throws Exception {
+		switch (type) {
+		case "blob":
+			return buildBlob();
+		case "commit":
+			return buildCommit();
+		case "tag":
+			return builTag();
+		case "tree":
+			return buildTree();
+		default: //bein c'est pas cense arriver bande de debiles !!
+			throw new Exception();
+		}
+	}
+	
+	/**
+	 * This function reset the index inside the object, do not use it !
+	 * 
+	 * @author VieVie31
+	 */
+	public void resetIndex() {
+		index = 0;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		//tests...
 		GitObjectReader gor;
