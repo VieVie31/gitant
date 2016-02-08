@@ -2,43 +2,46 @@ package edu.caravane.guitare.application;
 
 import javafx.fxml.*;
 import javafx.stage.*;
-import sun.security.jca.GetInstance;
 import javafx.scene.*;
 import edu.caravane.guitare.gitobejct.GitObjectReader;
 import edu.caravane.guitare.gitobejct.GitObjectsIndex;
 import javafx.application.Application;
 
 public class MainWindow extends Application {
+	protected GitObjectsIndex gitObjectsIndex;
 
 	/**
-	 * this function add all the objects into a GitObjectsIndex object
+	 * This function add all the objects into a GitObjectsIndex object
 	 *
-	 * @author Sylvain
+	 * @author Sylvain, VieVie31
 	 *
-	 * @param listObjs
-	 * @return
-	 * @throws Exception
+	 * @param listObjs a list of paths (String) of git object
+	 * @return the GitObjectsIndex containing all the objects by sha1
+	 * @throws Exception if something wrong appends
 	 */
 	public GitObjectsIndex indexObjects(String[] listObjs) throws Exception {
-			GitObjectsIndex goi =  GitObjectsIndex.getInstance();
 			GitObjectReader gor;
+			GitObjectsIndex goi =  GitObjectsIndex.getInstance();
 
+			System.out.println("bla");
+			
 			for (String pathObj : listObjs) {
-				System.out.println(pathObj);
+				//on ne traite pas les pack pour le moment
+				if (pathObj.contains("/pack/"))
+					continue;
+				
 				gor = new GitObjectReader(pathObj);
-				System.out.println(gor.builGitObject());
 				goi.put(gor.getId(), gor.builGitObject());
 			}
-
-			for (String s : GitObjectsIndex.getInstance().getListOfAllObjectKeys())
-				System.out.println(s);
-
+			
+			System.out.println("coucou");
+			
 			return goi;
 	}
 
 	public void start(Stage primaryStage, String[] args) throws Exception {
 		System.out.println(args[0]);
-		indexObjects(args);
+		gitObjectsIndex = indexObjects(args);
 		start(primaryStage);
 	}
 
