@@ -24,15 +24,21 @@ public class MainWindow extends Application {
 			GitObjectReader gor;
 
 			for (String pathObj : listObjs) {
+				System.out.println(pathObj);
 				gor = new GitObjectReader(pathObj);
+				System.out.println(gor.builGitObject());
 				goi.put(gor.getId(), gor.builGitObject());
 			}
+
+			for (String s : GitObjectsIndex.getInstance().getListOfAllObjectKeys())
+				System.out.println(s);
 
 			return goi;
 	}
 
 	public void start(Stage primaryStage, String[] args) throws Exception {
 		System.out.println(args[0]);
+		indexObjects(args);
 		start(primaryStage);
 	}
 

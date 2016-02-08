@@ -665,5 +665,10 @@ public class GitObjectReader {
 
 		gor = new GitObjectReader("Annexes/tests/test_tag.bin");
 		System.out.println(gor.builTag());
+
+
+		gor = new GitObjectReader("/home/neiko/Documents/FAQ/GP/gitant/.git/objects/82/d16d4a40cc0dec173124cae4feba0498f9dd01");
+		System.out.println(gor.getType());
+
 	}
 }
