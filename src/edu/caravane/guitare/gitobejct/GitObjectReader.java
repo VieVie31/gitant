@@ -93,8 +93,10 @@ public class GitObjectReader {
 	 * 		<NULL> (0x00), <LF> (0x0a), '<' (0x3c), or '>' (0x3e),
 	 * and the sequence may not begin or end with any bytes with the following
 	 * ASCII charcter byte values :
-	 * 		<SP> (0x20), '.' (0x2e), ',' (0x2c), ':' (0x3a), ';' (0x3b),
+	 * 		<SP> (0x20), ',' (0x2c), ':' (0x3a), ';' (0x3b),
 	 * 		'<'  (0x3c), '>' (0x3e), '"' (0x22), "'" (0x27).
+	 * PS: usually a safe string cann't begin with '.' (0x2e), but for some
+	 * reason ( magical !! :p ), it'll can... :D
 	 *
 	 * @author VieVie31
 	 *
@@ -106,12 +108,14 @@ public class GitObjectReader {
 
 		byte[] forbiden = {0x00, 0x0a, 0x3c, 0x3e};
 
+		/*
 		byte t = array[i];
 		if (byteArrayContainsOneOfThose(forbiden, array[i])
 				|| t == 0x20  || t == '.' || t == ',' || t == ':'
 				|| t == ';' || t == 0x22 || t == 0x27)
 			throw new Exception(); //msg d'erreur plus tard
-
+		*/
+		
 		while (i < array.length && //plutot important
 				!byteArrayContainsOneOfThose(forbiden, array[i++]));
 
@@ -667,8 +671,9 @@ public class GitObjectReader {
 		System.out.println(gor.builTag());
 
 
-		gor = new GitObjectReader("/home/neiko/Documents/FAQ/GP/gitant/.git/objects/82/d16d4a40cc0dec173124cae4feba0498f9dd01");
-		System.out.println(gor.getType());
+		gor = new GitObjectReader("Annexes/tests/d16d4a40cc0dec173124cae4feba0498f9dd01");
+		for (TreeEntry tEntry : gor.buildTree().listEntry())
+			System.out.println(tEntry);
 
 	}
 }
