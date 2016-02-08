@@ -4,5 +4,5 @@ public interface GitGetter {
 
 	String getName();
 	String getDate();
-	String getParent();
+	String[] getParents();
 }
