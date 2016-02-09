@@ -21,7 +21,7 @@ public class GitTree extends GitObject {
 	 * @return the type of the object
 	 */
 	@Override
-	String getType() {
+	public String getType() {
 		return GitTree.type;
 	}
 
@@ -33,7 +33,7 @@ public class GitTree extends GitObject {
 	 * @return the size of the object
 	 */
 	@Override
-	int getSize() {
+	public int getSize() {
 		return this.size;
 	}
 
@@ -45,7 +45,7 @@ public class GitTree extends GitObject {
 	 * @return the id of the object
 	 */
 	@Override
-	String getId() {
+	public String getId() {
 		return this.sha1;
 	}
 

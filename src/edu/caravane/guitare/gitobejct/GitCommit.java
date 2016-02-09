@@ -31,7 +31,7 @@ public class GitCommit extends GitObject {
 	 * @return The type of the object
 	 */
 	@Override
-	String getType() {
+	public String getType() {
 		return GitCommit.type;
 	}
 
@@ -43,7 +43,7 @@ public class GitCommit extends GitObject {
 	 * @return The size of the object
 	 */
 	@Override
-	int getSize() {
+	public int getSize() {
 		return this.size;
 	}
 
@@ -55,7 +55,7 @@ public class GitCommit extends GitObject {
 	 * @return The id of the object
 	 */
 	@Override
-	String getId() {
+	public String getId() {
 		return this.sha1;
 	}
 
