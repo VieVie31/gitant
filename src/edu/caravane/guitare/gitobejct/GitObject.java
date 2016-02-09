@@ -10,9 +10,13 @@ public abstract class GitObject implements GitObjectInterface {
 	protected ArrayList<String> parents = new ArrayList<String>();
 	protected GitDate date = new GitDate(0); //What I haven't for 14/02
 
-	abstract String getType();
-	abstract int getSize();
-	abstract String getId();
+	public abstract String getType();
+	public abstract int getSize();
+	public abstract String getId();
+	
+	public GitDate date() {
+		return date;
+	}
 	
 	@Override
 	public void setDate(GitDate date) {
@@ -27,6 +31,13 @@ public abstract class GitObject implements GitObjectInterface {
 	@Override
 	public void addParent(String parentFileName) {
 		parents.add(parentFileName);
+	}
+	
+	@Override
+	public void addParents(String[] parentsFilesNames) {
+		for (String parent : parentsFilesNames)
+			if (!parents.contains(parent))
+				parents.add(parent);
 	}
 
 	@Override
