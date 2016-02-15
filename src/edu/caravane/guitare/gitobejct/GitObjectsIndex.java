@@ -31,15 +31,21 @@ public class GitObjectsIndex {
 	}
 
 	/**
-	 * This function put (index) a git object by his hash value (sha1)
+	 * This function put (index) a git object by his hash value (sha1) and 
+	 * add a new name if he have an other name
 	 *
-	 * @author VieVie31
+	 * @author VieVie31,Marvyn
 	 *
 	 * @param sha1 the hash of the git object
 	 * @param gitObject the git object
 	 */
 	public void put(String sha1, GitObject gitObject) {
-		hashMap.put(sha1, gitObject);
+		if(hashMap.containsKey(sha1))
+			for(int i = 0; i < gitObject.getNames().length; i++)
+				hashMap.get(sha1).addName(gitObject.getNames()[i]);
+		else
+			hashMap.put(sha1, gitObject);			
+
 	}
 	
 	/**
