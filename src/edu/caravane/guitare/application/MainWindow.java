@@ -31,25 +31,24 @@ public class MainWindow extends Application {
 				//on ne traite pas les pack pour le moment
 				if (pathObj.contains("/pack/"))
 					continue;
-				
+
 				gor = new GitObjectReader(pathObj);
 				goi.put(gor.getId(), gor.builGitObject());
 			}
-			
+
 			return goi;
 	}
 
 	public void makeLinks() {
-		/* fait chier... on verra ca demain...
 		GitObject gitObject = null;
 		GitObjectsIndex gitObjectsIndex = GitObjectsIndex.getInstance();
 		//on gere les commits en premier
 		for (String sha1GitObject : gitObjectsIndex.getListOfAllObjectKeys()) {
 			gitObject = gitObjectsIndex.get(sha1GitObject);
-			
+
 			if (!gitObject.getType().equals("commit"))
 				continue;
-			
+
 			GitCommit gc = (GitCommit) gitObject;
 			GitTree gt = (GitTree) gitObjectsIndex.get(gc.getTreeId());
 			gt.setDate(gc.getAutor().getDate());
@@ -58,23 +57,30 @@ public class MainWindow extends Application {
 		//puis les trees
 		for (String sha1GitObject : gitObjectsIndex.getListOfAllObjectKeys()) {
 			gitObject = gitObjectsIndex.get(sha1GitObject);
-			
+
 			if (!gitObject.getType().equals("tree"))
 				continue;
-			
+
 			GitTree gt = (GitTree) gitObject;
 			for (TreeEntry tEntry : gt.listEntry()) {
 				GitObject go = gitObjectsIndex.get(tEntry.getSha1());
-				go.setDate(gt.date());
+				if (tEntry.getName() == null || gt.date() == null )
+					continue;
+				System.out.println(tEntry.getName());
+				System.out.println(gt.date());
+				//go.setDate(gt.date());
 				go.addName(tEntry.getName());
 			}
 		}
-		*/
 	}
-	
+
+
+
 	public void start(Stage primaryStage, String[] args) throws Exception {
 		System.out.println(args[0]);
 		gitObjectsIndex = indexObjects(args);
+		indexObjects(args);
+		makeLinks();
 		start(primaryStage);
 	}
 
