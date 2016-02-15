@@ -115,7 +115,7 @@ public class GitObjectReader {
 				|| t == ';' || t == 0x22 || t == 0x27)
 			throw new Exception(); //msg d'erreur plus tard
 		*/
-		
+
 		while (i < array.length && //plutot important
 				!byteArrayContainsOneOfThose(forbiden, array[i++]));
 
