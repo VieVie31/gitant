@@ -7,6 +7,8 @@ import java.util.zip.DataFormatException;
 
 
 public class GitObjectReader {
+	protected final String osBarre = 
+			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
 	protected String id;
 	protected byte[] array;
 	protected int index;
@@ -39,7 +41,7 @@ public class GitObjectReader {
 			throws IOException, DataFormatException {
 		this.path = path;
 
-		String[] str = path.split("/");
+		String[] str = path.split(osBarre);
 		id = str[str.length - 2] + str[str.length - 1];
 
 		array = BinaryFile.decompress(path);

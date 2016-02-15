@@ -12,6 +12,8 @@ import edu.caravane.guitare.gitobejct.TreeEntry;
 import javafx.application.Application;
 
 public class MainWindow extends Application {
+	protected final String osBarre = 
+			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
 	protected GitObjectsIndex gitObjectsIndex;
 
 	/**
@@ -29,7 +31,7 @@ public class MainWindow extends Application {
 
 			for (String pathObj : listObjs) {
 				//on ne traite pas les pack pour le moment
-				if (pathObj.contains("/pack/"))
+				if (pathObj.contains(osBarre+"pack"+osBarre))
 					continue;
 
 				gor = new GitObjectReader(pathObj);
@@ -45,7 +47,6 @@ public class MainWindow extends Application {
 	}
 
 	public void start(Stage primaryStage, String[] args) throws Exception {
-		System.out.println(args[0]);
 		gitObjectsIndex = indexObjects(args);
 		indexObjects(args);
 		start(primaryStage);
