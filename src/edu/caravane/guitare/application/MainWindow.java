@@ -39,48 +39,15 @@ public class MainWindow extends Application {
 			return goi;
 	}
 
-	public void makeLinks() {
-		GitObject gitObject = null;
-		GitObjectsIndex gitObjectsIndex = GitObjectsIndex.getInstance();
-		//on gere les commits en premier
-		for (String sha1GitObject : gitObjectsIndex.getListOfAllObjectKeys()) {
-			gitObject = gitObjectsIndex.get(sha1GitObject);
 
-			if (!gitObject.getType().equals("commit"))
-				continue;
-
-			GitCommit gc = (GitCommit) gitObject;
-			GitTree gt = (GitTree) gitObjectsIndex.get(gc.getTreeId());
-			gt.setDate(gc.getAutor().getDate());
-			gt.addParents(gc.getParentFiles());
-		}
-		//puis les trees
-		for (String sha1GitObject : gitObjectsIndex.getListOfAllObjectKeys()) {
-			gitObject = gitObjectsIndex.get(sha1GitObject);
-
-			if (!gitObject.getType().equals("tree"))
-				continue;
-
-			GitTree gt = (GitTree) gitObject;
-			for (TreeEntry tEntry : gt.listEntry()) {
-				GitObject go = gitObjectsIndex.get(tEntry.getSha1());
-				if (tEntry.getName() == null || gt.date() == null )
-					continue;
-				System.out.println(tEntry.getName());
-				System.out.println(gt.date());
-				//go.setDate(gt.date());
-				go.addName(tEntry.getName());
-			}
-		}
+	public void makeLinks(){
+		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 	}
-
-
 
 	public void start(Stage primaryStage, String[] args) throws Exception {
 		System.out.println(args[0]);
 		gitObjectsIndex = indexObjects(args);
 		indexObjects(args);
-		makeLinks();
 		start(primaryStage);
 	}
 
