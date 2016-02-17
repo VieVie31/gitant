@@ -88,6 +88,17 @@ public class GitTag extends GitObject {
 	public GitInfo getTagger() {
 		return this.tagger;
 	}
+	
+	/**
+	 * *Getter
+	 * 
+	 * @author Marvyn
+	 * 
+	 * @return the sha1 of the object tagged
+	 */
+	public String getObjHexId(){
+		return this.objHexId;
+	}
 
 	public String toString() {
 		String s = "";
