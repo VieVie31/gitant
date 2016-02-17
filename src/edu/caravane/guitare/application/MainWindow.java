@@ -3,10 +3,14 @@ package edu.caravane.guitare.application;
 import javafx.fxml.*;
 import javafx.stage.*;
 import javafx.scene.*;
+
+import java.util.ArrayList;
+
 import edu.caravane.guitare.gitobejct.GitCommit;
 import edu.caravane.guitare.gitobejct.GitObject;
 import edu.caravane.guitare.gitobejct.GitObjectReader;
 import edu.caravane.guitare.gitobejct.GitObjectsIndex;
+import edu.caravane.guitare.gitobejct.GitTag;
 import edu.caravane.guitare.gitobejct.GitTree;
 import edu.caravane.guitare.gitobejct.TreeEntry;
 import javafx.application.Application;
@@ -44,6 +48,22 @@ public class MainWindow extends Application {
 
 	public void makeLinks(){
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
+		ArrayList<String> sha1Keys = goi.getListOfAllObjectKeys();
+		for(String p : sha1Keys){
+			if(goi.get(p).getType().equals("tag")){
+				GitTag tag = (GitTag) goi.get(p);
+				//On récupère l'objet tagger
+				GitObject tagger = goi.get(tag.getObjHexId());
+				//On ajoute son parent ( le taggeur ) 
+				tagger.addParent(tag.getId());
+				
+			}
+			/*else if(goi.get(p).getType().equals("commit")){
+				
+			}*/
+				
+			
+		}
 	}
 
 	public void start(Stage primaryStage, String[] args) throws Exception {

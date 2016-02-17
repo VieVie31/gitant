@@ -7,8 +7,8 @@ import java.util.zip.DataFormatException;
 
 
 public class GitObjectReader {
-	protected final String osBarre = 
-			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
+	protected final static String osBarre = 
+			System.getProperty("os.name").charAt(0) == 'W' ? "\\\\" : "/" ;
 	protected String id;
 	protected byte[] array;
 	protected int index;
@@ -639,7 +639,7 @@ public class GitObjectReader {
 	public static void main(String[] args) throws Exception {
 		//tests...
 		GitObjectReader gor;
-		gor = new GitObjectReader("Annexes/tests/test_tree.bin");
+		/*gor = new GitObjectReader("Annexes/tests/test_tree.bin");
 
 
 		GitTree gitTree = gor.buildTree();
@@ -675,7 +675,10 @@ public class GitObjectReader {
 
 		gor = new GitObjectReader("Annexes/tests/d16d4a40cc0dec173124cae4feba0498f9dd01");
 		for (TreeEntry tEntry : gor.buildTree().listEntry())
-			System.out.println(tEntry);
+			System.out.println(tEntry);*/
+		//gor = new GitObjectReader("C:\\Users\\Marv\\Desktop\\Cours\\HTML\\test_tag.bin");
+		
+		//System.out.println(gor.builTag());
 
 	}
 }
