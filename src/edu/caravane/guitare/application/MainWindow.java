@@ -46,78 +46,74 @@ public class MainWindow extends Application {
 			return goi;
 	}
 	
-	protected void parcoursTree(GitTree tree){
-		//On récupère les éléments dans le tree
+	/**
+	 * This function browse in a tree the find all his son and add son's name 
+	 * and parents 
+	 * 
+	 * @author Marvyn, VieVie31
+	 * 
+	 * @param tree
+	 */
+	protected void parcoursTree(GitTree tree) {
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
-		ArrayList<TreeEntry> treeEntry = tree.listEntry();
-		//On parcours les éléments
-		for(TreeEntry te : treeEntry){
-
-			//On regarde si c'est un blob
-
-			if(goi.get(te.getSha1()).getType().equals("blob")){
+		
+		for (TreeEntry te : tree.listEntry()) {
+			if (goi.get(te.getSha1()).getType().equals("blob")){
 				//Si c'est un blob, on lui donne son nom et le parent
 				GitBlob blob = (GitBlob) goi.get(te.getSha1());
 				blob.addName(te.getName());
 				blob.addParent(tree.getId());
-			}
-			//On regarde si c'est un arbre
-			else if(goi.get(te.getSha1()).getType().equals("tree")){
-				//On regarde si c'est un arbre différent de lui-même pour ne pas 
+			} else if (goi.get(te.getSha1()).getType().equals("tree")) {
+				//On regarde si c'est un arbre différent de lui-meme pour ne pas 
 				//boucler à l'infini
-				if(tree.getId() != te.getSha1()){
-					//On ajoute ces parents et on le parcours ( récursivité powa)
+				if (!tree.getId().equals(te.getSha1())) {
+					//On ajoute ces parents et on le parcours 
 					GitTree treeSon = (GitTree) goi.get(te.getSha1());
 					treeSon.addParent(tree.getId());
-					parcoursTree(treeSon);
+					treeSon.addName(te.getName());
+					parcoursTree(treeSon); //Recursivite powa
 				}
 			}
-			
 		}
 	}
 
-
-	public void makeLinks()throws Exception{
+	/**
+	 * This function find parents of tag, commit, tree and blob.
+	 * It add too the blob's name.
+	 * 
+	 * @author Marvyn
+	 * 
+	 * @throws Exception
+	 */
+	protected void makeLinks() throws Exception {
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 		ArrayList<String> sha1Keys = goi.getListOfAllObjectKeys();
-		for( String p : sha1Keys){
-			
-			if( goi.get(p).getType().equals("tag")){
+		for (String p : sha1Keys) {
+			if (goi.get(p).getType().equals("tag")) {//PAS TEST POUR LES TAGS !!!
 				GitTag tag = (GitTag) goi.get(p);
-				//On récupère l'objet tagger
-				GitObject tagger = goi.get(tag.getObjHexId());
+				//On recupere l'objet tagger
+				GitObject taggay = goi.get(tag.getObjHexId());
 				//On ajoute son parent ( le taggeur ) 
-				tagger.addParent(tag.getId());
-				
-			}
-			else if( goi.get(p).getType().equals("commit")){
-				
+				taggay.addParent(tag.getId());
+			} else if ( goi.get(p).getType().equals("commit")) {
 				GitCommit commit = (GitCommit) goi.get(p);
+				commit.addName(commit.getId());
+				
 				//En attendant que l'on trouve mieux.
-				for(int i = 0; i < commit.getParentListId().size(); i++)
+				for (int i = 0; i < commit.getParentListId().size(); i++)
 					commit.addParent(commit.getParentListId().get(i));
 				
-				//On récupère le tree du commit
+				//On recupere le tree du commit
 				GitTree treeCommit = (GitTree) goi.get(commit.getTreeId());
 				//On ajoute le parent du tree
 				treeCommit.addParent(commit.getId());
-				//On appelle la fonction récursive qui parcours l'arbre
+				//On appelle la fonction recursive qui parcours l'arbre
 				parcoursTree(treeCommit);
 				
 			}
-				
-			
 		}
-		test();
 	}
 	
-	private void test()throws Exception{ 
-		GitObjectsIndex goi = GitObjectsIndex.getInstance();		
-		System.out.println(goi.get("14163189dcfa37b2f52ecac7a8ff5979930e6a5b"));
-		System.out.println(goi.get(
-				"057c5a01b160dd3b537c781212de7b46ba0a6412").getNames()[0]);
-		}
-
 	public void start(Stage primaryStage, String[] args) throws Exception {
 		gitObjectsIndex = indexObjects(args);
 		indexObjects(args);
