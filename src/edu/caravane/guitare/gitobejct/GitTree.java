@@ -63,5 +63,12 @@ public class GitTree extends GitObject {
 	public void addEntry(TreeEntry te) {
 		this.lstEntr.add(te);
 	}
+	
+	public String toString() {
+		String s = "Tree : " + sha1 + "\nChildren : ";
+		for (TreeEntry te : lstEntr)
+			s += te.toString() + "\n";
+		return s;
+	}
 
 }
