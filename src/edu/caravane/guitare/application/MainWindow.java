@@ -6,6 +6,7 @@ import javafx.scene.*;
 
 import java.util.ArrayList;
 
+import edu.caravane.guitare.gitobejct.GitBlob;
 import edu.caravane.guitare.gitobejct.GitCommit;
 import edu.caravane.guitare.gitobejct.GitObject;
 import edu.caravane.guitare.gitobejct.GitObjectReader;
@@ -44,12 +45,47 @@ public class MainWindow extends Application {
 
 			return goi;
 	}
+	
+	public void parcoursTree(GitTree tree,GitObjectsIndex goi){
+		//On récupère les éléments dans le tree
+		ArrayList<TreeEntry> treeEntry = tree.listEntry();
+		System.out.println("test6");
+		//On parcours les éléments
+		for(int i = 0;i<treeEntry.size();i++){
+
+			//On regarde si c'est un blob
+			System.out.println(goi.get(treeEntry.get(i).getSha1()));
+			System.out.println(treeEntry.get(i).getSha1());
+			if(goi.get(treeEntry.get(i).getSha1()).getType().equals("blob")){
+				System.out.println("test7");
+				//Si c'est un blob, on lui donne son nom et le parent
+				GitBlob blob = (GitBlob) goi.get(treeEntry.get(i).getSha1());
+				blob.addName(treeEntry.get(i).getName());
+				blob.addParent(treeEntry.get(i).getSha1());
+			}
+			//On regarde si c'est un arbre
+			else if(goi.get(treeEntry.get(i).getSha1()).getType().equals("tree")){
+				System.out.println("test8");
+				//On regarde si c'est un arbre différent de lui-même pour ne pas 
+				//boucler à l'infini
+				if(tree.getId() != treeEntry.get(i).getSha1()){
+					System.out.println("test9");
+					//On ajoute ces parents et on le parcours ( récursivité powa)
+					GitTree treeSon = (GitTree) goi.get(treeEntry.get(i).getSha1());
+					treeSon.addParent(tree.getId());
+					parcoursTree(treeSon,goi);
+				}
+			}
+			
+		}
+	}
 
 
-	public void makeLinks(){
+	public void makeLinks()throws Exception{
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 		ArrayList<String> sha1Keys = goi.getListOfAllObjectKeys();
 		for(String p : sha1Keys){
+			
 			if(goi.get(p).getType().equals("tag")){
 				GitTag tag = (GitTag) goi.get(p);
 				//On récupère l'objet tagger
@@ -58,17 +94,35 @@ public class MainWindow extends Application {
 				tagger.addParent(tag.getId());
 				
 			}
-			/*else if(goi.get(p).getType().equals("commit")){
+			else if(goi.get(p).getType().equals("commit")){
 				
-			}*/
+				GitCommit commit = (GitCommit) goi.get(p);
+				//En attendant que l'on trouve mieux.
+				for(int i = 0; i < commit.getParentListId().size();i++)
+					commit.addParent(commit.getParentListId().get(i));
+				
+				//On récupère le tree du commit
+				GitTree treeCommit =(GitTree) goi.get(commit.getTreeId());
+				//On ajoute le parent du tree
+				treeCommit.addParent(commit.getId());
+				//On appelle la fonction récursive qui parcours l'arbre
+				parcoursTree(treeCommit,goi);
+				
+			}
 				
 			
 		}
+		test();
+	}
+	
+	private void test()throws Exception{ 
+		
 	}
 
 	public void start(Stage primaryStage, String[] args) throws Exception {
 		gitObjectsIndex = indexObjects(args);
 		indexObjects(args);
+		makeLinks();
 		start(primaryStage);
 	}
 
