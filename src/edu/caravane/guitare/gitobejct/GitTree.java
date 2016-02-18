@@ -65,7 +65,7 @@ public class GitTree extends GitObject {
 	}
 	
 	public String toString() {
-		String s = "Tree : " + sha1 + "\nChildren : ";
+		String s = "Tree : " + sha1 + "\nChildren : \n";
 		for (TreeEntry te : lstEntr)
 			s += te.toString() + "\n";
 		return s;

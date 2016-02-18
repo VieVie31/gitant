@@ -46,28 +46,28 @@ public class MainWindow extends Application {
 			return goi;
 	}
 	
-	public void parcoursTree(GitTree tree){
+	protected void parcoursTree(GitTree tree){
 		//On récupère les éléments dans le tree
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 		ArrayList<TreeEntry> treeEntry = tree.listEntry();
 		//On parcours les éléments
-		for(int i = 0; i < treeEntry.size(); i++){
+		for(TreeEntry te : treeEntry){
 
 			//On regarde si c'est un blob
 
-			if(goi.get(treeEntry.get(i).getSha1()).getType().equals("blob")){
+			if(goi.get(te.getSha1()).getType().equals("blob")){
 				//Si c'est un blob, on lui donne son nom et le parent
-				GitBlob blob = (GitBlob) goi.get(treeEntry.get(i).getSha1());
-				blob.addName(treeEntry.get(i).getName());
-				blob.addParent(treeEntry.get(i).getSha1());
+				GitBlob blob = (GitBlob) goi.get(te.getSha1());
+				blob.addName(te.getName());
+				blob.addParent(tree.getId());
 			}
 			//On regarde si c'est un arbre
-			else if(goi.get(treeEntry.get(i).getSha1()).getType().equals("tree")){
+			else if(goi.get(te.getSha1()).getType().equals("tree")){
 				//On regarde si c'est un arbre différent de lui-même pour ne pas 
 				//boucler à l'infini
-				if(tree.getId() != treeEntry.get(i).getSha1()){
+				if(tree.getId() != te.getSha1()){
 					//On ajoute ces parents et on le parcours ( récursivité powa)
-					GitTree treeSon = (GitTree) goi.get(treeEntry.get(i).getSha1());
+					GitTree treeSon = (GitTree) goi.get(te.getSha1());
 					treeSon.addParent(tree.getId());
 					parcoursTree(treeSon);
 				}
@@ -112,13 +112,11 @@ public class MainWindow extends Application {
 	}
 	
 	private void test()throws Exception{ 
-		GitObjectsIndex goi = GitObjectsIndex.getInstance();
-		for(String te : goi.get("14163189dcfa37b2f52ecac7a8ff5979930e6a5b").getParentFiles()){
-			System.out.println(te);
-		}
-		
+		GitObjectsIndex goi = GitObjectsIndex.getInstance();		
 		System.out.println(goi.get("14163189dcfa37b2f52ecac7a8ff5979930e6a5b"));
-	}
+		System.out.println(goi.get(
+				"057c5a01b160dd3b537c781212de7b46ba0a6412").getNames()[0]);
+		}
 
 	public void start(Stage primaryStage, String[] args) throws Exception {
 		gitObjectsIndex = indexObjects(args);
