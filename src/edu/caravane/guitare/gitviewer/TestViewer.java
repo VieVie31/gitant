@@ -1,46 +1,35 @@
-package edu.caravane.guitare.gitviewer; //fais gaffe au package !!
+package edu.caravane.guitare.gitviewer;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.zip.DataFormatException;
 
+import edu.caravane.guitare.gitobejct.GitBlob;
+import edu.caravane.guitare.gitobejct.GitObjectReader;
 import javafx.application.Application;
-import javafx.geometry.Bounds;
 import javafx.stage.Stage;
-import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 
-
-//le nom de classe doit etre le meme que le nom de fichier
 public class TestViewer extends Application { 
 	@Override
-	public void start(Stage primaryStage) {
-		try {
-			Group root = new Group();
-			Scene scene = new Scene(root,500,500);
-			//ligne : pas plus de 80 caracteres !!!!
-			scene.getStylesheets().add(
-					getClass().getResource("application.css").toExternalForm());
-			primaryStage.setTitle("Viewer !");
-			primaryStage.setScene(scene);
-			primaryStage.sizeToScene();
-			primaryStage.setMaximized(true);
-			//ligne : pas plus de 80 caracteres !!!!
-			ImageView imageAffiche = new ImageView(
-					new Image(TestViewer.
-							class.
-							getResourceAsStream(
-									"images/Aile de Mort VS Electromage.jpg"))); // Il faudra peut-être se servir de OutputStream pour obtenir l'image.
-			root.getChildren().add(imageAffiche);
-			imageAffiche.setFitWidth(scene.getWidth());
-			imageAffiche.setPreserveRatio(true);
-			// primaryStage.addEventHandler(primaryStage.isMaximized(), imageAffiche.setFitWidth(scene.getWidth()));
-			primaryStage.show();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+	public void start(Stage primaryStage) throws Exception {
+		Parent root;
+		root = Visionneuse.getInstance();
+		Scene scene = new Scene(root);
+		
+		primaryStage.setTitle("Visionneuse");
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		
+		//tests
+		GitObjectReader gor;
+		//test avec blob
+		gor = new GitObjectReader("Annexes/tests/test_blob.bin");
+		Visionneuse.display(gor.builGitObject());
+		//test avec pas blob
+		gor = new GitObjectReader("Annexes/tests/test_commit.bin");
+		Visionneuse.display(gor.builGitObject());
 	}
 	
 	public static void main(String[] args) {
