@@ -49,7 +49,7 @@
                <children>
                   <SplitPane dividerPositions="0.66" layoutX="30.0" layoutY="123.0" orientation="VERTICAL" prefHeight="370.0" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
-                      <AnchorPane fx:id="gitObjectViewerSpace" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                      <AnchorPane id="gitObjectViewerSpace" fx:id="gitObjectViewerSpace" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
                               <ListView layoutX="9.0" layoutY="-40.0" prefHeight="119.0" prefWidth="218.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
