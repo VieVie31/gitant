@@ -6,7 +6,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="visioneuseAP" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+
+<AnchorPane id="visioneuseAP" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TabPane layoutX="40.0" layoutY="48.0" prefHeight="266.0" prefWidth="342.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -14,7 +15,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="14.0" layoutY="14.0" text="Hash : " />
+                        <Label fx:id="hashLabel" id="hashLabel" layoutX="14.0" layoutY="14.0" text="Hash : Rien de selectionne..." />
                      </children>
                   </AnchorPane>
             </content>
@@ -23,7 +24,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextArea id="visioneuseTV" editable="false" layoutX="60.0" layoutY="60.0" prefHeight="200.0" prefWidth="200.0" promptText="Nothing to display... :'(" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0" />
+                        <TextArea fx:id="visioneuseTV" id="visioneuseTV" editable="false" layoutX="60.0" layoutY="60.0" prefHeight="200.0" prefWidth="200.0" promptText="Nothing to display... :'(" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
             </content>

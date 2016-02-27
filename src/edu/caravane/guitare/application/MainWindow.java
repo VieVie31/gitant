@@ -3,6 +3,7 @@ package edu.caravane.guitare.application;
 import javafx.fxml.*;
 import javafx.stage.*;
 import javafx.scene.*;
+import javafx.scene.layout.AnchorPane;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,7 @@ import edu.caravane.guitare.gitobejct.GitObjectsIndex;
 import edu.caravane.guitare.gitobejct.GitTag;
 import edu.caravane.guitare.gitobejct.GitTree;
 import edu.caravane.guitare.gitobejct.TreeEntry;
+import edu.caravane.guitare.gitviewer.Visionneuse;
 import javafx.application.Application;
 
 public class MainWindow extends Application {
@@ -64,8 +66,8 @@ public class MainWindow extends Application {
 				blob.addName(te.getName());
 				blob.addParent(tree.getId());
 			} else if (goi.get(te.getSha1()).getType().equals("tree")) {
-				//On regarde si c'est un arbre différent de lui-meme pour ne pas 
-				//boucler à l'infini
+				//On regarde si c'est un arbre diffï¿½rent de lui-meme pour ne pas 
+				//boucler ï¿½ l'infini
 				if (!tree.getId().equals(te.getSha1())) {
 					//On ajoute ces parents et on le parcours 
 					GitTree treeSon = (GitTree) goi.get(te.getSha1());
@@ -126,13 +128,17 @@ public class MainWindow extends Application {
 		Parent root;
 		root = FXMLLoader.load(getClass().getResource("MainScene.fxml"));
 		Scene scene = new Scene(root);
-
-
+		
 		primaryStage.setTitle("GitExplorer");
 		primaryStage.setMinWidth(600);
 		primaryStage.setMinHeight(400);
 		primaryStage.setScene(scene);
 		primaryStage.show();
+
+		//integration de la visionneuse
+		AnchorPane visionneuseAP;
+		visionneuseAP = (AnchorPane) root.lookup("#gitObjectViewerSpace");
+		visionneuseAP.getChildren().add(Visionneuse.getInstance());
 	}
 
 }
