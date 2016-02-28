@@ -180,7 +180,31 @@ public class MainWindow extends Application {
 		visionneuseAP = (AnchorPane) root.lookup("#gitObjectViewerSpace");
 		visionneuseAP.getChildren().add(Visionneuse.getInstance());
 
-		
+		TableView objectTable = (TableView) root.lookup("#objectTable");
+		objectTable.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() > 1) { //double clicked
+			        //recuperer les hash en fonction de la ou on a clicke
+			        //en tenant compte du fait que les colomnes aient pu permuter...
+			        String hash = (String) getTableColumnByName(objectTable, "SHA-1")
+			        		.getCellData(
+			        				objectTable
+			        				.getSelectionModel()
+			        				.getSelectedIndex()
+			        				);
+			        
+			        try {
+			        	Visionneuse.getInstance().display(hash);
+			        } catch (Exception e) {
+			        	System.out.println("Can't display the object : \n".concat(hash));
+			        	errorMessageBox("ERROR DISPLAY", 
+			        			"Can't display the object :".concat(hash));
+			        }
+			        System.out.println("");
+			    }
+			}
+		});
 	}
 
 }
