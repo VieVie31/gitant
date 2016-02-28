@@ -163,6 +163,11 @@ public class MainWindow extends Application {
 		start(primaryStage);
 	}
 
+	/**
+	 * Main interface loaded here...
+	 * 
+	 * @author Eloan, VieVie31
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Parent root;
