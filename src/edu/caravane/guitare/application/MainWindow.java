@@ -1,9 +1,16 @@
 package edu.caravane.guitare.application;
 
+import javafx.event.EventHandler;
 import javafx.fxml.*;
 import javafx.stage.*;
 import javafx.scene.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.application.Application;
 
 import java.util.ArrayList;
 
@@ -16,13 +23,28 @@ import edu.caravane.guitare.gitobejct.GitTag;
 import edu.caravane.guitare.gitobejct.GitTree;
 import edu.caravane.guitare.gitobejct.TreeEntry;
 import edu.caravane.guitare.gitviewer.Visionneuse;
-import javafx.application.Application;
 
 public class MainWindow extends Application {
 	protected final String osBarre = 
 			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
 	protected GitObjectsIndex gitObjectsIndex;
 
+	/**
+	 * This function pop-up an error message box with the title and error
+	 * message given in parameters
+	 * 
+	 * @author VieVie31
+	 * 
+	 * @param titre of the error box
+	 * @param message of the error box
+	 */
+	public void errorMessageBox(String titre, String message) {
+		Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(titre); 
+        alert.setContentText(message); //alert.setHeaderText("");
+        alert.showAndWait();
+	}
+	
 	/**
 	 * This function add all the objects into a GitObjectsIndex object
 	 *
@@ -33,21 +55,21 @@ public class MainWindow extends Application {
 	 * @throws Exception if something wrong appends
 	 */
 	public GitObjectsIndex indexObjects(String[] listObjs) throws Exception {
-			GitObjectReader gor;
-			GitObjectsIndex goi =  GitObjectsIndex.getInstance();
+		GitObjectReader gor;
+		GitObjectsIndex goi =  GitObjectsIndex.getInstance();
 
-			for (String pathObj : listObjs) {
-				//on ne traite pas les pack pour le moment
-				if (pathObj.contains(osBarre+"pack"+osBarre))
-					continue;
+		for (String pathObj : listObjs) {
+			//on ne traite pas les pack pour le moment
+			if (pathObj.contains(osBarre+"pack"+osBarre))
+				continue;
 
-				gor = new GitObjectReader(pathObj);
-				goi.put(gor.getId(), gor.builGitObject());
-			}
+			gor = new GitObjectReader(pathObj);
+			goi.put(gor.getId(), gor.builGitObject());
+		}
 
-			return goi;
+		return goi;
 	}
-	
+
 	/**
 	 * This function browse in a tree the find all his son and add son's name 
 	 * and parents 
@@ -58,7 +80,7 @@ public class MainWindow extends Application {
 	 */
 	protected void parcoursTree(GitTree tree) {
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
-		
+
 		for (TreeEntry te : tree.listEntry()) {
 			if (goi.get(te.getSha1()).getType().equals("blob")){
 				//Si c'est un blob, on lui donne son nom et le parent
@@ -66,8 +88,8 @@ public class MainWindow extends Application {
 				blob.addName(te.getName());
 				blob.addParent(tree.getId());
 			} else if (goi.get(te.getSha1()).getType().equals("tree")) {
-				//On regarde si c'est un arbre diff�rent de lui-meme pour ne pas 
-				//boucler � l'infini
+				//On regarde si c'est un arbre different de lui-meme pour ne pas 
+				//boucler a l'infini
 				if (!tree.getId().equals(te.getSha1())) {
 					//On ajoute ces parents et on le parcours 
 					GitTree treeSon = (GitTree) goi.get(te.getSha1());
@@ -100,20 +122,38 @@ public class MainWindow extends Application {
 			} else if ( goi.get(p).getType().equals("commit")) {
 				GitCommit commit = (GitCommit) goi.get(p);
 				commit.addName(commit.getId());
-				
+
 				//En attendant que l'on trouve mieux.
 				for (int i = 0; i < commit.getParentListId().size(); i++)
 					commit.addParent(commit.getParentListId().get(i));
-				
+
 				//On recupere le tree du commit
 				GitTree treeCommit = (GitTree) goi.get(commit.getTreeId());
 				//On ajoute le parent du tree
 				treeCommit.addParent(commit.getId());
 				//On appelle la fonction recursive qui parcours l'arbre
 				parcoursTree(treeCommit);
-				
+
 			}
 		}
+	}
+
+	/**
+	 * This function return the column of a TableView with the name
+	 * specified in parameter.
+	 * 
+	 * @author VieVie31
+	 * 
+	 * @param tableView where is the column to get
+	 * @param name of the columns to return
+	 * @return the column if found null else
+	 */
+	private <T> TableColumn<T, ?> getTableColumnByName(TableView<T> tableView, 
+			String name) {
+	    for (TableColumn<T, ?> column : tableView.getColumns())
+	        if (column.getText().equals(name)) return column;
+	    
+	    return null ;
 	}
 	
 	public void start(Stage primaryStage, String[] args) throws Exception {
@@ -128,7 +168,7 @@ public class MainWindow extends Application {
 		Parent root;
 		root = FXMLLoader.load(getClass().getResource("MainScene.fxml"));
 		Scene scene = new Scene(root);
-		
+
 		primaryStage.setTitle("GitExplorer");
 		primaryStage.setMinWidth(600);
 		primaryStage.setMinHeight(400);
@@ -139,6 +179,8 @@ public class MainWindow extends Application {
 		AnchorPane visionneuseAP;
 		visionneuseAP = (AnchorPane) root.lookup("#gitObjectViewerSpace");
 		visionneuseAP.getChildren().add(Visionneuse.getInstance());
+
+		
 	}
 
 }
