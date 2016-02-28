@@ -64,8 +64,6 @@ public class Main extends Application {
 		if (!git.getAbsolutePath().contains(".git"))
 			throw new Exception("Il n'existe pas de .git dans le repertoire");
 		
-		
-		
 		ArrayList<String> listg = new ArrayList<String>();
 		if (drap == true){
 			for (File f : git.listFiles()) {
