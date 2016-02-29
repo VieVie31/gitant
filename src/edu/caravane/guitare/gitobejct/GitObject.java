@@ -2,6 +2,9 @@ package edu.caravane.guitare.gitobejct;
 
 import java.util.ArrayList;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public abstract class GitObject implements GitObjectInterface {
 	protected String type, sha1;
 	protected int size;
@@ -55,5 +58,23 @@ public abstract class GitObject implements GitObjectInterface {
 	@Override
 	public String[] getParentFiles() {
 		return parents.toArray(new String[parents.size()]);
+	}
+	public StringProperty sha1Property() {
+		StringProperty sha1 = new SimpleStringProperty(this.getId());
+		return sha1;
+	}
+	
+	public StringProperty typeProperty() {
+		StringProperty type = new SimpleStringProperty(this.getType());
+		return type;
+	}
+	
+	public StringProperty sizeProperty() {
+		StringProperty size  = new SimpleStringProperty(Integer.toString(this.getSize()));
+		return size;
+	}
+	public StringProperty nameProperty() {
+		StringProperty name  = new SimpleStringProperty(this.names.get(0));
+		return name;
 	}
 }
