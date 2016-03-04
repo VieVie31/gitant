@@ -1,11 +1,14 @@
 package edu.caravane.guitare.application;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.*;
 import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
@@ -185,8 +188,20 @@ public class MainWindow extends Application {
 		visionneuseAP = (AnchorPane) root.lookup("#gitObjectViewerSpace");
 		visionneuseAP.getChildren().add(Visionneuse.getInstance());
 
+		ListView<String> listParents;
+		listParents = (ListView<String>) root.lookup("#listParents");
+		
 		TableView objectTable = (TableView) root.lookup("#objectTable");
 		objectTable.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			/**
+			 * This function associate the action of the double click on a cell
+			 * int the TableView to display his parents hash and display it in
+			 * the viewer...
+			 * If the display or the parents listing throws an exception, the
+			 * exception will be catched but an error dialog message will pop-up
+			 * 
+			 * @author VieVie31, Eloan
+			 */
 			@Override
 			public void handle(MouseEvent event) {
 				if (event.getClickCount() > 1) { //double clicked
@@ -199,6 +214,22 @@ public class MainWindow extends Application {
 			        				.getSelectedIndex()
 			        				);
 			        
+			      //pour afficher la liste des parents
+			        try {
+				        ObservableList<String> hashParentsList;
+				        hashParentsList = FXCollections.observableArrayList();
+				        
+				        for (String s : GitObjectsIndex.getInstance().get(hash).getParentFiles())
+				        	hashParentsList.add(s);
+				        
+				        listParents.setItems(hashParentsList); //l'afficher dans la ListView...
+			        } catch (Exception e) {
+			        	System.out.println("Can't display the parent(s) hash : \n".concat(hash));
+			        	errorMessageBox("ERROR DISPLAY", 
+			        			"Can't display the parent(s) hash :".concat(hash));
+			        }
+			        
+			        //pour afficher dans la visionneuse
 			        try {
 			        	Visionneuse.getInstance().display(hash);
 			        } catch (Exception e) {
