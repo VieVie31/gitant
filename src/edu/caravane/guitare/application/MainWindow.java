@@ -3,6 +3,7 @@ package edu.caravane.guitare.application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.*;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -11,6 +12,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.application.Application;
@@ -31,6 +35,11 @@ public class MainWindow extends Application {
 	protected final String osBarre = 
 			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
 	protected GitObjectsIndex gitObjectsIndex;
+	
+	protected AnchorPane visionneuseAP; //integration de la visionneuse
+	protected TableView objectTable;
+	protected TextField searchEntry; //la barre de recherche
+	protected ListView<String> listParents;
 
 	/**
 	 * This function pop-up an error message box with the title and error
@@ -142,6 +151,41 @@ public class MainWindow extends Application {
 	}
 
 	/**
+	 * This function display all the info of a git object selected by his hash
+	 * int the viewer and in the list of the parents...
+	 * 
+	 * @author VieVie31
+	 * 
+	 * @param hash
+	 */
+	protected void displayAllInfo(String hash) {
+		//pour afficher la liste des parents
+        try {
+	        ObservableList<String> hashParentsList;
+	        hashParentsList = FXCollections.observableArrayList();
+	        
+	        for (String s : GitObjectsIndex.getInstance().get(hash).getParentFiles())
+	        	hashParentsList.add(s);
+	        
+	        listParents.setItems(hashParentsList); //l'afficher dans la ListView...
+        } catch (Exception e) {
+        	System.out.println("Can't display the parent(s) hash : \n".concat(hash));
+        	errorMessageBox("ERROR DISPLAY", 
+        			"Can't display the parent(s) hash :".concat(hash));
+        }
+        
+        //pour afficher dans la visionneuse
+        try {
+        	Visionneuse.getInstance().display(hash);
+        } catch (Exception e) {
+        	System.out.println("Can't display the object : \n".concat(hash));
+        	errorMessageBox("ERROR DISPLAY", 
+        			"Can't display the object :".concat(hash));
+        }
+        System.out.println("");
+	}
+	
+	/**
 	 * This function return the column of a TableView with the name
 	 * specified in parameter.
 	 * 
@@ -183,15 +227,28 @@ public class MainWindow extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
-		//integration de la visionneuse
-		AnchorPane visionneuseAP;
+		
 		visionneuseAP = (AnchorPane) root.lookup("#gitObjectViewerSpace");
 		visionneuseAP.getChildren().add(Visionneuse.getInstance());
-
-		ListView<String> listParents;
+		objectTable = (TableView) root.lookup("#objectTable");
+		searchEntry = (TextField) root.lookup("#searchEntry"); //la barre de recherche
 		listParents = (ListView<String>) root.lookup("#listParents");
 		
-		TableView objectTable = (TableView) root.lookup("#objectTable");
+		//la liste des parents du fichier recherche...
+		listParents.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() < 2)
+					return;
+				
+				String hash = listParents.getItems().get(
+						listParents.getSelectionModel().getSelectedIndex());
+				
+				displayAllInfo(hash);
+			}
+			
+		});
+		
 		objectTable.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			/**
 			 * This function associate the action of the double click on a cell
@@ -213,31 +270,8 @@ public class MainWindow extends Application {
 			        				.getSelectionModel()
 			        				.getSelectedIndex()
 			        				);
-			        
-			      //pour afficher la liste des parents
-			        try {
-				        ObservableList<String> hashParentsList;
-				        hashParentsList = FXCollections.observableArrayList();
-				        
-				        for (String s : GitObjectsIndex.getInstance().get(hash).getParentFiles())
-				        	hashParentsList.add(s);
-				        
-				        listParents.setItems(hashParentsList); //l'afficher dans la ListView...
-			        } catch (Exception e) {
-			        	System.out.println("Can't display the parent(s) hash : \n".concat(hash));
-			        	errorMessageBox("ERROR DISPLAY", 
-			        			"Can't display the parent(s) hash :".concat(hash));
-			        }
-			        
-			        //pour afficher dans la visionneuse
-			        try {
-			        	Visionneuse.getInstance().display(hash);
-			        } catch (Exception e) {
-			        	System.out.println("Can't display the object : \n".concat(hash));
-			        	errorMessageBox("ERROR DISPLAY", 
-			        			"Can't display the object :".concat(hash));
-			        }
-			        System.out.println("");
+			      
+			      displayAllInfo(hash);
 			    }
 			}
 		});
