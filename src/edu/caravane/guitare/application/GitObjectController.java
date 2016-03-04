@@ -1,6 +1,8 @@
 package edu.caravane.guitare.application;
 
-
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -21,8 +23,11 @@ import edu.caravane.guitare.gitobejct.GitObjectsIndex;
  * @author Marvyn
  */
 public class GitObjectController {
-		
+
 	FilteredList<GitObject> filteredData;
+
+	FilteredList<GitObject> base;
+
 
 	@FXML
 	private TextField searchEntry;
@@ -40,54 +45,92 @@ public class GitObjectController {
 
 
 	private ObservableList<GitObject> masterData = FXCollections.observableArrayList();
-	
+
 	public GitObjectController() {
 		GitObjectsIndex goi =  GitObjectsIndex.getInstance();
 		for(String key : goi.getListOfAllObjectKeys()){
-			System.out.println(goi.get(key).sizeProperty());
 			if(goi.get(key).getNames().length==0)
 				goi.get(key).addName("temp");
 			masterData.add(goi.get(key));
 		}
-		
-    }
-	
+
+	}
+
 	@FXML
-    private void initialize() {
-        SHA1.setCellValueFactory(cellData -> cellData.getValue().sha1Property());
-        Type.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
-        Nom.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-        Size.setCellValueFactory(cellData -> cellData.getValue().sizeProperty());
-        filteredData = new FilteredList<>(masterData, p -> true);
+	private void initialize() {
+		SHA1.setCellValueFactory(cellData -> cellData.getValue().sha1Property());
+		Type.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
+		Nom.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+		Size.setCellValueFactory(cellData -> cellData.getValue().sizeProperty());
+
+		filteredData = new FilteredList<>(masterData, p -> true);
+		base = new FilteredList<>(masterData, p -> true);
+
+		searchEntry.addEventFilter(KeyEvent.KEY_PRESSED,new EventHandler<KeyEvent>(){
+
+			@Override
+			public void handle(KeyEvent event) {
+				// TODO Auto-generated method stub
+				objectTable.setItems(base);
+				if(event.getCode() == KeyCode.ENTER){
+					SortedList<GitObject> sortedData = new SortedList<>(filteredData);
+					objectTable.setItems(sortedData);
+				}
 
 
-        searchEntry.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(person -> {
-                // If filter text is empty, display objects.
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
+				searchEntry.textProperty().addListener((observable, oldValue, newValue) -> {
+					filteredData.setPredicate(person -> {
+						// If filter text is empty, display objects.
+						if (newValue == null || newValue.isEmpty()) {
+							return true;
+						}
 
-                String lowerCaseFilter = newValue.toLowerCase();
+						String lowerCaseFilter = newValue.toLowerCase();
 
-                if (person.getId().toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches sha1.
-                } else if (person.getType().toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches type.
-                }else if (person.getNames()[0].toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches name.
-                }else if (Integer.toString(person.getSize()).toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches size.
-                }
-                
-                return false; // Does not match.
-            });
-        });
-        
-        SortedList<GitObject> sortedData = new SortedList<>(filteredData);
+						if (lowerCaseFilter.contains(":")) {
+							String col = lowerCaseFilter.substring(0,
+									lowerCaseFilter.indexOf(":"));
+							String search = lowerCaseFilter.substring(
+									lowerCaseFilter.indexOf(":")+1,lowerCaseFilter.length());
 
-        sortedData.comparatorProperty().bind(objectTable.comparatorProperty());
+							if (person.getId().toLowerCase().contains(search) && 
+									(col.equals("id") || col.equals("sha1"))) {
+								return true; // Filter matches sha1.
+							} else if (person.getType().toLowerCase().contains(search) &&
+									col.equals("type")) {
+								return true; // Filter matches type.
+							}else if (person.getNames()[0].toLowerCase().contains(search) &&
+									col.equals("nom")) {
+								return true; // Filter matches name.
+							}else if (Integer.toString(person.getSize()).toLowerCase().contains(search) &&
+									col.equals("size")) {
+								return true; // Filter matches size.
+							}
 
-        objectTable.setItems(sortedData);
-    }
+							return false; // Does not match.
+						} else{
+							if (person.getId().toLowerCase().contains(lowerCaseFilter)) {
+								return true; // Filter matches sha1.
+							} else if (person.getType().toLowerCase().contains(lowerCaseFilter)) {
+								return true; // Filter matches type.
+							}else if (person.getNames()[0].toLowerCase().contains(lowerCaseFilter)) {
+								return true; // Filter matches name.
+							}else if (Integer.toString(person.getSize()).toLowerCase().contains(lowerCaseFilter)) {
+								return true; // Filter matches size.
+							}
+
+							return false; // Does not match.
+						}
+
+					});
+				});
+
+			}
+
+		});
+
+
+
+		objectTable.setItems(base);
+	}
 }
