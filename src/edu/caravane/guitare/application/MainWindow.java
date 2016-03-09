@@ -40,6 +40,7 @@ public class MainWindow extends Application {
 	protected TableView objectTable;
 	protected TextField searchEntry; //la barre de recherche
 	protected ListView<String> listParents;
+	private boolean flag;
 
 	/**
 	 * This function pop-up an error message box with the title and error
@@ -92,22 +93,25 @@ public class MainWindow extends Application {
 	 */
 	protected void parcoursTree(GitTree tree) {
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
-
+		ArrayList<String> keys = goi.getListOfAllObjectKeys();
 		for (TreeEntry te : tree.listEntry()) {
-			if (goi.get(te.getSha1()).getType().equals("blob")){
-				//Si c'est un blob, on lui donne son nom et le parent
-				GitBlob blob = (GitBlob) goi.get(te.getSha1());
-				blob.addName(te.getName());
-				blob.addParent(tree.getId());
-			} else if (goi.get(te.getSha1()).getType().equals("tree")) {
-				//On regarde si c'est un arbre different de lui-meme pour ne pas 
-				//boucler a l'infini
-				if (!tree.getId().equals(te.getSha1())) {
-					//On ajoute ces parents et on le parcours 
-					GitTree treeSon = (GitTree) goi.get(te.getSha1());
-					treeSon.addParent(tree.getId());
-					treeSon.addName(te.getName());
-					parcoursTree(treeSon); //Recursivite powa
+			if(keys.contains(te.getSha1())){
+				if (goi.get(te.getSha1()).getType().equals("blob")){
+					//Si c'est un blob, on lui donne son nom et le parent
+					GitBlob blob = (GitBlob) goi.get(te.getSha1());
+					blob.addName(te.getName());
+					blob.addParent(tree.getId());
+				} else if (goi.get(te.getSha1()).getType().equals("tree")) {
+					//On regarde si c'est un arbre different de lui-meme pour ne pas 
+					//boucler a l'infini
+					if (!tree.getId().equals(te.getSha1())) {
+						//On ajoute ces parents et on le parcours 
+						GitTree treeSon = (GitTree) goi.get(te.getSha1());
+	 
+						treeSon.addParent(tree.getId());
+						treeSon.addName(te.getName());
+						parcoursTree(treeSon); //Recursivite powa
+					}
 				}
 			}
 		}
@@ -227,7 +231,6 @@ public class MainWindow extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
-		
 		visionneuseAP = (AnchorPane) root.lookup("#gitObjectViewerSpace");
 		visionneuseAP.getChildren().add(Visionneuse.getInstance());
 		objectTable = (TableView) root.lookup("#objectTable");
