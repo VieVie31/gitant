@@ -20,6 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.application.Application;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import edu.caravane.guitare.gitobejct.GitBlob;
 import edu.caravane.guitare.gitobejct.GitCommit;
@@ -32,10 +33,10 @@ import edu.caravane.guitare.gitobejct.TreeEntry;
 import edu.caravane.guitare.gitviewer.Visionneuse;
 
 public class MainWindow extends Application {
-	protected final String osBarre = 
+	protected static final String osBarre = 
 			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
 	protected GitObjectsIndex gitObjectsIndex;
-	
+
 	protected AnchorPane visionneuseAP; //integration de la visionneuse
 	protected TableView objectTable;
 	protected TextField searchEntry; //la barre de recherche
@@ -53,11 +54,11 @@ public class MainWindow extends Application {
 	 */
 	public void errorMessageBox(String titre, String message) {
 		Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(titre); 
-        alert.setContentText(message); //alert.setHeaderText("");
-        alert.showAndWait();
+		alert.setTitle(titre); 
+		alert.setContentText(message); //alert.setHeaderText("");
+		alert.showAndWait();
 	}
-	
+
 	/**
 	 * This function add all the objects into a GitObjectsIndex object
 	 *
@@ -99,17 +100,25 @@ public class MainWindow extends Application {
 				if (goi.get(te.getSha1()).getType().equals("blob")){
 					//Si c'est un blob, on lui donne son nom et le parent
 					GitBlob blob = (GitBlob) goi.get(te.getSha1());
-					blob.addName(te.getName());
-					blob.addParent(tree.getId());
+
+					if(!Arrays.asList(blob.getParentFiles()).contains(te.getName()))
+						blob.addName(te.getName());
+
+					if(!Arrays.asList(blob.getParentFiles()).contains(tree.getId()))
+						blob.addParent(tree.getId());
+
 				} else if (goi.get(te.getSha1()).getType().equals("tree")) {
 					//On regarde si c'est un arbre different de lui-meme pour ne pas 
 					//boucler a l'infini
 					if (!tree.getId().equals(te.getSha1())) {
 						//On ajoute ces parents et on le parcours 
 						GitTree treeSon = (GitTree) goi.get(te.getSha1());
-	 
-						treeSon.addParent(tree.getId());
-						treeSon.addName(te.getName());
+						
+						if(!Arrays.asList(treeSon.getParentFiles()).contains(te.getName()))
+							treeSon.addName(te.getName());
+
+						if(!Arrays.asList(treeSon.getParentFiles()).contains(tree.getId()))
+							treeSon.addParent(tree.getId());
 						parcoursTree(treeSon); //Recursivite powa
 					}
 				}
@@ -164,31 +173,31 @@ public class MainWindow extends Application {
 	 */
 	protected void displayAllInfo(String hash) {
 		//pour afficher la liste des parents
-        try {
-	        ObservableList<String> hashParentsList;
-	        hashParentsList = FXCollections.observableArrayList();
-	        
-	        for (String s : GitObjectsIndex.getInstance().get(hash).getParentFiles())
-	        	hashParentsList.add(s);
-	        
-	        listParents.setItems(hashParentsList); //l'afficher dans la ListView...
-        } catch (Exception e) {
-        	System.out.println("Can't display the parent(s) hash : \n".concat(hash));
-        	errorMessageBox("ERROR DISPLAY", 
-        			"Can't display the parent(s) hash :".concat(hash));
-        }
-        
-        //pour afficher dans la visionneuse
-        try {
-        	Visionneuse.getInstance().display(hash);
-        } catch (Exception e) {
-        	System.out.println("Can't display the object : \n".concat(hash));
-        	errorMessageBox("ERROR DISPLAY", 
-        			"Can't display the object :".concat(hash));
-        }
-        System.out.println("");
+		try {
+			ObservableList<String> hashParentsList;
+			hashParentsList = FXCollections.observableArrayList();
+
+			for (String s : GitObjectsIndex.getInstance().get(hash).getParentFiles())
+				hashParentsList.add(s);
+
+			listParents.setItems(hashParentsList); //l'afficher dans la ListView...
+		} catch (Exception e) {
+			System.out.println("Can't display the parent(s) hash : \n".concat(hash));
+			errorMessageBox("ERROR DISPLAY", 
+					"Can't display the parent(s) hash :".concat(hash));
+		}
+
+		//pour afficher dans la visionneuse
+		try {
+			Visionneuse.getInstance().display(hash);
+		} catch (Exception e) {
+			System.out.println("Can't display the object : \n".concat(hash));
+			errorMessageBox("ERROR DISPLAY", 
+					"Can't display the object :".concat(hash));
+		}
+		System.out.println("");
 	}
-	
+
 	/**
 	 * This function return the column of a TableView with the name
 	 * specified in parameter.
@@ -201,12 +210,12 @@ public class MainWindow extends Application {
 	 */
 	private <T> TableColumn<T, ?> getTableColumnByName(TableView<T> tableView, 
 			String name) {
-	    for (TableColumn<T, ?> column : tableView.getColumns())
-	        if (column.getText().equals(name)) return column;
-	    
-	    return null ;
+		for (TableColumn<T, ?> column : tableView.getColumns())
+			if (column.getText().equals(name)) return column;
+
+		return null ;
 	}
-	
+
 	public void start(Stage primaryStage, String[] args) throws Exception {
 		gitObjectsIndex = indexObjects(args);
 		indexObjects(args);
@@ -236,22 +245,22 @@ public class MainWindow extends Application {
 		objectTable = (TableView) root.lookup("#objectTable");
 		searchEntry = (TextField) root.lookup("#searchEntry"); //la barre de recherche
 		listParents = (ListView<String>) root.lookup("#listParents");
-		
+
 		//la liste des parents du fichier recherche...
 		listParents.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				if (event.getClickCount() < 2)
 					return;
-				
+
 				String hash = listParents.getItems().get(
 						listParents.getSelectionModel().getSelectedIndex());
-				
+
 				displayAllInfo(hash);
 			}
-			
+
 		});
-		
+
 		objectTable.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			/**
 			 * This function associate the action of the double click on a cell
@@ -265,17 +274,17 @@ public class MainWindow extends Application {
 			@Override
 			public void handle(MouseEvent event) {
 				if (event.getClickCount() > 1) { //double clicked
-			        //recuperer les hash en fonction de la ou on a clicke
-			        //en tenant compte du fait que les colomnes aient pu permuter...
-			        String hash = (String) getTableColumnByName(objectTable, "SHA-1")
-			        		.getCellData(
-			        				objectTable
-			        				.getSelectionModel()
-			        				.getSelectedIndex()
-			        				);
-			      
-			      displayAllInfo(hash);
-			    }
+					//recuperer les hash en fonction de la ou on a clicke
+					//en tenant compte du fait que les colomnes aient pu permuter...
+					String hash = (String) getTableColumnByName(objectTable, "SHA-1")
+							.getCellData(
+									objectTable
+									.getSelectionModel()
+									.getSelectedIndex()
+									);
+
+					displayAllInfo(hash);
+				}
 			}
 		});
 	}

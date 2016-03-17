@@ -50,7 +50,7 @@ public class GitObjectController {
 		GitObjectsIndex goi =  GitObjectsIndex.getInstance();
 		for(String key : goi.getListOfAllObjectKeys()){
 			if(goi.get(key).getNames().length==0)
-				goi.get(key).addName("temp");
+				goi.get(key).addName("PAS_DE_NOM");
 			masterData.add(goi.get(key));
 		}
 

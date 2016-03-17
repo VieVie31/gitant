@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public abstract class GitObject implements GitObjectInterface {
-	protected String type, sha1;
+	protected String sha1;
 	protected int size;
 
 	protected ArrayList<String> names = new ArrayList<String>();

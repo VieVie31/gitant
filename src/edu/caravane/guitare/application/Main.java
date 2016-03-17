@@ -15,7 +15,7 @@ import javafx.application.Application;
 
 public class Main extends Application {
 	protected Stage primaryStage;
-	protected final String osBarre = 
+	protected static final String osBarre = 
 			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
 
 	/**
