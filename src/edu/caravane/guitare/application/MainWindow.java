@@ -19,8 +19,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.application.Application;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import org.eclipse.jgit.internal.storage.file.PackFile;
+import org.eclipse.jgit.internal.storage.file.PackIndex.MutableEntry;
+
+import com.sun.org.apache.xpath.internal.operations.Mult;
 
 import edu.caravane.guitare.gitobejct.GitBlob;
 import edu.caravane.guitare.gitobejct.GitCommit;
@@ -33,7 +39,7 @@ import edu.caravane.guitare.gitobejct.TreeEntry;
 import edu.caravane.guitare.gitviewer.Visionneuse;
 
 public class MainWindow extends Application {
-	protected static final String osBarre = 
+	protected static final String osBarre =
 			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
 	protected GitObjectsIndex gitObjectsIndex;
 
@@ -46,15 +52,15 @@ public class MainWindow extends Application {
 	/**
 	 * This function pop-up an error message box with the title and error
 	 * message given in parameters
-	 * 
+	 *
 	 * @author VieVie31
-	 * 
+	 *
 	 * @param titre of the error box
 	 * @param message of the error box
 	 */
 	public void errorMessageBox(String titre, String message) {
 		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle(titre); 
+		alert.setTitle(titre);
 		alert.setContentText(message); //alert.setHeaderText("");
 		alert.showAndWait();
 	}
@@ -75,7 +81,16 @@ public class MainWindow extends Application {
 		for (String pathObj : listObjs) {
 			//on ne traite pas les pack pour le moment
 			if (pathObj.contains(osBarre+"pack"+osBarre))
-				continue;
+				if (pathObj.contains(osBarre+"pack"+osBarre)){
+					if(pathObj.contains(".pack")){
+						File pa = new File(pathObj);
+						PackFile p = new PackFile(pa, 0);
+						for (MutableEntry mutableEntry : p) {
+							System.out.println(mutableEntry.name());
+						}
+					}
+					continue;
+				}
 
 			gor = new GitObjectReader(pathObj);
 			goi.put(gor.getId(), gor.builGitObject());
@@ -85,11 +100,11 @@ public class MainWindow extends Application {
 	}
 
 	/**
-	 * This function browse in a tree the find all his son and add son's name 
-	 * and parents 
-	 * 
+	 * This function browse in a tree the find all his son and add son's name
+	 * and parents
+	 *
 	 * @author Marvyn, VieVie31
-	 * 
+	 *
 	 * @param tree
 	 */
 	protected void parcoursTree(GitTree tree) {
@@ -108,12 +123,12 @@ public class MainWindow extends Application {
 						blob.addParent(tree.getId());
 
 				} else if (goi.get(te.getSha1()).getType().equals("tree")) {
-					//On regarde si c'est un arbre different de lui-meme pour ne pas 
+					//On regarde si c'est un arbre different de lui-meme pour ne pas
 					//boucler a l'infini
 					if (!tree.getId().equals(te.getSha1())) {
-						//On ajoute ces parents et on le parcours 
+						//On ajoute ces parents et on le parcours
 						GitTree treeSon = (GitTree) goi.get(te.getSha1());
-						
+
 						if(!Arrays.asList(treeSon.getParentFiles()).contains(te.getName()))
 							treeSon.addName(te.getName());
 
@@ -129,9 +144,9 @@ public class MainWindow extends Application {
 	/**
 	 * This function find parents of tag, commit, tree and blob.
 	 * It add too the blob's name.
-	 * 
+	 *
 	 * @author Marvyn
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	protected void makeLinks() throws Exception {
@@ -142,7 +157,7 @@ public class MainWindow extends Application {
 				GitTag tag = (GitTag) goi.get(p);
 				//On recupere l'objet tagger
 				GitObject taggay = goi.get(tag.getObjHexId());
-				//On ajoute son parent ( le taggeur ) 
+				//On ajoute son parent ( le taggeur )
 				taggay.addParent(tag.getId());
 			} else if ( goi.get(p).getType().equals("commit")) {
 				GitCommit commit = (GitCommit) goi.get(p);
@@ -166,9 +181,9 @@ public class MainWindow extends Application {
 	/**
 	 * This function display all the info of a git object selected by his hash
 	 * int the viewer and in the list of the parents...
-	 * 
+	 *
 	 * @author VieVie31
-	 * 
+	 *
 	 * @param hash
 	 */
 	protected void displayAllInfo(String hash) {
@@ -183,7 +198,7 @@ public class MainWindow extends Application {
 			listParents.setItems(hashParentsList); //l'afficher dans la ListView...
 		} catch (Exception e) {
 			System.out.println("Can't display the parent(s) hash : \n".concat(hash));
-			errorMessageBox("ERROR DISPLAY", 
+			errorMessageBox("ERROR DISPLAY",
 					"Can't display the parent(s) hash :".concat(hash));
 		}
 
@@ -192,7 +207,7 @@ public class MainWindow extends Application {
 			Visionneuse.getInstance().display(hash);
 		} catch (Exception e) {
 			System.out.println("Can't display the object : \n".concat(hash));
-			errorMessageBox("ERROR DISPLAY", 
+			errorMessageBox("ERROR DISPLAY",
 					"Can't display the object :".concat(hash));
 		}
 		System.out.println("");
@@ -201,14 +216,14 @@ public class MainWindow extends Application {
 	/**
 	 * This function return the column of a TableView with the name
 	 * specified in parameter.
-	 * 
+	 *
 	 * @author VieVie31
-	 * 
+	 *
 	 * @param tableView where is the column to get
 	 * @param name of the columns to return
 	 * @return the column if found null else
 	 */
-	private <T> TableColumn<T, ?> getTableColumnByName(TableView<T> tableView, 
+	private <T> TableColumn<T, ?> getTableColumnByName(TableView<T> tableView,
 			String name) {
 		for (TableColumn<T, ?> column : tableView.getColumns())
 			if (column.getText().equals(name)) return column;
@@ -225,7 +240,7 @@ public class MainWindow extends Application {
 
 	/**
 	 * Main interface loaded here...
-	 * 
+	 *
 	 * @author Eloan, VieVie31
 	 */
 	@Override
@@ -268,7 +283,7 @@ public class MainWindow extends Application {
 			 * the viewer...
 			 * If the display or the parents listing throws an exception, the
 			 * exception will be catched but an error dialog message will pop-up
-			 * 
+			 *
 			 * @author VieVie31, Eloan
 			 */
 			@Override
