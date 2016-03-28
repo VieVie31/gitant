@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.MediaPlayer;
 
 import java.io.IOException;
 import java.util.zip.DataFormatException;
@@ -19,14 +20,15 @@ public class Visionneuse extends Parent {
 	protected static Visionneuse visionneuse;
 	
 	protected Visionneuse() throws IOException {
-		Parent p = FXMLLoader.load(getClass().getResource("Visioneuse.fxml"));
-		AnchorPane visioneuseAP = (AnchorPane) p.lookup("#visioneuseAP");
+		Parent p = FXMLLoader.load(getClass().getResource("Visionneuse.fxml"));
+		AnchorPane visioneuseAP = (AnchorPane) p.lookup("#visionneuseAP");
 		getChildren().add(visioneuseAP);
 	}
 	
 	public static Visionneuse getInstance() throws IOException {
-		if (Visionneuse.visionneuse == null)
+		if (Visionneuse.visionneuse == null){
 			Visionneuse.visionneuse = new Visionneuse();
+		}
 		return Visionneuse.visionneuse;
 	}
 	
@@ -37,18 +39,26 @@ public class Visionneuse extends Parent {
 
 	public static void display(GitObject gitObject) throws IOException, DataFormatException {
 		Visionneuse visionneuse = Visionneuse.getInstance();
-		TextArea textArea = (TextArea) visionneuse.lookup("#visioneuseTV");
+		TextArea textArea = (TextArea) visionneuse.lookup("#visionneuseT");
+		//MediaPlayer mediaPlayer = (MediaPlayer) visionneuse.lookup("#visionneuseTV");
 		Label hashLabel = (Label) visionneuse.lookup("#hashLabel");
 		
 		//actualiser le label
 		hashLabel.setText("Hash : " + gitObject.getId());
 		
-		//actualiser la visionneuse texte
+		//Test, savoir si c'est du texte, une vidéo, une image ou du son.
+		
+		//Si c'est du texte
+		//Actualiser la visionneuse texte
 		if (gitObject.getType().equals("blob"))
 			textArea.setText(new String(((GitBlob) gitObject).getData()));
 		else
 			textArea.setText(gitObject.toString());
 		
-		//faire le reste
+		//Si c'est une vidéo
+//		if (gitObject.getType().equals("blob"))
+//			mediaPlayer.(new String(((GitBlob) gitObject).getData()));
+//		else
+//			textArea.setText(gitObject.toString());
 	}
 }
