@@ -4,5 +4,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="lib" path="/home/neiko/Documents/FAQ/GP/gitant/Annexes/org.eclipse.jgit-4.2.0.201601211800-r.jar"/>
+	<classpathentry kind="lib" path="/home/neiko/Documents/FAQ/GP/gitant/Annexes/slf4j.jar"/>
+	<classpathentry kind="lib" path="/home/neiko/Documents/FAQ/GP/gitant/Annexes/logback-core-1.0.13.jar"/>
+	<classpathentry kind="lib" path="/home/neiko/Documents/FAQ/GP/gitant/Annexes/logback-classic-1.1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
