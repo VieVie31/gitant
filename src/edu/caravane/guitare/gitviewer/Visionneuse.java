@@ -51,14 +51,20 @@ public class Visionneuse extends Parent {
 		return visionneuseAP.getHeight();
 	}
 	
-	public static void autobound() {
+	public static void setWidth(double width) {
+		visionneuseAP.widthProperty().subtract(visionneuseAP.getWidth()).add(width);
+	}
+	
+	public static void setHeight(double height) {
+		visionneuseAP.heightProperty().subtract(visionneuseAP.getHeight()).add(height);
+	}
+	
+	public static void rebound(String hash) throws IOException, DataFormatException {
 		if (displayedNode == null)
 			return;
-
-		displayedNode.minWidth(getWidth());
-		displayedNode.minHeight(getHeight());
-		displayedNode.maxWidth(getWidth());
-		displayedNode.maxHeight(getHeight());
+		if (displayedNode instanceof TextArea){
+			display(hash);
+		}
 	}
 	
 	public void somethingHasChanged() throws IOException{
@@ -93,7 +99,7 @@ public class Visionneuse extends Parent {
 		textArea.setMaxWidth(getWidth());
 		textArea.setMaxHeight(getHeight());
 		
-		displayedNode = textArea;
+		displayedNode = textArea;		
 		
 		if (gitObject.getType().equals("blob")) {
 			textArea.setText(new String(((GitBlob) (gitObject)).getData()));

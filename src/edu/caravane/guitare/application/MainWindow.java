@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.zip.DataFormatException;
 
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.ObjectId;
@@ -305,13 +306,97 @@ public class MainWindow extends Application {
 			}
 		});
 		
-		primaryStage.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
+		primaryStage.widthProperty().addListener(new ChangeListener<Number>() {
+		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+		    	//Visionneuse.setHeight(primaryStage.getHeight());
+		    	String hash = (String) getTableColumnByName(objectTable, "SHA-1")
+						.getCellData(
+								objectTable
+								.getSelectionModel()
+								.getSelectedIndex()
+								);
+		    	try {
+					Visionneuse.rebound(hash);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DataFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		});
+		
+		primaryStage.heightProperty().addListener(new ChangeListener<Number>() {
+		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+		    	//Visionneuse.setWidth(primaryStage.getWidth());
+		    	String hash = (String) getTableColumnByName(objectTable, "SHA-1")
+						.getCellData(
+								objectTable
+								.getSelectionModel()
+								.getSelectedIndex()
+								);
+		    	try {
+					Visionneuse.rebound(hash);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DataFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		});
+		
+		scene.widthProperty().addListener(new ChangeListener<Number>() {
+		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+		    	//Visionneuse.setHeight(scene.getHeight());
+		    	String hash = (String) getTableColumnByName(objectTable, "SHA-1")
+						.getCellData(
+								objectTable
+								.getSelectionModel()
+								.getSelectedIndex()
+								);
+		    	try {
+					Visionneuse.rebound(hash);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DataFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		});
+		
+		scene.heightProperty().addListener(new ChangeListener<Number>() {
+		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+		    	//Visionneuse.setWidth(scene.getWidth());
+		    	String hash = (String) getTableColumnByName(objectTable, "SHA-1")
+						.getCellData(
+								objectTable
+								.getSelectionModel()
+								.getSelectedIndex()
+								);
+		    	try {
+					Visionneuse.rebound(hash);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DataFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		});
+		
+		/*primaryStage.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				Visionneuse.autobound();
 			}
 
-		});
+		});*/
 		
 
 	}
