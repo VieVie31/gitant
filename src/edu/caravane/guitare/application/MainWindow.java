@@ -258,6 +258,7 @@ public class MainWindow extends Application {
 
 		visionneuseAP = (AnchorPane) root.lookup("#gitObjectViewerSpace");
 		visionneuseAP.getChildren().add(Visionneuse.getInstance());
+		Visionneuse.getInstance().setAp(visionneuseAP);
 		objectTable = (TableView) root.lookup("#objectTable");
 		searchEntry = (TextField) root.lookup("#searchEntry"); //la barre de recherche
 		listParents = (ListView<String>) root.lookup("#listParents");
@@ -304,20 +305,14 @@ public class MainWindow extends Application {
 			}
 		});
 		
-		primaryStage.maximizedProperty().addListener(new ChangeListener<Boolean>() {
-		    @Override
-		    public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
-		        System.out.println("maximized:" + t1.booleanValue());
-		        if (t1.booleanValue() == true){
-		        	try {
-						Visionneuse visionneuse = Visionneuse.getInstance();
-						visionneuse.somethingHasChanged();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		        }
-		    }
+		primaryStage.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				Visionneuse.autobound();
+			}
+
 		});
+		
+
 	}
 }

@@ -21,19 +21,44 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 
 import edu.caravane.guitare.gitobejct.GitBlob;
+import edu.caravane.guitare.gitobejct.GitCommit;
 import edu.caravane.guitare.application.Main;
 import edu.caravane.guitare.gitobejct.GitObject;
+import edu.caravane.guitare.gitobejct.GitObjectType;
 import edu.caravane.guitare.gitobejct.GitObjectsIndex;
+import edu.caravane.guitare.gitobejct.GitTag;
+import edu.caravane.guitare.gitobejct.GitTree;
 
 
 public class Visionneuse extends Parent {
 	protected static Visionneuse visionneuse;
+	protected static AnchorPane visionneuseAP;
+	protected static Node displayedNode;
 	
 	protected Visionneuse() throws IOException {
-		Parent p = FXMLLoader.load(getClass().getResource("Visionneuse.fxml"));
-		AnchorPane visionneuseAP = (AnchorPane) p.lookup("#visionneuseAP");
 		
-		getChildren().add(visionneuseAP);
+	}
+	
+	public void setAp(AnchorPane visionneuseAP) {
+		this.visionneuseAP = visionneuseAP;
+	}
+	
+	public static double getWidth() {
+		return visionneuseAP.getWidth();
+	}
+	
+	public static double getHeight() {
+		return visionneuseAP.getHeight();
+	}
+	
+	public static void autobound() {
+		if (displayedNode == null)
+			return;
+
+		displayedNode.minWidth(getWidth());
+		displayedNode.minHeight(getHeight());
+		displayedNode.maxWidth(getWidth());
+		displayedNode.maxHeight(getHeight());
 	}
 	
 	public void somethingHasChanged() throws IOException{
@@ -58,40 +83,30 @@ public class Visionneuse extends Parent {
 
 	public static void display(GitObject gitObject) throws IOException, DataFormatException {
 		Visionneuse visionneuse = Visionneuse.getInstance();
-		TextArea textArea = (TextArea) visionneuse.lookup("#visionneuseT");
-		ImageView imageView = (ImageView) visionneuse.lookup("#visionneuseI");
-		Label hashLabel = (Label) visionneuse.lookup("#hashLabel");
+		visionneuse.getChildren().clear();
 		
-		//actualiser le label
-		hashLabel.setText("Hash : " + gitObject.getId());
+		TextArea textArea = new TextArea();
+		textArea.setEditable(false);
 		
-		//Test, savoir si c'est du texte, une vidéo, une image ou du son.
-		//System.out.println();
-		//Si c'est du texte
-		//if ( == "txt"){
-			
-		//}
-		//Actualiser la visionneuse texte
-		if (gitObject.getType().equals("blob")){
-			String nomObjet = gitObject.nameProperty().getValue();
-			if (nomObjet.contains(".bmp") || nomObjet.contains(".gif") || nomObjet.contains(".jpeg") || nomObjet.contains(".png")){
-				//Image image = new Image(gitObject.getParentFiles()[0]);
-				//System.out.println(gitObject.getParentFiles()[0]);
-				//imageView.setImage(image);
-				//imageView.setImage(image);
-			}//else{
-				
-			//} 
-			else {
-				textArea.setText(new String(((GitBlob) gitObject).getData()));
-			}
-		}else{
-			textArea.setText(gitObject.toString());
+		textArea.setMinWidth(getWidth());
+		textArea.setMinHeight(getHeight());
+		textArea.setMaxWidth(getWidth());
+		textArea.setMaxHeight(getHeight());
+		
+		displayedNode = textArea;
+		
+		if (gitObject.getType().equals("blob")) {
+			textArea.setText(new String(((GitBlob) (gitObject)).getData()));
+		} else if (gitObject.getType().equals("tree")) {
+			textArea.setText(new String(((GitTree) (gitObject)).toString()));
+		} else if (gitObject.getType().equals("tag")) {
+			textArea.setText(new String(((GitTag) (gitObject)).toString()));
+		} else if (gitObject.getType().equals("commit")) {
+			textArea.setText(new String(((GitCommit) (gitObject)).toString()));
 		}
-		//Si c'est une vidéo
-//		if (gitObject.getType().equals("blob"))
-//			mediaPlayer.(new String(((GitBlob) gitObject).getData()));
-//		else
-//			textArea.setText(gitObject.toString());
+		
+		
+		
+		visionneuse.getChildren().add(displayedNode);
 	}
 }
