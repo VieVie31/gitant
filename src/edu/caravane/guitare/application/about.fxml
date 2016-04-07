@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TextArea editable="false" layoutX="-3.0" layoutY="3.0" prefHeight="228.0" prefWidth="602.0" text="L'application gitant développé par Olivier Risser-Maroix, Sylvain Maillot, Marvyn O'rourke, Romain Roch et Eloan Lagier.&#10;&#10;Ce logiciel est une interface graphique utiliser pour visualiser les objets git d'un repository développé dans le cadre d'un projet&#10; de groupe en deuxième année de licence à la faculté Champollion Albi.&#10;&#10;Développé pour le confort de tout utilisateur, elle devrait vous êtres très util.&#10;&#10;Merci d'avoir choisis gitant, les développeurs de qualité.&#10;&#10;@cpoyright nous quatres&#10;2016&#10;&#10;Lorem ipsum dolor sit amet, no his repudiandae conclusionemque, vim civibus salutatus patrioque cu. Ei sed vivendum laboramus, eos dolorem pertinacia et, eos latine moderatius cu. Cu qui utamur appellantur. Te fabulas accumsan eam.&#10;&#10;Ex minim graecis vel. Melius tractatos per ut, duo consul maluisset definiebas ut, error noster iisque te sea. Nam ei equidem facilisi, cu his munere argumentum honestatis. Qui causae deleniti dissentiunt eu, nonumes denique conclusionemque eu eum, ex cum numquam bonorum noluisse. Ut impetus civibus pertinacia sed. Eam sint fastidii prodesset eu.&#10;&#10;Tritani periculis his eu, eam ad erat nusquam disputationi. Id verear deterruisset ius, eos assum altera et, cum quaeque oporteat singulis te. Sit no malorum prompta fuisset. Nec nullam sensibus maluisset id, id dolorem sapientem persecuti mel, decore nominati omittantur in nam.&#10;&#10;Vis ne liber graeci nonumes, justo tempor vix ex. Vis ut porro reformidans, est accusam quaestio inciderint in. Qui ex omnes ignota sapientem, ea vitae munere definitiones est. Eum te eruditi corpora senserit. Mea no sint incorrupte.&#10;&#10;In aeque tempor intellegat his. Etiam intellegam id est. Mutat consulatu dissentiet te eum, pri patrioque delicatissimi et. Id mei mentitum pertinax laboramus, simul omnium ocurreret te eum. Tollit atomorum vituperatoribus ex eos, cu dicta doctus patrioque nam. Unum nibh cotidieque eum ut. Facete scaevola id his.&#10;&#10;" wrapText="true" AnchorPane.bottomAnchor="173.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />
+      <ImageView fitHeight="98.0" fitWidth="101.0" layoutX="362.0" layoutY="251.0">
+         <image>
+            <Image url="@../../../../image/9532877.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="98.0" fitWidth="101.0" layoutX="14.0" layoutY="251.0">
+         <image>
+            <Image url="@../../../../image/14021207.jpeg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="98.0" fitWidth="101.0" layoutX="140.0" layoutY="251.0">
+         <image>
+            <Image url="@../../../../image/16819419.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="98.0" fitWidth="101.0" layoutX="476.0" layoutY="251.0">
+         <image>
+            <Image url="@../../../../image/16842716.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="98.0" fitWidth="101.0" layoutX="251.0" layoutY="251.0">
+         <image>
+            <Image url="@../../../../image/7243050.png" />
+         </image>
+      </ImageView>
+      <Hyperlink layoutX="190.0" layoutY="374.0" text="https://github.com/VieVie31/gitant" />
+   </children>
+</AnchorPane>
