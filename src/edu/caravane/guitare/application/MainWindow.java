@@ -11,6 +11,7 @@ import javafx.scene.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -59,6 +60,9 @@ public class MainWindow extends Application {
 	protected TableView objectTable;
 	protected TextField searchEntry; //la barre de recherche
 	protected ListView<String> listParents;
+	protected SplitPane splitPane;
+	protected AnchorPane mainScene;
+	protected SplitPane splitPane2;
 	private boolean flag;
 
 	/**
@@ -263,6 +267,9 @@ public class MainWindow extends Application {
 		objectTable = (TableView) root.lookup("#objectTable");
 		searchEntry = (TextField) root.lookup("#searchEntry"); //la barre de recherche
 		listParents = (ListView<String>) root.lookup("#listParents");
+		splitPane   = (SplitPane) root.lookup("#splitPane");
+		mainScene   = (AnchorPane) root.lookup("#mainScene");
+		splitPane2  = (SplitPane) root.lookup("#splitPane2");
 
 		//la liste des parents du fichier recherche...
 		listParents.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -306,98 +313,38 @@ public class MainWindow extends Application {
 			}
 		});
 		
-		primaryStage.widthProperty().addListener(new ChangeListener<Number>() {
-		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-		    	//Visionneuse.setHeight(primaryStage.getHeight());
-		    	String hash = (String) getTableColumnByName(objectTable, "SHA-1")
-						.getCellData(
-								objectTable
-								.getSelectionModel()
-								.getSelectedIndex()
-								);
-		    	try {
-					Visionneuse.rebound(hash);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (DataFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    }
-		});
-		
-		primaryStage.heightProperty().addListener(new ChangeListener<Number>() {
+		visionneuseAP.widthProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
 		    	//Visionneuse.setWidth(primaryStage.getWidth());
 		    	String hash = (String) getTableColumnByName(objectTable, "SHA-1")
-						.getCellData(
+								.getCellData(
 								objectTable
 								.getSelectionModel()
 								.getSelectedIndex()
 								);
 		    	try {
 					Visionneuse.rebound(hash);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (DataFormatException e) {
-					// TODO Auto-generated catch block
+		    	} catch (Exception e) {
 					e.printStackTrace();
 				}
 		    }
 		});
 		
-		scene.widthProperty().addListener(new ChangeListener<Number>() {
-		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-		    	//Visionneuse.setHeight(scene.getHeight());
-		    	String hash = (String) getTableColumnByName(objectTable, "SHA-1")
-						.getCellData(
-								objectTable
-								.getSelectionModel()
-								.getSelectedIndex()
-								);
-		    	try {
-					Visionneuse.rebound(hash);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (DataFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    }
-		});
-		
-		scene.heightProperty().addListener(new ChangeListener<Number>() {
+		visionneuseAP.heightProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-		    	//Visionneuse.setWidth(scene.getWidth());
+		    	//Visionneuse.setWidth(primaryStage.getWidth());
 		    	String hash = (String) getTableColumnByName(objectTable, "SHA-1")
-						.getCellData(
+								.getCellData(
 								objectTable
 								.getSelectionModel()
 								.getSelectedIndex()
 								);
 		    	try {
 					Visionneuse.rebound(hash);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (DataFormatException e) {
-					// TODO Auto-generated catch block
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 		    }
 		});
-		
-		/*primaryStage.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				Visionneuse.autobound();
-			}
-
-		});*/
-		
-
 	}
 }
