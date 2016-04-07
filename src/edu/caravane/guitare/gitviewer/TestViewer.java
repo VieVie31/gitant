@@ -33,11 +33,12 @@ public class TestViewer extends Application {
 		
 		
 		//tests
-		GitObjectReader gor;
+		GitObjectReader gor = new GitObjectReader("/Annexes/tests/heat.flv");
 		
+		//gor.getType();
 		//test avec blob
 //		gor = new GitObjectReader("/Annexes/tests/test_blob.bin");
-//		Visionneuse.display(gor.builGitObject());
+		Visionneuse.display(gor.builGitObject());
 		
 		//test avec pas blob
 //		gor = new GitObjectReader("/Annexes/tests/test_commit.bin");

@@ -2,6 +2,7 @@ package edu.caravane.guitare.application;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.*;
@@ -17,9 +18,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.transform.TransformChangedEvent;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -302,6 +307,21 @@ public class MainWindow extends Application {
 				}
 			}
 		});
+		
+		primaryStage.maximizedProperty().addListener(new ChangeListener<Boolean>() {
+		    @Override
+		    public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+		        System.out.println("maximized:" + t1.booleanValue());
+		        if (t1.booleanValue() == true){
+		        	try {
+						Visionneuse visionneuse = Visionneuse.getInstance();
+						visionneuse.somethingHasChanged();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        }
+		    }
+		});
 	}
-
 }

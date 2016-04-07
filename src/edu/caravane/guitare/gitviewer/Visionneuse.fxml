@@ -10,18 +10,18 @@
 <?import javafx.scene.media.MediaView?>
 
 
-<AnchorPane id="visionneuseAP" AnchorPane.bottomAnchor="0.0"
+<AnchorPane id="visionneuseAP" maxHeight="Infinity" maxWidth="Infinity" AnchorPane.bottomAnchor="0.0"
 	AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
 	AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<TabPane layoutX="40.0" layoutY="48.0" prefHeight="266.0"
+		<TabPane maxHeight="Infinity" maxWidth="Infinity" layoutX="40.0" layoutY="48.0" prefHeight="266.0"
 			prefWidth="342.0" tabClosingPolicy="UNAVAILABLE"
 			AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0"
 			AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
 			<tabs>
 				<Tab text="Infos">
 					<content>
-						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+						<AnchorPane maxHeight="Infinity" maxWidth="Infinity" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
 							prefWidth="200.0">
 							<children>
 								<Label fx:id="hashLabel" id="hashLabel" layoutX="14.0"
@@ -32,7 +32,7 @@
 				</Tab>
 				<Tab text="TextView">
 					<content>
-						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+						<AnchorPane maxHeight="Infinity" maxWidth="Infinity" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 							<children>
 								<TextArea fx:id="visionneuseT" id="visionneuseT"
 									editable="false" layoutX="60.0" layoutY="60.0" prefHeight="200.0"
@@ -45,28 +45,11 @@
 				</Tab>
 				<Tab text="ImageView">
 					<content>
-						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+						<AnchorPane maxHeight="Infinity" maxWidth="Infinity" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 							<children>
 								<ImageView fx:id="visionneuseI" id="visionneuseI" fitHeight="150.0" 
 									fitWidth="200.0" layoutX="103.0"
 									layoutY="70.0" pickOnBounds="true" preserveRatio="true" />
-							</children>
-						</AnchorPane>
-					</content>
-				</Tab>
-				<Tab text="VideoView">
-					<content>
-						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-							<children>
-								<MediaView >
-									<mediaPlayer>
-										<MediaPlayer autoPlay="false">
-											<media>
-												<Media source="http://download.oracle.com/otndocs/products/javafx/oow2010-2.flv"/>
-											</media>
-										</MediaPlayer>
-									</mediaPlayer>
-								</MediaView>
 							</children>
 						</AnchorPane>
 					</content>
