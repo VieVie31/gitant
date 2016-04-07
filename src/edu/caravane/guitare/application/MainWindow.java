@@ -28,8 +28,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.eclipse.jgit.lib.AnyObjectId;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.internal.storage.file.PackFile;
 import org.eclipse.jgit.internal.storage.file.PackIndex.MutableEntry;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RepositoryBuilder;
 
 import com.sun.org.apache.xpath.internal.operations.Mult;
 
@@ -38,6 +43,7 @@ import edu.caravane.guitare.gitobejct.GitCommit;
 import edu.caravane.guitare.gitobejct.GitObject;
 import edu.caravane.guitare.gitobejct.GitObjectReader;
 import edu.caravane.guitare.gitobejct.GitObjectsIndex;
+import edu.caravane.guitare.gitobejct.GitPack;
 import edu.caravane.guitare.gitobejct.GitTag;
 import edu.caravane.guitare.gitobejct.GitTree;
 import edu.caravane.guitare.gitobejct.TreeEntry;
@@ -82,25 +88,15 @@ public class MainWindow extends Application {
 	public GitObjectsIndex indexObjects(String[] listObjs) throws Exception {
 		GitObjectReader gor;
 		GitObjectsIndex goi =  GitObjectsIndex.getInstance();
-
 		for (String pathObj : listObjs) {
-			//on ne traite pas les pack pour le moment
 			if (pathObj.contains(osBarre+"pack"+osBarre))
 				if (pathObj.contains(osBarre+"pack"+osBarre)){
-					if(pathObj.contains(".pack")){
-						File pa = new File(pathObj);
-						PackFile p = new PackFile(pa, 0);
-						for (MutableEntry mutableEntry : p) {
-							System.out.println(mutableEntry.name());
-						}
-					}
+					GitPack.makePack(pathObj);
 					continue;
 				}
-
 			gor = new GitObjectReader(pathObj);
 			goi.put(gor.getId(), gor.builGitObject());
 		}
-
 		return goi;
 	}
 
