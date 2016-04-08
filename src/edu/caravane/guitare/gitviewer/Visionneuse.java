@@ -7,12 +7,24 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.MediaPlayer;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 import java.util.zip.DataFormatException;
+
+import javax.imageio.ImageIO;
 
 import edu.caravane.guitare.gitobejct.GitBlob;
 import edu.caravane.guitare.gitobejct.GitObject;
@@ -118,9 +130,50 @@ public class Visionneuse extends Parent {
 		
 		//Si c'est du texte
 		//Actualiser la visionneuse texte*/
-		if (gitObject.getType().equals("blob"))
-			textArea.setText(new String(((GitBlob) gitObject).getData()));
-		else
+		if (gitObject.getType().equals("blob")) {
+			byte[] data = ((GitBlob) gitObject).getData();
+			textArea.setText(new String(data));
+			
+
+			try {
+				//saving temporary the data
+				String tmpFileName = String.format("%d.tmp", System.currentTimeMillis());
+				FileOutputStream fos = new FileOutputStream(tmpFileName);
+				fos.write(data);
+				fos.close();
+				
+				try { 
+					BufferedImage bf = ImageIO.read(new File(tmpFileName));
+					
+					WritableImage wr = null;
+			        if (bf != null) {
+			            wr = new WritableImage(bf.getWidth(), bf.getHeight());
+			            PixelWriter pw = wr.getPixelWriter();
+			            for (int x = 0; x < bf.getWidth(); x++) {
+			                for (int y = 0; y < bf.getHeight(); y++) {
+			                    pw.setArgb(x, y, bf.getRGB(x, y));
+			                }
+			            }
+			        }
+			 
+			        ImageView imgView = new ImageView(wr);
+			        imgView.setPreserveRatio(true);
+			        imgView.resize(getWidth(), getHeight());
+			        imgView.setFitHeight(getHeight());
+			        imgView.setFitWidth(getWidth());
+			        
+			        imageView.setContent(imgView);
+				}
+				catch (Exception e) {
+					
+				}
+				
+				Files.delete(new File(tmpFileName).toPath());
+				
+			} catch (Exception e) {
+				textArea.setText(new String(data));
+			}
+		} else
 			textArea.setText(gitObject.toString());
 		
         /*visionneuse.getChildren().clear();
