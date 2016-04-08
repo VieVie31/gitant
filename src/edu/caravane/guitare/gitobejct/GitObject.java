@@ -13,7 +13,7 @@ public abstract class GitObject implements GitObjectInterface {
 	protected ArrayList<String> parents = new ArrayList<String>();
 	protected GitDate date = new GitDate(0); //What I haven't for 14/02
 
-	public abstract String getType();
+	public abstract GitObjectType getType();
 	public abstract int getSize();
 	public abstract String getId();
 
@@ -65,7 +65,7 @@ public abstract class GitObject implements GitObjectInterface {
 	}
 	
 	public StringProperty typeProperty() {
-		StringProperty type = new SimpleStringProperty(this.getType());
+		StringProperty type = new SimpleStringProperty(this.getType().toString());
 		return type;
 	}
 	

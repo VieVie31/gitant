@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
 
 import edu.caravane.guitare.gitobejct.GitBlob;
 import edu.caravane.guitare.gitobejct.GitObject;
+import edu.caravane.guitare.gitobejct.GitObjectType;
 import edu.caravane.guitare.gitobejct.GitObjectsIndex;
 
 
@@ -130,7 +131,7 @@ public class Visionneuse extends Parent {
 		
 		//Si c'est du texte
 		//Actualiser la visionneuse texte*/
-		if (gitObject.getType().equals("blob")) {
+		if (gitObject.getType().equals(GitObjectType.BLOB)) {
 			byte[] data = ((GitBlob) gitObject).getData();
 			textArea.setText(new String(data));
 			

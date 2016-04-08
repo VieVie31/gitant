@@ -1,7 +1,7 @@
 package edu.caravane.guitare.gitobejct;
 
 public class GitTag extends GitObject {
-	protected static String type = "tag";
+	protected static GitObjectType type = GitObjectType.TAG;
 	protected int size;
 	protected String tagName, sha1;
 	protected String objHexId;
@@ -28,7 +28,7 @@ public class GitTag extends GitObject {
 	 * @return the type of the object
 	 */
 	@Override
-	public String getType() {
+	public GitObjectType getType() {
 		return GitTag.type;
 	}
 

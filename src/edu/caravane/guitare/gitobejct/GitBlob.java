@@ -10,7 +10,7 @@ import java.util.zip.DataFormatException;
  *
  */
 public class GitBlob extends GitObject {
-	protected static String type = "blob";
+	protected static GitObjectType type = GitObjectType.BLOB;
 	protected String path, sha1;
 	protected int size;
 	protected int index;
@@ -38,7 +38,7 @@ public class GitBlob extends GitObject {
 	 * @return The type of the object
 	 */
 	@Override
-	public String getType() {
+	public GitObjectType getType() {
 		return GitBlob.type;
 	}
 

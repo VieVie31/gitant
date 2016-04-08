@@ -2,7 +2,7 @@ package edu.caravane.guitare.gitobejct;
 import java.util.*;
 
 public class GitTree extends GitObject {
-	protected static String type = "tree";
+	protected static GitObjectType type = GitObjectType.TREE;
 	protected int size;
 	protected String sha1;
 	protected ArrayList<TreeEntry> lstEntr;
@@ -21,7 +21,7 @@ public class GitTree extends GitObject {
 	 * @return the type of the object
 	 */
 	@Override
-	public String getType() {
+	public GitObjectType getType() {
 		return GitTree.type;
 	}
 

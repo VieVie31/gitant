@@ -456,7 +456,7 @@ public class GitObjectReader {
 	 * @return true if the array is a blob else false
 	 */
 	public boolean isBlob() {
-		return getType().equals("blob");
+		return GitObjectType.BLOB.equals(type);
 	}
 
 
@@ -468,7 +468,7 @@ public class GitObjectReader {
 	 * @return true if the array is a tree object else false.
 	 */
 	public boolean isTree() {
-		return type.equals("tree");
+		return GitObjectType.TREE.equals(type);
 	}
 
 
@@ -480,7 +480,7 @@ public class GitObjectReader {
 	 * @return true if the array is a tag object.
 	 */
 	public boolean isTag() {
-		return type.equals("tag");
+		return GitObjectType.TAG.equals(type);
 	}
 
 
@@ -492,7 +492,7 @@ public class GitObjectReader {
 	 * @return true if the array is a commit array else false.
 	 */
 	public boolean isCommit() {
-		return type.equals("commit");
+		return GitObjectType.COMMIT.equals(type);
 	}
 
 
@@ -506,7 +506,7 @@ public class GitObjectReader {
 	 * @throws Exception if the object is not a tree
 	 */
 	public GitTree buildTree() throws Exception {
-		if (!getType().equals("tree"))
+		if (!GitObjectType.TREE.equals(getType()))
 			throw new Exception(); //message plus tard
 
 		return new GitTree(getSize(), getId(),
@@ -523,7 +523,7 @@ public class GitObjectReader {
 	 * @throws Exception
 	 */
 	public GitBlob buildBlob() throws Exception {
-		if (!getType().equals("blob"))
+		if (!GitObjectType.BLOB.equals(getType()))
 			throw new Exception(); //message plus tard
 
 		return new GitBlob(getId(), getSize(), getContentIndex(), path);
@@ -539,7 +539,7 @@ public class GitObjectReader {
 	 * @throws Exception
 	 */
 	public GitCommit buildCommit() throws Exception {
-		if (!getType().equals("commit"))
+		if (!GitObjectType.COMMIT.equals(getType()))
 			throw new Exception();
 
 		index = getContentIndex() + 5; //"tree" + <SP>
@@ -574,7 +574,7 @@ public class GitObjectReader {
 	 * @throws Exception
 	 */
 	public GitTag builTag() throws Exception {
-		if (!getType().equals("tag"))
+		if (!GitObjectType.TAG.equals(getType()))
 			throw new Exception();
 
 		index = getContentIndex() + 7; //"object" + <SP>

@@ -3,7 +3,7 @@ package edu.caravane.guitare.gitobejct;
 import java.util.ArrayList;
 
 public class GitCommit extends GitObject {
-	protected static String type = "commit";
+	protected static GitObjectType type = GitObjectType.COMMIT;
 	protected int size;
 	protected String treeId, sha1;
 	protected ArrayList<String> parentListId;
@@ -31,7 +31,7 @@ public class GitCommit extends GitObject {
 	 * @return The type of the object
 	 */
 	@Override
-	public String getType() {
+	public GitObjectType getType() {
 		return GitCommit.type;
 	}
 

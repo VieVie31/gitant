@@ -96,7 +96,7 @@ public class GitObjectController {
 							if (person.getId().toLowerCase().contains(search) && 
 									(col.equals("id") || col.equals("sha1"))) {
 								return true; // Filter matches sha1.
-							} else if (person.getType().toLowerCase().contains(search) &&
+							} else if (person.getType().toString().toLowerCase().contains(search) &&
 									col.equals("type")) {
 								return true; // Filter matches type.
 							}else if (person.getNames()[0].toLowerCase().contains(search) &&
@@ -111,7 +111,7 @@ public class GitObjectController {
 						} else{
 							if (person.getId().toLowerCase().contains(lowerCaseFilter)) {
 								return true; // Filter matches sha1.
-							} else if (person.getType().toLowerCase().contains(lowerCaseFilter)) {
+							} else if (person.getType().toString().toLowerCase().contains(lowerCaseFilter)) {
 								return true; // Filter matches type.
 							}else if (person.getNames()[0].toLowerCase().contains(lowerCaseFilter)) {
 								return true; // Filter matches name.
