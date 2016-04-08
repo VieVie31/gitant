@@ -44,6 +44,7 @@ import edu.caravane.guitare.gitobejct.GitBlob;
 import edu.caravane.guitare.gitobejct.GitCommit;
 import edu.caravane.guitare.gitobejct.GitObject;
 import edu.caravane.guitare.gitobejct.GitObjectReader;
+import edu.caravane.guitare.gitobejct.GitObjectType;
 import edu.caravane.guitare.gitobejct.GitObjectsIndex;
 import edu.caravane.guitare.gitobejct.GitPack;
 import edu.caravane.guitare.gitobejct.GitTag;
@@ -118,7 +119,7 @@ public class MainWindow extends Application {
 		ArrayList<String> keys = goi.getListOfAllObjectKeys();
 		for (TreeEntry te : tree.listEntry()) {
 			if(keys.contains(te.getSha1())){
-				if (goi.get(te.getSha1()).getType().equals("blob")){
+				if (GitObjectType.BLOB.equals(goi.get(te.getSha1()).getType())){
 					//Si c'est un blob, on lui donne son nom et le parent
 					GitBlob blob = (GitBlob) goi.get(te.getSha1());
 
@@ -128,7 +129,7 @@ public class MainWindow extends Application {
 					if(!Arrays.asList(blob.getParentFiles()).contains(tree.getId()))
 						blob.addParent(tree.getId());
 
-				} else if (goi.get(te.getSha1()).getType().equals("tree")) {
+				} else if (GitObjectType.TREE.equals(goi.get(te.getSha1()).getType())) {
 					//On regarde si c'est un arbre different de lui-meme pour ne pas
 					//boucler a l'infini
 					if (!tree.getId().equals(te.getSha1())) {
@@ -159,13 +160,13 @@ public class MainWindow extends Application {
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 		ArrayList<String> sha1Keys = goi.getListOfAllObjectKeys();
 		for (String p : sha1Keys) {
-			if (goi.get(p).getType().equals("tag")) {//PAS TEST POUR LES TAGS !!!
+			if (GitObjectType.TAG.equals(goi.get(p).getType())) {//PAS TEST POUR LES TAGS !!!
 				GitTag tag = (GitTag) goi.get(p);
 				//On recupere l'objet tagger
 				GitObject taggay = goi.get(tag.getObjHexId());
 				//On ajoute son parent ( le taggeur )
 				taggay.addParent(tag.getId());
-			} else if ( goi.get(p).getType().equals("commit")) {
+			} else if (GitObjectType.COMMIT.equals(goi.get(p).getType())) {
 				GitCommit commit = (GitCommit) goi.get(p);
 				commit.addName(commit.getId());
 
