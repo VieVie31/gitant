@@ -253,6 +253,7 @@ public class MainWindow extends Application {
 
 		visionneuseAP = (AnchorPane) root.lookup("#gitObjectViewerSpace");
 		visionneuseAP.getChildren().add(Visionneuse.getInstance());
+		Visionneuse.getInstance().setAp(visionneuseAP);
 		objectTable = (TableView) root.lookup("#objectTable");
 		searchEntry = (TextField) root.lookup("#searchEntry"); //la barre de recherche
 		listParents = (ListView<String>) root.lookup("#listParents");
