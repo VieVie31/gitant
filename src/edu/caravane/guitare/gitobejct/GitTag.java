@@ -1,5 +1,8 @@
 package edu.caravane.guitare.gitobejct;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class GitTag extends GitObject {
 	protected static GitObjectType type = GitObjectType.TAG;
 	protected int size;
@@ -18,6 +21,12 @@ public class GitTag extends GitObject {
 		this.tagType = tagType;
 		this.tagger = tagger;
 		this.data = data;
+	}
+
+	public GitTag(long size, String sha1, String data) {
+		this.size = (int) size;
+		this.sha1 = sha1;
+		this.setData(data);
 	}
 
 	/**
@@ -88,16 +97,52 @@ public class GitTag extends GitObject {
 	public GitInfo getTagger() {
 		return this.tagger;
 	}
-	
+
 	/**
 	 * *Getter
-	 * 
+	 *
 	 * @author Marvyn
-	 * 
+	 *
 	 * @return the sha1 of the object tagged
 	 */
 	public String getObjHexId(){
 		return this.objHexId;
+	}
+
+	private void setData(String data) {
+		Pattern lines = Pattern.compile("\n");
+		String[] datab = lines.split(data);
+		String tagMail = null;
+		String tagDate = null;
+		String tagTagger = null;
+
+		this.objHexId = datab[0].substring(7);
+
+		this.tagType = datab[1].substring(5);
+
+		this.tagName = datab[2].substring(4);
+
+		Pattern taggerName = Pattern.compile("[A-Z][a-z]+ [A-Z][a-z]+");
+		Matcher tagger = taggerName.matcher(datab[3]);
+		while (tagger.find()) {
+			tagTagger = tagger.group();
+		}
+
+		Pattern taggerMail = Pattern.compile("<.*>");
+		Matcher mail = taggerMail.matcher(datab[3]);
+		while (mail.find()) {
+			tagMail = mail.group();
+		}
+
+		Pattern taggerDate = Pattern.compile("[0-9]* \\+[0-9]*");
+		Matcher date = taggerDate.matcher(datab[3]);
+		while (date.find()) {
+			tagDate = date.group();
+		}
+
+		GitDate tagDat = new GitDate(Integer.parseInt(tagDate));
+		GitInfo tagInfo = new GitInfo(tagTagger, tagMail, tagDat);
+		this.tagger = tagInfo;
 	}
 
 	public String toString() {

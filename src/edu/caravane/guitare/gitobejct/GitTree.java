@@ -13,6 +13,51 @@ public class GitTree extends GitObject {
 		this.sha1 = sha1;
 	}
 
+	public GitTree(long size, String sha1, byte[] data) {
+		this.size = (int) size;
+		this.sha1 = sha1;
+		this.setData(data);
+	}
+
+	private void setData(byte[] data) {
+		this.lstEntr = new ArrayList<TreeEntry>();
+		StringBuffer buffer = new StringBuffer();
+		StringBuffer lineBuffer = new StringBuffer();
+		boolean trad = false;
+		int cpt = 0;
+		for (byte by : data) {
+			if (by == 0 && !trad) {
+				buffer.append((char) 32);
+				lineBuffer.append((char) 32);
+				cpt = 20;
+				trad = true;
+			} else {
+				if (trad) {
+					String string = Integer.toHexString(by);
+					if (string.length() > 2){
+						string = string.substring(string.length() - 2);
+					}
+					else if(string.length() == 1){
+						string = "0" + string;
+					}
+					buffer.append(string);
+					lineBuffer.append(string);
+					cpt--;
+					if (cpt <= 0) {
+						trad = false;
+						buffer.append("\n");
+						TreeEntry a = new TreeEntry(lineBuffer.toString());
+						lstEntr.add(a);
+						lineBuffer.setLength(0);
+					}
+				} else {
+					lineBuffer.append((char) by);
+					buffer.append((char) by);
+				}
+			}
+		}
+	}
+
 	/**
 	 * Getter
 	 *
@@ -63,7 +108,7 @@ public class GitTree extends GitObject {
 	public void addEntry(TreeEntry te) {
 		this.lstEntr.add(te);
 	}
-	
+
 	public String toString() {
 		String s = "Tree : " + sha1 + "\nChildren : \n";
 		for (TreeEntry te : lstEntr)

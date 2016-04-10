@@ -39,7 +39,7 @@ public class GitBlob extends GitObject {
 	 * @param index, it's the beginning of the data
 	 * @param path
 	 */
-	public GitBlob(String sha1, long size, String path, byte[] data) {
+	public GitBlob(long size, String sha1, String path, byte[] data) {
 		this.size = (int) size;
 		this.path = path;
 		this.index = 0;

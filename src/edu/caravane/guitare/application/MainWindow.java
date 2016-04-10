@@ -313,7 +313,7 @@ public class MainWindow extends Application {
 				}
 			}
 		});
-		
+
 		visionneuseAP.widthProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
 		    	//Visionneuse.setWidth(primaryStage.getWidth());
@@ -330,7 +330,7 @@ public class MainWindow extends Application {
 				}
 		    }
 		});
-		
+
 		visionneuseAP.heightProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
 		    	//Visionneuse.setWidth(primaryStage.getWidth());
