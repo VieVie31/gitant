@@ -14,6 +14,7 @@ public class GitBlob extends GitObject {
 	protected String path, sha1;
 	protected int size;
 	protected int index;
+	protected byte[] data;
 
 	/**
 	 *Constructor
@@ -28,6 +29,22 @@ public class GitBlob extends GitObject {
 		this.path = path;
 		this.index = index;
 		this.sha1 = sha1;
+	}
+
+	/**
+	 *Constructor
+	 *
+	 * @param sha1
+	 * @param size
+	 * @param index, it's the beginning of the data
+	 * @param path
+	 */
+	public GitBlob(String sha1, long size, String path, byte[] data) {
+		this.size = (int) size;
+		this.path = path;
+		this.index = 0;
+		this.sha1 = sha1;
+		this.data = data;
 	}
 
 	/**
@@ -87,9 +104,13 @@ public class GitBlob extends GitObject {
 	 * @return the data of blob object
 	 */
 	public byte[] getData() throws IOException, DataFormatException {
+		if (path.contains("object")) {
 		byte[] arrayFileContent = BinaryFile.decompress(path);
 		return Arrays.copyOfRange(arrayFileContent,
 				getIndex(), arrayFileContent.length);
+		} else {
+			return this.data;
+		}
 	}
 
 	/**
