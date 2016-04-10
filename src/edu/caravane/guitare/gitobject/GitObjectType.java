@@ -1,4 +1,4 @@
-package edu.caravane.guitare.gitobejct;
+package edu.caravane.guitare.gitobject;
 
 public enum GitObjectType {
 	BLOB("blob"),

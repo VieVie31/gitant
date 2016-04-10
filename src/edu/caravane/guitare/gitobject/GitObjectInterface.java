@@ -1,4 +1,4 @@
-package edu.caravane.guitare.gitobejct;
+package edu.caravane.guitare.gitobject;
 
 public interface GitObjectInterface {
 	public void setDate(GitDate date);

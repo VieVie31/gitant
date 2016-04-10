@@ -1,4 +1,4 @@
-package edu.caravane.guitare.gitobejct;
+package edu.caravane.guitare.gitobject;
 import java.util.*;
 
 public class GitTree extends GitObject {

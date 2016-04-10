@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 
-import edu.caravane.guitare.gitobejct.GitBlob;
-import edu.caravane.guitare.gitobejct.GitObjectReader;
+import edu.caravane.guitare.gitobject.GitBlob;
+import edu.caravane.guitare.gitobject.GitObjectReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Group;

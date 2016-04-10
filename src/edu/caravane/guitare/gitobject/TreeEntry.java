@@ -1,4 +1,4 @@
-package edu.caravane.guitare.gitobejct;
+package edu.caravane.guitare.gitobject;
 
 public class TreeEntry {
 	protected final int octalMode;

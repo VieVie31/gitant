@@ -3,6 +3,8 @@ package edu.caravane.guitare.application;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import edu.caravane.guitare.gitobject.GitObject;
+import edu.caravane.guitare.gitobject.GitObjectsIndex;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -11,10 +13,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-
-
-import edu.caravane.guitare.gitobejct.GitObject;
-import edu.caravane.guitare.gitobejct.GitObjectsIndex;
 
 /**
  * This class add Git Object in the table view and allows to make search 

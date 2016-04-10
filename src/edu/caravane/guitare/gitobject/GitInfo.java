@@ -1,4 +1,4 @@
-package edu.caravane.guitare.gitobejct;
+package edu.caravane.guitare.gitobject;
 
 public class GitInfo {
 	protected final String name;

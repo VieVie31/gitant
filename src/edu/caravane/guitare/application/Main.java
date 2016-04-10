@@ -12,7 +12,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.application.Application;
 
-
 public class Main extends Application {
 	protected Stage primaryStage;
 	protected static final String osBarre = 

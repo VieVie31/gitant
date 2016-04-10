@@ -2,9 +2,7 @@ package edu.caravane.guitare.application;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.*;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -14,42 +12,25 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.transform.TransformChangedEvent;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.zip.DataFormatException;
-
-import org.eclipse.jgit.lib.AnyObjectId;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectLoader;
-import org.eclipse.jgit.internal.storage.file.PackFile;
-import org.eclipse.jgit.internal.storage.file.PackIndex.MutableEntry;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.RepositoryBuilder;
-
-import com.sun.org.apache.xpath.internal.operations.Mult;
-
-import edu.caravane.guitare.gitobejct.GitBlob;
-import edu.caravane.guitare.gitobejct.GitCommit;
-import edu.caravane.guitare.gitobejct.GitObject;
-import edu.caravane.guitare.gitobejct.GitObjectReader;
-import edu.caravane.guitare.gitobejct.GitObjectType;
-import edu.caravane.guitare.gitobejct.GitObjectsIndex;
-import edu.caravane.guitare.gitobejct.GitPack;
-import edu.caravane.guitare.gitobejct.GitTag;
-import edu.caravane.guitare.gitobejct.GitTree;
-import edu.caravane.guitare.gitobejct.TreeEntry;
+import edu.caravane.guitare.gitobject.GitBlob;
+import edu.caravane.guitare.gitobject.GitCommit;
+import edu.caravane.guitare.gitobject.GitObject;
+import edu.caravane.guitare.gitobject.GitObjectReader;
+import edu.caravane.guitare.gitobject.GitObjectType;
+import edu.caravane.guitare.gitobject.GitObjectsIndex;
+import edu.caravane.guitare.gitobject.GitPack;
+import edu.caravane.guitare.gitobject.GitTag;
+import edu.caravane.guitare.gitobject.GitTree;
+import edu.caravane.guitare.gitobject.TreeEntry;
 import edu.caravane.guitare.gitviewer.Visionneuse;
 
 public class MainWindow extends Application {
@@ -214,6 +195,7 @@ public class MainWindow extends Application {
 			Visionneuse.getInstance().display(hash);
 		} catch (Exception e) {
 			System.out.println("Can't display the object : \n".concat(hash));
+			System.out.println(e);
 			errorMessageBox("ERROR DISPLAY",
 					"Can't display the object :".concat(hash));
 		}
@@ -313,7 +295,14 @@ public class MainWindow extends Application {
 				}
 			}
 		});
-
+		
+		/**
+		 * This listener is used to call the resize function
+		 * of the visionneuse when the AnchorPane of the visionneuse
+		 * is changed.
+		 *
+		 * @author TheHaricover
+		 */
 		visionneuseAP.widthProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
 		    	//Visionneuse.setWidth(primaryStage.getWidth());
@@ -324,13 +313,20 @@ public class MainWindow extends Application {
 								.getSelectedIndex()
 								);
 		    	try {
-					Visionneuse.rebound(hash);
+					Visionneuse.resize(hash);
 		    	} catch (Exception e) {
 					e.printStackTrace();
 				}
 		    }
 		});
-
+		
+		/**
+		 * This listener is used to call the resize function
+		 * of the visionneuse when the AnchorPane of the visionneuse
+		 * is changed.
+		 *
+		 * @author TheHaricover
+		 */
 		visionneuseAP.heightProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
 		    	//Visionneuse.setWidth(primaryStage.getWidth());
@@ -341,7 +337,7 @@ public class MainWindow extends Application {
 								.getSelectedIndex()
 								);
 		    	try {
-					Visionneuse.rebound(hash);
+					Visionneuse.resize(hash);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
