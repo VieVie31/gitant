@@ -13,14 +13,6 @@ public class TreeEntry {
 		this.sha1 = sha1;
 	}
 
-	public TreeEntry(String entry) {
-		int entryName = entry.indexOf(32);
-		int entrySha = entry.indexOf(32, entryName + 1);
-		this.name = entry.substring(entryName+1, entrySha);
-		this.sha1 = entry.substring(entrySha+1);
-		this.octalMode = Integer.parseInt(entry.substring(0,entryName));
-	}
-
 	//ne pas faire de setter car cet object une fois intancie
 	//doit etre en read only
 

@@ -26,13 +26,16 @@ public class GitPack {
 		builder.setMustExist(true);
 		builder.setGitDir(new File(path[0]+ osBarre+".git"+osBarre));
 		repository = builder.build();
+
 		File pa = new File(pathPack);
 		PackFile p = new PackFile(pa, 0);
+
 		for (MutableEntry mutableEntry : p) {
 			GitObject obj = null;
 			String sha1 = mutableEntry.toObjectId().name();
 			ObjectId id = repository.resolve(sha1);
 			ObjectLoader loader = repository.open(id);
+
 			switch (loader.getType()) {
 			case Constants.OBJ_BLOB:
 				obj = new GitBlob(loader.getSize(), sha1, "",
@@ -52,6 +55,7 @@ public class GitPack {
 			default:
 				break;
 			}
+
 				goi.put(mutableEntry.toObjectId().name(),obj);
 		}
 	}

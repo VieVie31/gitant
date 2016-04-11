@@ -12,7 +12,17 @@ public class GitCommit extends GitObject {
 	protected GitInfo autor;
 	protected GitInfo commiter;
 	protected byte[] data;
-
+/**
+ * Constructor
+ *
+ * @param size
+ * @param sha1
+ * @param treeId
+ * @param parentLstId
+ * @param autor
+ * @param commiter
+ * @param data
+ */
 	public GitCommit(int size, String sha1, String treeId,
 			ArrayList<String> parentLstId, GitInfo autor,
 			GitInfo commiter, byte[] data) {
@@ -25,6 +35,15 @@ public class GitCommit extends GitObject {
 		this.data = data;
 	}
 
+/**
+ * Constructor
+ *
+ * This second constructor is used for pack object
+ *
+ * @param size
+ * @param sha1
+ * @param data
+ */
 	public GitCommit(long size, String sha1, String data) {
 		this.size = (int) size;
 		this.sha1 = sha1;
@@ -119,6 +138,12 @@ public class GitCommit extends GitObject {
 		this.parentListId.remove(index);
 	}
 
+/**
+ *This function is used to set the data for the object (only used with pack)
+ *It contain the treeId,the parentLstId,the autor,the commiter and the data
+ *
+ * @param data contains
+ */
 	private void setData(String data) {
 		String author = null;
 		String commiter = null;

@@ -31,14 +31,16 @@ public class GitBlob extends GitObject {
 		this.sha1 = sha1;
 	}
 
-	/**
-	 *Constructor
-	 *
-	 * @param sha1
-	 * @param size
-	 * @param index, it's the beginning of the data
-	 * @param path
-	 */
+/**
+ * Constructor
+ *
+ * This second constructor is used for pack object
+ *
+ * @param size
+ * @param sha1
+ * @param path
+ * @param data
+ */
 	public GitBlob(long size, String sha1, String path, byte[] data) {
 		this.size = (int) size;
 		this.path = path;

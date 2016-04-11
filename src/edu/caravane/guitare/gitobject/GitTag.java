@@ -12,6 +12,17 @@ public class GitTag extends GitObject {
 	protected String tagType;
 	protected byte[] data;
 
+/**
+ * Constructor
+ *
+ * @param size
+ * @param sha1
+ * @param objHexId
+ * @param tagType
+ * @param tagName
+ * @param tagger
+ * @param data
+ */
 	public GitTag(int size, String sha1, String objHexId, String tagType,
 			String tagName, GitInfo tagger, byte[] data) {
 		this.tagName = tagName;
@@ -23,6 +34,15 @@ public class GitTag extends GitObject {
 		this.data = data;
 	}
 
+/**
+ *Constructor
+ *
+ *This second constructor is used for pack object
+ *
+ * @param size
+ * @param sha1
+ * @param data
+ */
 	public GitTag(long size, String sha1, String data) {
 		this.size = (int) size;
 		this.sha1 = sha1;
@@ -109,6 +129,12 @@ public class GitTag extends GitObject {
 		return this.objHexId;
 	}
 
+/**
+ *This function is used to set the data for the object (only used with pack)
+ *It contains bjHexId, tagType, tagName, tagger, data
+ *
+ * @param data
+ */
 	private void setData(String data) {
 		Pattern lines = Pattern.compile("\n");
 		String[] datab = lines.split(data);
