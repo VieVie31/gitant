@@ -295,7 +295,7 @@ public class MainWindow extends Application {
 				}
 			}
 		});
-		
+
 		/**
 		 * This listener is used to call the resize function
 		 * of the visionneuse when the AnchorPane of the visionneuse
@@ -319,7 +319,7 @@ public class MainWindow extends Application {
 				}
 		    }
 		});
-		
+
 		/**
 		 * This listener is used to call the resize function
 		 * of the visionneuse when the AnchorPane of the visionneuse

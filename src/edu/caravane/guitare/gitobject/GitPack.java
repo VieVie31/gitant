@@ -18,6 +18,15 @@ public class GitPack {
 	protected final static String osBarre =
 			System.getProperty("os.name").charAt(0) == 'W' ? "\\\\" : "/" ;
 
+/**
+ * Function used to treat pack object,
+ * it load the data from each object of the pack to create the original object
+ * when the object is recreate it store the object into the git object index
+ *
+ * @param pathPack
+ * @throws IOException
+ * @throws DataFormatException
+ */
 	public static void makePack(String pathPack) throws IOException,
 	DataFormatException {
 		GitObjectsIndex goi =  GitObjectsIndex.getInstance();
