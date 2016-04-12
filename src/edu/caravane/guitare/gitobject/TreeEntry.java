@@ -5,16 +5,16 @@ public class TreeEntry {
 	protected final String name;
 	protected final String sha1;
 
-	//ne pas faire d'autre constructeur pour que ne soient
-	//instancies que les objects complets
+	// ne pas faire d'autre constructeur pour que ne soient
+	// instancies que les objects complets
 	public TreeEntry(int octalMode, String name, String sha1) {
 		this.octalMode = octalMode;
 		this.name = name;
 		this.sha1 = sha1;
 	}
 
-	//ne pas faire de setter car cet object une fois intancie
-	//doit etre en read only
+	// ne pas faire de setter car cet object une fois intancie
+	// doit etre en read only
 
 	/**
 	 * Getter

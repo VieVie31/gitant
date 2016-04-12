@@ -12,20 +12,21 @@ public class GitCommit extends GitObject {
 	protected GitInfo autor;
 	protected GitInfo commiter;
 	protected byte[] data;
-/**
- * Constructor
- *
- * @param size
- * @param sha1
- * @param treeId
- * @param parentLstId
- * @param autor
- * @param commiter
- * @param data
- */
+
+	/**
+	 * Constructor
+	 *
+	 * @param size
+	 * @param sha1
+	 * @param treeId
+	 * @param parentLstId
+	 * @param autor
+	 * @param commiter
+	 * @param data
+	 */
 	public GitCommit(int size, String sha1, String treeId,
-			ArrayList<String> parentLstId, GitInfo autor,
-			GitInfo commiter, byte[] data) {
+			ArrayList<String> parentLstId, GitInfo autor, GitInfo commiter,
+			byte[] data) {
 		this.treeId = treeId;
 		this.parentListId = parentLstId;
 		this.autor = autor;
@@ -35,15 +36,15 @@ public class GitCommit extends GitObject {
 		this.data = data;
 	}
 
-/**
- * Constructor
- *
- * This second constructor is used for pack object
- *
- * @param size
- * @param sha1
- * @param data
- */
+	/**
+	 * Constructor
+	 *
+	 * This second constructor is used for pack object
+	 *
+	 * @param size
+	 * @param sha1
+	 * @param data
+	 */
 	public GitCommit(long size, String sha1, String data) {
 		this.size = (int) size;
 		this.sha1 = sha1;
@@ -93,7 +94,7 @@ public class GitCommit extends GitObject {
 	 *
 	 * @return The treeId of the object
 	 */
-	public String getTreeId(){
+	public String getTreeId() {
 		return this.treeId;
 	}
 
@@ -138,12 +139,14 @@ public class GitCommit extends GitObject {
 		this.parentListId.remove(index);
 	}
 
-/**
- *This function is used to set the data for the object (only used with pack)
- *It contain the treeId,the parentLstId,the autor,the commiter and the data
- *
- * @param data contains
- */
+	/**
+	 * This function is used to set the data for the object (only used with
+	 * pack) It contain the treeId,the parentLstId,the autor,the commiter and
+	 * the data
+	 *
+	 * @param data
+	 *            contains
+	 */
 	private void setData(String data) {
 		String author = null;
 		String commiter = null;
@@ -157,58 +160,63 @@ public class GitCommit extends GitObject {
 		++i;
 
 		parentListId = new ArrayList<String>();
-		while(datab[i].contains("parent")){
+		while (datab[i].contains("parent")) {
 			parentListId.add(datab[i].substring(7));
 			++i;
 		}
 
 		Pattern name = Pattern.compile("[A-Z][a-z]+ [A-Z][a-z]+");
 		Matcher aName = name.matcher(datab[i]);
-		while(aName.find()) {
+		while (aName.find()) {
 			author = aName.group();
 		}
 
-		Pattern mail = Pattern.compile("<.*>");;
+		Pattern mail = Pattern.compile("<.*>");
+		;
 		Matcher aMail = mail.matcher(datab[i]);
-		while(aMail.find()) {
-			author += " : " + aMail.group().substring(1, aMail.group().length()-1);
+		while (aMail.find()) {
+			author += " : "
+					+ aMail.group().substring(1, aMail.group().length() - 1);
 		}
 
 		Pattern date = Pattern.compile("[0-9]* \\+[0-9]*");
-    	Matcher aDate = date.matcher(datab[i]);
-    	while(aDate.find()) {
-    		String[] aDat = aDate.group().split(" +");
-    		autDate = new GitDate(Integer.parseInt(aDat[0]),Integer.parseInt(aDat[1].substring(2)));
-    	}
+		Matcher aDate = date.matcher(datab[i]);
+		while (aDate.find()) {
+			String[] aDat = aDate.group().split(" +");
+			autDate = new GitDate(Integer.parseInt(aDat[0]),
+					Integer.parseInt(aDat[1].substring(2)));
+		}
 
 		++i;
 
 		Pattern Name = Pattern.compile("[A-Z][a-z]+ [A-Z][a-z]+");
 		Matcher cName = Name.matcher(datab[i]);
-		while(cName.find()) {
+		while (cName.find()) {
 			commiter = cName.group();
 		}
 
-		Pattern Mail = Pattern.compile("<.*>");;
+		Pattern Mail = Pattern.compile("<.*>");
+		;
 		Matcher cMail = Mail.matcher(datab[i]);
-		while(cMail.find()) {
-			commiter += " : " + cMail.group().substring(1, cMail.group().length()-1);
+		while (cMail.find()) {
+			commiter += " : "
+					+ cMail.group().substring(1, cMail.group().length() - 1);
 		}
 
 		Pattern Date = Pattern.compile("[0-9]* \\+[0-9]*");
-    	Matcher cDate = Date.matcher(datab[i]);
-    	while(cDate.find()) {
-    		String[] cDat = cDate.group().split(" +");
-    		comDate = new GitDate(Integer.parseInt(cDat[0]),
-    				Integer.parseInt(cDat[1].substring(2)));
-    	}
+		Matcher cDate = Date.matcher(datab[i]);
+		while (cDate.find()) {
+			String[] cDat = cDate.group().split(" +");
+			comDate = new GitDate(Integer.parseInt(cDat[0]),
+					Integer.parseInt(cDat[1].substring(2)));
+		}
 
-    	String aut[] = author.split(":");
-    	String com[] = commiter.split(":");
-    	this.autor = new GitInfo(aut[0], aut[1].substring(1), autDate);
-    	this.commiter = new GitInfo(com[0], com[1].substring(1), comDate);
-    	i += 2;
-    	this.data = datab[i].getBytes();
+		String aut[] = author.split(":");
+		String com[] = commiter.split(":");
+		this.autor = new GitInfo(aut[0], aut[1].substring(1), autDate);
+		this.commiter = new GitInfo(com[0], com[1].substring(1), comDate);
+		i += 2;
+		this.data = datab[i].getBytes();
 	}
 
 	public String toString() {

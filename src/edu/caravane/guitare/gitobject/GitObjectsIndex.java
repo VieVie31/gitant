@@ -23,7 +23,8 @@ public class GitObjectsIndex {
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  sha1 the hash of the git object to retrieve
+	 * @param sha1
+	 *            the hash of the git object to retrieve
 	 * @return a git object
 	 */
 	public GitObject get(String sha1) {
@@ -31,25 +32,27 @@ public class GitObjectsIndex {
 	}
 
 	/**
-	 * This function put (index) a git object by his hash value (sha1) and
-	 * add a new name if he have an other name
+	 * This function put (index) a git object by his hash value (sha1) and add a
+	 * new name if he have an other name
 	 *
 	 * @author VieVie31,Marvyn
 	 *
-	 * @param sha1 the hash of the git object
-	 * @param gitObject the git object
+	 * @param sha1
+	 *            the hash of the git object
+	 * @param gitObject
+	 *            the git object
 	 */
 	public void put(String sha1, GitObject gitObject) {
-		if(hashMap.containsKey(sha1))
-			for(int i = 0; i < gitObject.getNames().length; i++)
+		if (hashMap.containsKey(sha1))
+			for (int i = 0; i < gitObject.getNames().length; i++)
 				hashMap.get(sha1).addName(gitObject.getNames()[i]);
 		else
 			hashMap.put(sha1, gitObject);
 	}
 
 	/**
-	 * This function iterate all the keys of the hashmap and return a list
-	 * of them.
+	 * This function iterate all the keys of the hashmap and return a list of
+	 * them.
 	 *
 	 * @author VieVie31
 	 *
@@ -58,7 +61,7 @@ public class GitObjectsIndex {
 	public ArrayList<String> getListOfAllObjectKeys() {
 		ArrayList<String> listOfObjectKeys = new ArrayList<String>();
 
-		for(Entry<String, GitObject> entry : hashMap.entrySet())
+		for (Entry<String, GitObject> entry : hashMap.entrySet())
 			listOfObjectKeys.add(entry.getKey());
 
 		return listOfObjectKeys;

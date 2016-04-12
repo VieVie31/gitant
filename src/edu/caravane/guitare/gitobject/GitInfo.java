@@ -4,20 +4,20 @@ public class GitInfo {
 	protected final String name;
 	protected final String mail;
 	protected GitDate date;
-	
+
 	public GitInfo(String name, String mail) {
 		this.name = name;
 		this.mail = mail;
 	}
-	
+
 	public GitInfo(String name, String mail, GitDate date) {
 		this.name = name;
 		this.mail = mail;
 		this.date = date;
 	}
-	
-	//Getter
-	
+
+	// Getter
+
 	/**
 	 * Getter
 	 * 
@@ -28,7 +28,7 @@ public class GitInfo {
 	public String getName() {
 		return this.name;
 	}
-	
+
 	/**
 	 * Getter
 	 * 
@@ -39,7 +39,7 @@ public class GitInfo {
 	public String getMail() {
 		return this.mail;
 	}
-	
+
 	/**
 	 * Getter
 	 * 
@@ -50,9 +50,9 @@ public class GitInfo {
 	public GitDate getDate() {
 		return this.date;
 	}
-	
-	//Body
-	
+
+	// Body
+
 	public String toString() {
 		return String.format("%s %s %s", name, mail, date.toString());
 	}

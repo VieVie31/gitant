@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-
 public class GitObjectReader {
-	protected final static String osBarre = 
-			System.getProperty("os.name").charAt(0) == 'W' ? "\\\\" : "/" ;
+	protected final static String osBarre = System.getProperty("os.name")
+			.charAt(0) == 'W' ? "\\\\" : "/";
 	protected String id;
 	protected byte[] array;
 	protected int index;
@@ -17,13 +16,13 @@ public class GitObjectReader {
 	protected boolean isGitObject;
 
 	/**
-	 * Simple structure containing an extracted object,
-	 * the start position in the array for decoding,
-	 * the len of this object written in the array.
+	 * Simple structure containing an extracted object, the start position in
+	 * the array for decoding, the len of this object written in the array.
 	 *
 	 * @author VieVie31
 	 *
-	 * @param <T> the type of object decoded
+	 * @param <T>
+	 *            the type of object decoded
 	 */
 	protected class DataObject<T> {
 		public T obj;
@@ -37,8 +36,7 @@ public class GitObjectReader {
 		}
 	}
 
-	public GitObjectReader(String path)
-			throws IOException, DataFormatException {
+	public GitObjectReader(String path) throws IOException, DataFormatException {
 		this.path = path;
 
 		String[] str = path.split(osBarre);
@@ -57,38 +55,41 @@ public class GitObjectReader {
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index position for starting to decode
+	 * @param index
+	 *            position for starting to decode
 	 * @return a DataObject containing the decoded object
 	 */
 	protected DataObject<String> extractWhileNotSP(int index) {
 		int i = index;
 
-		while (array[i++] != (byte) ' ');
+		while (array[i++] != (byte) ' ')
+			;
 
-        return  new DataObject<String>(
-        			new String(Arrays.copyOfRange(array, index, i - 1)),
-        			index, i - index - 1);
+		return new DataObject<String>(new String(Arrays.copyOfRange(array,
+				index, i - 1)), index, i - index - 1);
 	}
 
-	/** This funciton extract all symbols in the array fron the index position
+	/**
+	 * This funciton extract all symbols in the array fron the index position
 	 * until the symbol encontred is <LF> (\n).
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index position for starting to decode
+	 * @param index
+	 *            position for starting to decode
 	 * @return a DataObject containing the decoded object
 	 */
 	protected DataObject<String> extractWhileNotLF(int index) {
 		int i = index;
 
-		while (array[i++] != (byte) '\n');
+		while (array[i++] != (byte) '\n')
+			;
 
-       return  new DataObject<String>(
-       			new String(Arrays.copyOfRange(array, index, i - 1)),
-       			index, i - index - 1);
+		return new DataObject<String>(new String(Arrays.copyOfRange(array,
+				index, i - 1)), index, i - index - 1);
 	}
 
-	/**
+/**
 	 * This function return a safeString.
 	 * A safe string is a sequence of bytes not containing the ASCII charcter
 	 * byte values :
@@ -108,22 +109,21 @@ public class GitObjectReader {
 	protected DataObject<String> extractSafeString(int index) throws Exception {
 		int i = index;
 
-		byte[] forbiden = {0x00, 0x0a, 0x3c, 0x3e};
+		byte[] forbiden = { 0x00, 0x0a, 0x3c, 0x3e };
 
 		/*
-		byte t = array[i];
-		if (byteArrayContainsOneOfThose(forbiden, array[i])
-				|| t == 0x20  || t == '.' || t == ',' || t == ':'
-				|| t == ';' || t == 0x22 || t == 0x27)
-			throw new Exception(); //msg d'erreur plus tard
-		*/
+		 * byte t = array[i]; if (byteArrayContainsOneOfThose(forbiden,
+		 * array[i]) || t == 0x20 || t == '.' || t == ',' || t == ':' || t ==
+		 * ';' || t == 0x22 || t == 0x27) throw new Exception(); //msg d'erreur
+		 * plus tard
+		 */
 
-		while (i < array.length && //plutot important
-				!byteArrayContainsOneOfThose(forbiden, array[i++]));
+		while (i < array.length && // plutot important
+				!byteArrayContainsOneOfThose(forbiden, array[i++]))
+			;
 
-		return new DataObject<String>(
-				new String(Arrays.copyOfRange(array, index, i - 1)),
-				index, i - index - 1);
+		return new DataObject<String>(new String(Arrays.copyOfRange(array,
+				index, i - 1)), index, i - index - 1);
 	}
 
 	/**
@@ -131,12 +131,14 @@ public class GitObjectReader {
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  bts the set of bytes
-	 * @param  testIfIn the byte to check if bts contains it
+	 * @param bts
+	 *            the set of bytes
+	 * @param testIfIn
+	 *            the byte to check if bts contains it
 	 * @return true if testIfIn is in bts else false
 	 */
 	protected boolean byteArrayContainsOneOfThose(byte[] bts, byte testIfIn) {
-		for (byte b: bts)
+		for (byte b : bts)
 			if (b == testIfIn)
 				return true;
 
@@ -144,24 +146,24 @@ public class GitObjectReader {
 	}
 
 	/**
-	 * This function extract a number written in base 10,
-	 * using the ASCII encoding, and return this number as an Integer
-	 * in a DataObject
+	 * This function extract a number written in base 10, using the ASCII
+	 * encoding, and return this number as an Integer in a DataObject
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index position for start to decode
+	 * @param index
+	 *            position for start to decode
 	 * @return a DataObject containing the decoded integer
 	 */
 	protected DataObject<Integer> extractBase10Number(int index) {
-		int i  = index;
+		int i = index;
 
 		Integer number = 0;
-        while (i < array.length && //plutot important
-        		'0' <= (char) array[i] && (char) array[i] <= '9')
-            number = number * 10 + (array[i++] - '0');
+		while (i < array.length && // plutot important
+				'0' <= (char) array[i] && (char) array[i] <= '9')
+			number = number * 10 + (array[i++] - '0');
 
-        return new DataObject<Integer>(number, index, i - index);
+		return new DataObject<Integer>(number, index, i - index);
 	}
 
 	/**
@@ -170,7 +172,8 @@ public class GitObjectReader {
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index the starting position for extraction
+	 * @param index
+	 *            the starting position for extraction
 	 * @return a DataObject containing the SAH1 as string in lower case
 	 */
 	protected DataObject<String> extractSHA1Binary(int index) {
@@ -189,21 +192,22 @@ public class GitObjectReader {
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index for starting to extract the sha1
+	 * @param index
+	 *            for starting to extract the sha1
 	 * @return a DataObject containing the SHA1 as string in lower case
-	 * @throws an exception if the chars are not in hexa (lower case)
+	 * @throws an
+	 *             exception if the chars are not in hexa (lower case)
 	 */
 	protected DataObject<String> extractSHA1String(int index) throws Exception {
 		int i = index;
 
-		for(; i < index + 40; i++)
+		for (; i < index + 40; i++)
 			if ((array[i] > '9' || array[i] < '0')
 					&& (array[i] < 'a' || array[i] > 'f'))
-				throw new Exception(); //message d'erreur plus tard
+				throw new Exception(); // message d'erreur plus tard
 
-		return new DataObject<String>(
-				new String(Arrays.copyOfRange(array, index, index + 40)),
-				index, 40);
+		return new DataObject<String>(new String(Arrays.copyOfRange(array,
+				index, index + 40)), index, 40);
 	}
 
 	/**
@@ -211,29 +215,29 @@ public class GitObjectReader {
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index for starting to decode
+	 * @param index
+	 *            for starting to decode
 	 * @return
 	 */
 	protected DataObject<Integer> extractFileGitCHMOD(int index) {
 		int i = index;
 
 		Integer number = 0;
-		while (i < array.length //plutot important
+		while (i < array.length // plutot important
 				&& '0' <= (char) array[i] && (char) array[i] <= '9')
 			number = (number << 3) | ((array[i++] - '0') & 0x0f);
 
 		return new DataObject<Integer>(number, index, i - index);
 	}
 
-
 	/**
-	 * This function extract the next tree entry from the index.
-	 * A tree entry is composed by :
-	 * <CHMOD> <SP> <FILE_NAME> <NULL> <BINARY_SHA1_ID>
+	 * This function extract the next tree entry from the index. A tree entry is
+	 * composed by : <CHMOD> <SP> <FILE_NAME> <NULL> <BINARY_SHA1_ID>
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index for starting to decode
+	 * @param index
+	 *            for starting to decode
 	 * @return a tree entry
 	 * @throws Exception
 	 */
@@ -248,26 +252,25 @@ public class GitObjectReader {
 		chmod = extractFileGitCHMOD(i);
 		i += chmod.len;
 
-		i++; //+1 pour l'espace
+		i++; // +1 pour l'espace
 		name = extractSafeString(i);
 		i += name.len;
-		i++; //+1 pour <NULL>
+		i++; // +1 pour <NULL>
 
 		sha1 = extractSHA1Binary(i);
 
-		return new DataObject<TreeEntry>(
-				new TreeEntry(chmod.obj, name.obj, sha1.obj),
-				index, i + sha1.len - index);
+		return new DataObject<TreeEntry>(new TreeEntry(chmod.obj, name.obj,
+				sha1.obj), index, i + sha1.len - index);
 	}
 
-
 	/**
-	 * This function extract all the tree entries from the index to the
-	 * end of the arrray.
+	 * This function extract all the tree entries from the index to the end of
+	 * the arrray.
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index for starting to decode
+	 * @param index
+	 *            for starting to decode
 	 * @return an ArrayList made of TreeEntry
 	 * @throws Exception
 	 */
@@ -286,38 +289,40 @@ public class GitObjectReader {
 		return tList;
 	}
 
-
 	/**
-	 * This function return the time zone offset of a date in secondes.
-	 * For example : +0100 means : +01h00
+	 * This function return the time zone offset of a date in secondes. For
+	 * example : +0100 means : +01h00
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index for starting to decode
+	 * @param index
+	 *            for starting to decode
 	 * @return the offset in seconds.
 	 */
 	protected DataObject<Integer> extractTzOffset(int index) {
 		int i = index;
 
-		i++; //ignore the sign the sign for the moment...
+		i++; // ignore the sign the sign for the moment...
 		DataObject<Integer> tzOffset = extractBase10Number(i);
 		int mins = tzOffset.obj % 100;
 		int hours = tzOffset.obj / 100;
-		tzOffset.obj = hours * 3600 + mins * 60; //convert to seconds
+		tzOffset.obj = hours * 3600 + mins * 60; // convert to seconds
 
-		return new DataObject<Integer>(
-				tzOffset.obj * ((array[index] == '+') ? 1 : -1), //take the sign
-				index, 1 + tzOffset.len); //+1 for the sign
+		return new DataObject<Integer>(tzOffset.obj
+				* ((array[index] == '+') ? 1 : -1), // take the sign
+				index, 1 + tzOffset.len); // +1 for the sign
 	}
 
 	/**
 	 * This function return the date extracted from the current index position.
 	 * A date is composed by : the timestamp and the time zone offset.
+	 * 
 	 * @see GitDate
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index for starting to decode
+	 * @param index
+	 *            for starting to decode
 	 * @return a GitDate
 	 */
 	protected DataObject<GitDate> extractDate(int index) {
@@ -325,49 +330,52 @@ public class GitObjectReader {
 
 		DataObject<Integer> timestamp = extractBase10Number(i);
 		i += timestamp.len;
-		i++; //for <SP>
+		i++; // for <SP>
 		DataObject<Integer> tzOffset = extractTzOffset(i);
 
-		return new DataObject<GitDate>(new GitDate(timestamp.obj, tzOffset.obj),
-				index, i + tzOffset.len - index);
+		return new DataObject<GitDate>(
+				new GitDate(timestamp.obj, tzOffset.obj), index, i
+						+ tzOffset.len - index);
 	}
 
 	/**
-	 * This function extract a lot of git infos in a commit object.
-	 * A git info is composed by :
-	 * 	-	name   + email  + date
-	 * 	-	String + String + GitDate
+	 * This function extract a lot of git infos in a commit object. A git info
+	 * is composed by : - name + email + date - String + String + GitDate
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index for startig to decode
+	 * @param index
+	 *            for startig to decode
 	 * @return a GitInfo object
-	 * @throws Exception if the operation is impossible
+	 * @throws Exception
+	 *             if the operation is impossible
 	 */
 	protected DataObject<GitInfo> extractInfo(int index) throws Exception {
 		int i = index;
 
 		DataObject<String> name = extractWhileNotSP(i);
 		i += name.len;
-		i += 2; //' ' + '<'
+		i += 2; // ' ' + '<'
 		DataObject<String> mail = extractSafeString(i);
 		i += mail.len;
-		i += 2; //'>' + ' '
+		i += 2; // '>' + ' '
 		DataObject<GitDate> date = extractDate(i);
-		i += date.len + 1; //date.len + <LF>
+		i += date.len + 1; // date.len + <LF>
 
 		return new DataObject<GitInfo>(
-				new GitInfo(name.obj, mail.obj, date.obj),
-				index, i - index);
+				new GitInfo(name.obj, mail.obj, date.obj), index, i - index);
 	}
 
 	/**
 	 * This function return the list of the parent(s) of a commit.
+	 * 
 	 * @author VieVie31
 	 *
-	 * @param  index for starting to decode
+	 * @param index
+	 *            for starting to decode
 	 * @return bananas !! :p
-	 * @throws Exception if a problem occured
+	 * @throws Exception
+	 *             if a problem occured
 	 */
 	protected DataObject<ArrayList<String>> extractCommitParents(int index)
 			throws Exception {
@@ -375,13 +383,13 @@ public class GitObjectReader {
 
 		ArrayList<String> parents = new ArrayList<String>();
 
-		while (array[i] == 'p') { //content parent...
-			i += 6; //'parent'
-			i++; //<SP>
+		while (array[i] == 'p') { // content parent...
+			i += 6; // 'parent'
+			i++; // <SP>
 			DataObject<String> ph = extractSHA1String(i);
 			parents.add(ph.obj);
-			i += ph.len; //len of the sha1 40
-			i++; //<LF>
+			i += ph.len; // len of the sha1 40
+			i++; // <LF>
 		}
 
 		return new DataObject<ArrayList<String>>(parents, index, i - index);
@@ -398,7 +406,6 @@ public class GitObjectReader {
 		return type;
 	}
 
-
 	/**
 	 * This function return the size of the git object
 	 *
@@ -409,7 +416,6 @@ public class GitObjectReader {
 	public int getSize() {
 		return extractBase10Number(getType().length() + 1).obj;
 	}
-
 
 	/**
 	 * This function return the id of the git object
@@ -431,10 +437,9 @@ public class GitObjectReader {
 	 */
 	public int getContentIndex() {
 		return getType().length() + 1 // <SP>
-				+ (int) (Math.log10(getSize()) + 1) //the len of size in str
+				+ (int) (Math.log10(getSize()) + 1) // the len of size in str
 				+ 1; // <NULL>
 	}
-
 
 	/**
 	 * This function says if the byte array is a git object.
@@ -447,7 +452,6 @@ public class GitObjectReader {
 		return isGitObject;
 	}
 
-
 	/**
 	 * This function says if the byte array is a Blob object.
 	 *
@@ -458,7 +462,6 @@ public class GitObjectReader {
 	public boolean isBlob() {
 		return GitObjectType.BLOB.equals(type);
 	}
-
 
 	/**
 	 * This function says if the byte array is a Tree object.
@@ -471,7 +474,6 @@ public class GitObjectReader {
 		return GitObjectType.TREE.equals(type);
 	}
 
-
 	/**
 	 * This function says if the byte array is a Tag object.
 	 *
@@ -482,7 +484,6 @@ public class GitObjectReader {
 	public boolean isTag() {
 		return GitObjectType.TAG.equals(type);
 	}
-
 
 	/**
 	 * This function says if the byte array is a Commit object.
@@ -495,27 +496,27 @@ public class GitObjectReader {
 		return GitObjectType.COMMIT.equals(type);
 	}
 
-
 	/**
-	 * This function decode the git tree objects and return an instance of
-	 * the tree decoded.
+	 * This function decode the git tree objects and return an instance of the
+	 * tree decoded.
 	 *
 	 * @author VieVie31
 	 *
 	 * @return a GitTree decoded from this sequence of bytes
-	 * @throws Exception if the object is not a tree
+	 * @throws Exception
+	 *             if the object is not a tree
 	 */
 	public GitTree buildTree() throws Exception {
 		if (!GitObjectType.TREE.equals(getType()))
-			throw new Exception(); //message plus tard
+			throw new Exception(); // message plus tard
 
 		return new GitTree(getSize(), getId(),
 				extractTreeEntries(getContentIndex()));
 	}
 
 	/**
-	 * This function decode the git blob object and return an instnace of
-	 * the blob decoded.
+	 * This function decode the git blob object and return an instnace of the
+	 * blob decoded.
 	 *
 	 * @author VieVie31
 	 *
@@ -524,14 +525,14 @@ public class GitObjectReader {
 	 */
 	public GitBlob buildBlob() throws Exception {
 		if (!GitObjectType.BLOB.equals(getType()))
-			throw new Exception(); //message plus tard
+			throw new Exception(); // message plus tard
 
 		return new GitBlob(getId(), getSize(), getContentIndex(), path);
 	}
 
 	/**
-	 * This function decode the git commit objecy and return an instance of
-	 * the commit decoded.
+	 * This function decode the git commit objecy and return an instance of the
+	 * commit decoded.
 	 *
 	 * @author VieVie31
 	 *
@@ -542,31 +543,31 @@ public class GitObjectReader {
 		if (!GitObjectType.COMMIT.equals(getType()))
 			throw new Exception();
 
-		index = getContentIndex() + 5; //"tree" + <SP>
+		index = getContentIndex() + 5; // "tree" + <SP>
 		DataObject<String> tEntry = extractSHA1String(index);
 		index += tEntry.len;
-		index++; //<SP>
+		index++; // <SP>
 
 		DataObject<ArrayList<String>> pLst = extractCommitParents(index);
 		index += pLst.len;
 
-		index += 7; //'author' + <SP>
+		index += 7; // 'author' + <SP>
 		DataObject<GitInfo> author = extractInfo(index);
 		index += author.len;
 
-		index += 10; //'committer' + <SP>
+		index += 10; // 'committer' + <SP>
 		DataObject<GitInfo> commiter = extractInfo(index);
 		index += commiter.len;
-		index++; //<LF>
+		index++; // <LF>
 
-		return new GitCommit(getSize(), getId(),
-				tEntry.obj, pLst.obj, author.obj, commiter.obj,
-				Arrays.copyOfRange(array, index, array.length));
+		return new GitCommit(getSize(), getId(), tEntry.obj, pLst.obj,
+				author.obj, commiter.obj, Arrays.copyOfRange(array, index,
+						array.length));
 	}
 
 	/**
-	 * This function decode the git tag objact and return an instance of
-	 * the tag decodded.
+	 * This function decode the git tag objact and return an instance of the tag
+	 * decodded.
 	 *
 	 * @author VieVie31
 	 *
@@ -577,35 +578,35 @@ public class GitObjectReader {
 		if (!GitObjectType.TAG.equals(getType()))
 			throw new Exception();
 
-		index = getContentIndex() + 7; //"object" + <SP>
+		index = getContentIndex() + 7; // "object" + <SP>
 		DataObject<String> hexObjId = extractSHA1String(index);
 		index += hexObjId.len;
-		index++; //<SP>
+		index++; // <SP>
 
-		index += 5; //"type" + <SP>
+		index += 5; // "type" + <SP>
 		DataObject<String> type = extractWhileNotLF(index);
 		index += type.len;
-		index++; //<LF>
+		index++; // <LF>
 
-		index += 4; //"tag" + <SP>
+		index += 4; // "tag" + <SP>
 		DataObject<String> tagName = extractWhileNotLF(index);
 		index += tagName.len;
-		index++; //<LF>
+		index++; // <LF>
 
-		index += 7; //"tagger" + <SP>
+		index += 7; // "tagger" + <SP>
 		DataObject<GitInfo> tagger = extractInfo(index);
 		index += tagger.len;
-		index++; //<LF>
+		index++; // <LF>
 
 		byte[] data = Arrays.copyOfRange(array, index, array.length);
 
-		return new GitTag(getSize(), getId(),
-				hexObjId.obj, type.obj, tagName.obj, tagger.obj, data);
+		return new GitTag(getSize(), getId(), hexObjId.obj, type.obj,
+				tagName.obj, tagger.obj, data);
 	}
 
 	/**
-	 * This function build any type of git object, blob, commit, tag, tree
-	 * and return an instance of the object decoded.
+	 * This function build any type of git object, blob, commit, tag, tree and
+	 * return an instance of the object decoded.
 	 *
 	 * @author VieVie31
 	 *
@@ -622,7 +623,7 @@ public class GitObjectReader {
 			return builTag();
 		case "tree":
 			return buildTree();
-		default: //bein c'est pas cense arriver bande de debiles !!
+		default: // bein c'est pas cense arriver bande de debiles !!
 			throw new Exception();
 		}
 	}
@@ -637,48 +638,52 @@ public class GitObjectReader {
 	}
 
 	public static void main(String[] args) throws Exception {
-		//tests...
+		// tests...
 		GitObjectReader gor;
-		/*gor = new GitObjectReader("Annexes/tests/test_tree.bin");
+		/*
+		 * gor = new GitObjectReader("Annexes/tests/test_tree.bin");
+		 * 
+		 * 
+		 * GitTree gitTree = gor.buildTree();
+		 * System.out.println("Test TreeObject...");
+		 * System.out.println(String.format("Size : %d", gitTree.getSize()));
+		 * for (TreeEntry tEntry : gitTree.listEntry())
+		 * System.out.println(tEntry);
+		 * 
+		 * 
+		 * System.out.println("---------");
+		 * 
+		 * gor = new GitObjectReader("Annexes/tests/test_blob.bin");
+		 * 
+		 * GitBlob gitBlob = gor.buildBlob();
+		 * System.out.println("Test BlobObject...");
+		 * System.out.println(String.format("Size : %d", gitBlob.getSize()));
+		 * System.out.println(new String(gitBlob.getData()));
+		 * 
+		 * 
+		 * System.out.println("---------");
+		 * 
+		 * gor = new GitObjectReader("Annexes/tests/test_commit.bin");
+		 * System.out.println(gor.buildCommit());
+		 * 
+		 * gor = new GitObjectReader("Annexes/tests/test_commit2.bin");
+		 * System.out.println(gor.buildCommit());
+		 * 
+		 * System.out.println("---------");
+		 * 
+		 * gor = new GitObjectReader("Annexes/tests/test_tag.bin");
+		 * System.out.println(gor.builTag());
+		 * 
+		 * 
+		 * gor = new
+		 * GitObjectReader("Annexes/tests/d16d4a40cc0dec173124cae4feba0498f9dd01"
+		 * ); for (TreeEntry tEntry : gor.buildTree().listEntry())
+		 * System.out.println(tEntry);
+		 */
+		// gor = new
+		// GitObjectReader("C:\\Users\\Marv\\Desktop\\Cours\\HTML\\test_tag.bin");
 
-
-		GitTree gitTree = gor.buildTree();
-		System.out.println("Test TreeObject...");
-		System.out.println(String.format("Size : %d", gitTree.getSize()));
-		for (TreeEntry tEntry : gitTree.listEntry())
-			System.out.println(tEntry);
-
-
-		System.out.println("---------");
-
-		gor = new GitObjectReader("Annexes/tests/test_blob.bin");
-
-		GitBlob gitBlob = gor.buildBlob();
-		System.out.println("Test BlobObject...");
-		System.out.println(String.format("Size : %d", gitBlob.getSize()));
-		System.out.println(new String(gitBlob.getData()));
-
-
-		System.out.println("---------");
-
-		gor = new GitObjectReader("Annexes/tests/test_commit.bin");
-		System.out.println(gor.buildCommit());
-
-		gor = new GitObjectReader("Annexes/tests/test_commit2.bin");
-		System.out.println(gor.buildCommit());
-
-		System.out.println("---------");
-
-		gor = new GitObjectReader("Annexes/tests/test_tag.bin");
-		System.out.println(gor.builTag());
-
-
-		gor = new GitObjectReader("Annexes/tests/d16d4a40cc0dec173124cae4feba0498f9dd01");
-		for (TreeEntry tEntry : gor.buildTree().listEntry())
-			System.out.println(tEntry);*/
-		//gor = new GitObjectReader("C:\\Users\\Marv\\Desktop\\Cours\\HTML\\test_tag.bin");
-		
-		//System.out.println(gor.builTag());
+		// System.out.println(gor.builTag());
 
 	}
 }

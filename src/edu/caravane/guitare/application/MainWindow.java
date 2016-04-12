@@ -45,13 +45,13 @@ import edu.caravane.guitare.gitobject.TreeEntry;
 import edu.caravane.guitare.gitviewer.Visionneuse;
 
 public class MainWindow extends Application {
-	protected static final String osBarre =
-			System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/" ;
+	protected static final String osBarre = System.getProperty("os.name")
+			.charAt(0) == 'W' ? "\\" : "/";
 	protected GitObjectsIndex gitObjectsIndex;
 
-	protected AnchorPane visionneuseAP; //integration de la visionneuse
+	protected AnchorPane visionneuseAP; // integration de la visionneuse
 	protected TableView objectTable;
-	protected TextField searchEntry; //la barre de recherche
+	protected TextField searchEntry; // la barre de recherche
 	protected ListView<String> listParents;
 	protected SplitPane splitPane;
 	protected AnchorPane mainScene;
@@ -64,13 +64,15 @@ public class MainWindow extends Application {
 	 *
 	 * @author VieVie31
 	 *
-	 * @param titre of the error box
-	 * @param message of the error box
+	 * @param titre
+	 *            of the error box
+	 * @param message
+	 *            of the error box
 	 */
 	public void errorMessageBox(String titre, String message) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle(titre);
-		alert.setContentText(message); //alert.setHeaderText("");
+		alert.setContentText(message); // alert.setHeaderText("");
 		alert.showAndWait();
 	}
 
@@ -79,16 +81,18 @@ public class MainWindow extends Application {
 	 *
 	 * @author Sylvain, VieVie31
 	 *
-	 * @param listObjs a list of paths (String) of git object
+	 * @param listObjs
+	 *            a list of paths (String) of git object
 	 * @return the GitObjectsIndex containing all the objects by sha1
-	 * @throws Exception if something wrong appends
+	 * @throws Exception
+	 *             if something wrong appends
 	 */
 	public GitObjectsIndex indexObjects(String[] listObjs) throws Exception {
 		GitObjectReader gor;
-		GitObjectsIndex goi =  GitObjectsIndex.getInstance();
+		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 		for (String pathObj : listObjs) {
-			if (pathObj.contains(osBarre+"pack"+osBarre))
-				if (pathObj.contains(osBarre+"pack"+osBarre)){
+			if (pathObj.contains(osBarre + "pack" + osBarre))
+				if (pathObj.contains(osBarre + "pack" + osBarre)) {
 					makePack(pathObj);
 					continue;
 				}
@@ -99,55 +103,54 @@ public class MainWindow extends Application {
 	}
 
 	/**
-	 * Function used to treat pack object,
-	 * it load the data from each object of the pack to create the original object
-	 * when the object is recreate it store the object into the git object index
+	 * Function used to treat pack object, it load the data from each object of
+	 * the pack to create the original object when the object is recreate it
+	 * store the object into the git object index
 	 *
 	 * @param pathPack
 	 * @throws IOException
 	 * @throws DataFormatException
 	 */
-		public static void makePack(String pathPack) throws IOException,
-		DataFormatException {
-			GitObjectsIndex goi =  GitObjectsIndex.getInstance();
-			String[] path = pathPack.split(osBarre+".git"+osBarre);
-			RepositoryBuilder builder = new RepositoryBuilder();
-			builder.setMustExist(true);
-			builder.setGitDir(new File(path[0]+ osBarre+".git"+osBarre));
-			Repository repository = builder.build();
+	public static void makePack(String pathPack) throws IOException,
+			DataFormatException {
+		GitObjectsIndex goi = GitObjectsIndex.getInstance();
+		String[] path = pathPack.split(osBarre + ".git" + osBarre);
+		RepositoryBuilder builder = new RepositoryBuilder();
+		builder.setMustExist(true);
+		builder.setGitDir(new File(path[0] + osBarre + ".git" + osBarre));
+		Repository repository = builder.build();
 
-			File pa = new File(pathPack);
-			PackFile p = new PackFile(pa, 0);
+		File pa = new File(pathPack);
+		PackFile p = new PackFile(pa, 0);
 
-			for (MutableEntry mutableEntry : p) {
-				GitObject obj = null;
-				String sha1 = mutableEntry.toObjectId().name();
-				ObjectId id = repository.resolve(sha1);
-				ObjectLoader loader = repository.open(id);
+		for (MutableEntry mutableEntry : p) {
+			GitObject obj = null;
+			String sha1 = mutableEntry.toObjectId().name();
+			ObjectId id = repository.resolve(sha1);
+			ObjectLoader loader = repository.open(id);
 
-				switch (loader.getType()) {
-				case Constants.OBJ_BLOB:
-					obj = new GitBlob(loader.getSize(), sha1, "",
-							loader.getCachedBytes());
-					break;
-				case Constants.OBJ_COMMIT:
-					obj = new GitCommit(loader.getSize(), sha1,
-							new String(loader.getCachedBytes()));
-					break;
-				case Constants.OBJ_TREE:
-					obj = new GitTree(loader.getSize(), sha1,
-							loader.getBytes());
-					break;
-				case Constants.OBJ_TAG:
-					obj = new GitTag(loader.getSize(), sha1,
-							new String(loader.getCachedBytes()));
-				default:
-					break;
-				}
-
-					goi.put(mutableEntry.toObjectId().name(),obj);
+			switch (loader.getType()) {
+			case Constants.OBJ_BLOB:
+				obj = new GitBlob(loader.getSize(), sha1, "",
+						loader.getCachedBytes());
+				break;
+			case Constants.OBJ_COMMIT:
+				obj = new GitCommit(loader.getSize(), sha1, new String(
+						loader.getCachedBytes()));
+				break;
+			case Constants.OBJ_TREE:
+				obj = new GitTree(loader.getSize(), sha1, loader.getBytes());
+				break;
+			case Constants.OBJ_TAG:
+				obj = new GitTag(loader.getSize(), sha1, new String(
+						loader.getCachedBytes()));
+			default:
+				break;
 			}
+
+			goi.put(mutableEntry.toObjectId().name(), obj);
 		}
+	}
 
 	/**
 	 * This function browse in a tree the find all his son and add son's name
@@ -161,30 +164,36 @@ public class MainWindow extends Application {
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 		ArrayList<String> keys = goi.getListOfAllObjectKeys();
 		for (TreeEntry te : tree.listEntry()) {
-			if(keys.contains(te.getSha1())){
-				if (GitObjectType.BLOB.equals(goi.get(te.getSha1()).getType())){
-					//Si c'est un blob, on lui donne son nom et le parent
+			if (keys.contains(te.getSha1())) {
+				if (GitObjectType.BLOB.equals(goi.get(te.getSha1()).getType())) {
+					// Si c'est un blob, on lui donne son nom et le parent
 					GitBlob blob = (GitBlob) goi.get(te.getSha1());
 
-					if(!Arrays.asList(blob.getParentFiles()).contains(te.getName()))
+					if (!Arrays.asList(blob.getParentFiles()).contains(
+							te.getName()))
 						blob.addName(te.getName());
 
-					if(!Arrays.asList(blob.getParentFiles()).contains(tree.getId()))
+					if (!Arrays.asList(blob.getParentFiles()).contains(
+							tree.getId()))
 						blob.addParent(tree.getId());
 
-				} else if (GitObjectType.TREE.equals(goi.get(te.getSha1()).getType())) {
-					//On regarde si c'est un arbre different de lui-meme pour ne pas
-					//boucler a l'infini
+				} else if (GitObjectType.TREE.equals(goi.get(te.getSha1())
+						.getType())) {
+					// On regarde si c'est un arbre different de lui-meme pour
+					// ne pas
+					// boucler a l'infini
 					if (!tree.getId().equals(te.getSha1())) {
-						//On ajoute ces parents et on le parcours
+						// On ajoute ces parents et on le parcours
 						GitTree treeSon = (GitTree) goi.get(te.getSha1());
 
-						if(!Arrays.asList(treeSon.getParentFiles()).contains(te.getName()))
+						if (!Arrays.asList(treeSon.getParentFiles()).contains(
+								te.getName()))
 							treeSon.addName(te.getName());
 
-						if(!Arrays.asList(treeSon.getParentFiles()).contains(tree.getId()))
+						if (!Arrays.asList(treeSon.getParentFiles()).contains(
+								tree.getId()))
 							treeSon.addParent(tree.getId());
-						parcoursTree(treeSon); //Recursivite powa
+						parcoursTree(treeSon); // Recursivite powa
 					}
 				}
 			}
@@ -192,8 +201,8 @@ public class MainWindow extends Application {
 	}
 
 	/**
-	 * This function find parents of tag, commit, tree and blob.
-	 * It add too the blob's name.
+	 * This function find parents of tag, commit, tree and blob. It add too the
+	 * blob's name.
 	 *
 	 * @author Marvyn
 	 *
@@ -203,25 +212,27 @@ public class MainWindow extends Application {
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 		ArrayList<String> sha1Keys = goi.getListOfAllObjectKeys();
 		for (String p : sha1Keys) {
-			if (GitObjectType.TAG.equals(goi.get(p).getType())) {//PAS TEST POUR LES TAGS !!!
+			if (GitObjectType.TAG.equals(goi.get(p).getType())) {// PAS TEST
+																	// POUR LES
+																	// TAGS !!!
 				GitTag tag = (GitTag) goi.get(p);
-				//On recupere l'objet tagger
+				// On recupere l'objet tagger
 				GitObject taggay = goi.get(tag.getObjHexId());
-				//On ajoute son parent ( le taggeur )
+				// On ajoute son parent ( le taggeur )
 				taggay.addParent(tag.getId());
 			} else if (GitObjectType.COMMIT.equals(goi.get(p).getType())) {
 				GitCommit commit = (GitCommit) goi.get(p);
 				commit.addName(commit.getId());
 
-				//En attendant que l'on trouve mieux.
+				// En attendant que l'on trouve mieux.
 				for (int i = 0; i < commit.getParentListId().size(); i++)
 					commit.addParent(commit.getParentListId().get(i));
 
-				//On recupere le tree du commit
+				// On recupere le tree du commit
 				GitTree treeCommit = (GitTree) goi.get(commit.getTreeId());
-				//On ajoute le parent du tree
+				// On ajoute le parent du tree
 				treeCommit.addParent(commit.getId());
-				//On appelle la fonction recursive qui parcours l'arbre
+				// On appelle la fonction recursive qui parcours l'arbre
 				parcoursTree(treeCommit);
 
 			}
@@ -237,22 +248,25 @@ public class MainWindow extends Application {
 	 * @param hash
 	 */
 	protected void displayAllInfo(String hash) {
-		//pour afficher la liste des parents
+		// pour afficher la liste des parents
 		try {
 			ObservableList<String> hashParentsList;
 			hashParentsList = FXCollections.observableArrayList();
 
-			for (String s : GitObjectsIndex.getInstance().get(hash).getParentFiles())
+			for (String s : GitObjectsIndex.getInstance().get(hash)
+					.getParentFiles())
 				hashParentsList.add(s);
 
-			listParents.setItems(hashParentsList); //l'afficher dans la ListView...
+			listParents.setItems(hashParentsList); // l'afficher dans la
+													// ListView...
 		} catch (Exception e) {
-			System.out.println("Can't display the parent(s) hash : \n".concat(hash));
+			System.out.println("Can't display the parent(s) hash : \n"
+					.concat(hash));
 			errorMessageBox("ERROR DISPLAY",
 					"Can't display the parent(s) hash :".concat(hash));
 		}
 
-		//pour afficher dans la visionneuse
+		// pour afficher dans la visionneuse
 		try {
 			Visionneuse.getInstance().display(hash);
 		} catch (Exception e) {
@@ -265,21 +279,24 @@ public class MainWindow extends Application {
 	}
 
 	/**
-	 * This function return the column of a TableView with the name
-	 * specified in parameter.
+	 * This function return the column of a TableView with the name specified in
+	 * parameter.
 	 *
 	 * @author VieVie31
 	 *
-	 * @param tableView where is the column to get
-	 * @param name of the columns to return
+	 * @param tableView
+	 *            where is the column to get
+	 * @param name
+	 *            of the columns to return
 	 * @return the column if found null else
 	 */
 	private <T> TableColumn<T, ?> getTableColumnByName(TableView<T> tableView,
 			String name) {
 		for (TableColumn<T, ?> column : tableView.getColumns())
-			if (column.getText().equals(name)) return column;
+			if (column.getText().equals(name))
+				return column;
 
-		return null ;
+		return null;
 	}
 
 	public void start(Stage primaryStage, String[] args) throws Exception {
@@ -310,100 +327,104 @@ public class MainWindow extends Application {
 		visionneuseAP.getChildren().add(Visionneuse.getInstance());
 		Visionneuse.getInstance().setAp(visionneuseAP);
 		objectTable = (TableView) root.lookup("#objectTable");
-		searchEntry = (TextField) root.lookup("#searchEntry"); //la barre de recherche
+		searchEntry = (TextField) root.lookup("#searchEntry"); // la barre de
+																// recherche
 		listParents = (ListView<String>) root.lookup("#listParents");
-		splitPane   = (SplitPane) root.lookup("#splitPane");
-		mainScene   = (AnchorPane) root.lookup("#mainScene");
-		splitPane2  = (SplitPane) root.lookup("#splitPane2");
+		splitPane = (SplitPane) root.lookup("#splitPane");
+		mainScene = (AnchorPane) root.lookup("#mainScene");
+		splitPane2 = (SplitPane) root.lookup("#splitPane2");
 
-		//la liste des parents du fichier recherche...
-		listParents.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount() < 2)
-					return;
+		// la liste des parents du fichier recherche...
+		listParents.addEventFilter(MouseEvent.MOUSE_CLICKED,
+				new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+						if (event.getClickCount() < 2)
+							return;
 
-				String hash = listParents.getItems().get(
-						listParents.getSelectionModel().getSelectedIndex());
+						String hash = listParents.getItems().get(
+								listParents.getSelectionModel()
+										.getSelectedIndex());
 
-				displayAllInfo(hash);
-			}
+						displayAllInfo(hash);
+					}
 
-		});
+				});
 
-		objectTable.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-			/**
-			 * This function associate the action of the double click on a cell
-			 * int the TableView to display his parents hash and display it in
-			 * the viewer...
-			 * If the display or the parents listing throws an exception, the
-			 * exception will be catched but an error dialog message will pop-up
-			 *
-			 * @author VieVie31, Eloan
-			 */
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount() > 1) { //double clicked
-					//recuperer les hash en fonction de la ou on a clicke
-					//en tenant compte du fait que les colomnes aient pu permuter...
-					String hash = (String) getTableColumnByName(objectTable, "SHA-1")
-							.getCellData(
-									objectTable
-									.getSelectionModel()
-									.getSelectedIndex()
-									);
+		objectTable.addEventFilter(MouseEvent.MOUSE_CLICKED,
+				new EventHandler<MouseEvent>() {
+					/**
+					 * This function associate the action of the double click on
+					 * a cell int the TableView to display his parents hash and
+					 * display it in the viewer... If the display or the parents
+					 * listing throws an exception, the exception will be
+					 * catched but an error dialog message will pop-up
+					 *
+					 * @author VieVie31, Eloan
+					 */
+					@Override
+					public void handle(MouseEvent event) {
+						if (event.getClickCount() > 1) { // double clicked
+							// recuperer les hash en fonction de la ou on a
+							// clicke
+							// en tenant compte du fait que les colomnes aient
+							// pu permuter...
+							String hash = (String) getTableColumnByName(
+									objectTable, "SHA-1").getCellData(
+									objectTable.getSelectionModel()
+											.getSelectedIndex());
 
-					displayAllInfo(hash);
-				}
-			}
-		});
+							displayAllInfo(hash);
+						}
+					}
+				});
 
 		/**
-		 * This listener is used to call the resize function
-		 * of the visionneuse when the AnchorPane of the visionneuse
-		 * is changed.
+		 * This listener is used to call the resize function of the visionneuse
+		 * when the AnchorPane of the visionneuse is changed.
 		 *
 		 * @author TheHaricover
 		 */
 		visionneuseAP.widthProperty().addListener(new ChangeListener<Number>() {
-		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-		    	//Visionneuse.setWidth(primaryStage.getWidth());
-		    	String hash = (String) getTableColumnByName(objectTable, "SHA-1")
-								.getCellData(
-								objectTable
-								.getSelectionModel()
-								.getSelectedIndex()
-								);
-		    	try {
-					Visionneuse.resize(hash);
-		    	} catch (Exception e) {
-					e.printStackTrace();
-				}
-		    }
-		});
-
-		/**
-		 * This listener is used to call the resize function
-		 * of the visionneuse when the AnchorPane of the visionneuse
-		 * is changed.
-		 *
-		 * @author TheHaricover
-		 */
-		visionneuseAP.heightProperty().addListener(new ChangeListener<Number>() {
-		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-		    	//Visionneuse.setWidth(primaryStage.getWidth());
-		    	String hash = (String) getTableColumnByName(objectTable, "SHA-1")
-								.getCellData(
-								objectTable
-								.getSelectionModel()
-								.getSelectedIndex()
-								);
-		    	try {
+			@Override
+			public void changed(
+					ObservableValue<? extends Number> observableValue,
+					Number oldSceneHeight, Number newSceneHeight) {
+				// Visionneuse.setWidth(primaryStage.getWidth());
+				String hash = (String) getTableColumnByName(objectTable,
+						"SHA-1").getCellData(
+						objectTable.getSelectionModel().getSelectedIndex());
+				try {
 					Visionneuse.resize(hash);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-		    }
+			}
 		});
+
+		/**
+		 * This listener is used to call the resize function of the visionneuse
+		 * when the AnchorPane of the visionneuse is changed.
+		 *
+		 * @author TheHaricover
+		 */
+		visionneuseAP.heightProperty().addListener(
+				new ChangeListener<Number>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Number> observableValue,
+							Number oldSceneHeight, Number newSceneHeight) {
+						// Visionneuse.setWidth(primaryStage.getWidth());
+						String hash = (String) getTableColumnByName(
+								objectTable, "SHA-1").getCellData(
+								objectTable.getSelectionModel()
+										.getSelectedIndex());
+						try {
+							Visionneuse.resize(hash);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
 	}
 }

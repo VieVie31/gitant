@@ -17,11 +17,12 @@ public class GitBlob extends GitObject {
 	protected byte[] data;
 
 	/**
-	 *Constructor
+	 * Constructor
 	 *
 	 * @param sha1
 	 * @param size
-	 * @param index, it's the beginning of the data
+	 * @param index
+	 *            , it's the beginning of the data
 	 * @param path
 	 */
 	public GitBlob(String sha1, int size, int index, String path) {
@@ -31,16 +32,16 @@ public class GitBlob extends GitObject {
 		this.sha1 = sha1;
 	}
 
-/**
- * Constructor
- *
- * This second constructor is used for pack object
- *
- * @param size
- * @param sha1
- * @param path
- * @param data
- */
+	/**
+	 * Constructor
+	 *
+	 * This second constructor is used for pack object
+	 *
+	 * @param size
+	 * @param sha1
+	 * @param path
+	 * @param data
+	 */
 	public GitBlob(long size, String sha1, String path, byte[] data) {
 		this.size = (int) size;
 		this.path = path;
@@ -107,9 +108,9 @@ public class GitBlob extends GitObject {
 	 */
 	public byte[] getData() throws IOException, DataFormatException {
 		if (path.contains("object")) {
-		byte[] arrayFileContent = BinaryFile.decompress(path);
-		return Arrays.copyOfRange(arrayFileContent,
-				getIndex(), arrayFileContent.length);
+			byte[] arrayFileContent = BinaryFile.decompress(path);
+			return Arrays.copyOfRange(arrayFileContent, getIndex(),
+					arrayFileContent.length);
 		} else {
 			return this.data;
 		}
