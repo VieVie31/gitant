@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-public class GitObjectReader {
+public class GitObjectReader { // remake this class as a static package of
+								// methods ?
 	protected final static String osBarre = System.getProperty("os.name")
 			.charAt(0) == 'W' ? "\\\\" : "/";
 	protected String id;
@@ -252,10 +253,10 @@ public class GitObjectReader {
 		chmod = extractFileGitCHMOD(i);
 		i += chmod.len;
 
-		i++; // +1 pour l'espace
+		++i; // +1 pour l'espace
 		name = extractSafeString(i);
 		i += name.len;
-		i++; // +1 pour <NULL>
+		++i; // +1 pour <NULL>
 
 		sha1 = extractSHA1Binary(i);
 
@@ -302,7 +303,7 @@ public class GitObjectReader {
 	protected DataObject<Integer> extractTzOffset(int index) {
 		int i = index;
 
-		i++; // ignore the sign the sign for the moment...
+		++i; // ignore the sign the sign for the moment...
 		DataObject<Integer> tzOffset = extractBase10Number(i);
 		int mins = tzOffset.obj % 100;
 		int hours = tzOffset.obj / 100;
@@ -330,7 +331,7 @@ public class GitObjectReader {
 
 		DataObject<Integer> timestamp = extractBase10Number(i);
 		i += timestamp.len;
-		i++; // for <SP>
+		++i; // for <SP>
 		DataObject<Integer> tzOffset = extractTzOffset(i);
 
 		return new DataObject<GitDate>(
@@ -546,7 +547,7 @@ public class GitObjectReader {
 		index = getContentIndex() + 5; // "tree" + <SP>
 		DataObject<String> tEntry = extractSHA1String(index);
 		index += tEntry.len;
-		index++; // <SP>
+		++index; // <SP>
 
 		DataObject<ArrayList<String>> pLst = extractCommitParents(index);
 		index += pLst.len;
@@ -558,7 +559,7 @@ public class GitObjectReader {
 		index += 10; // 'committer' + <SP>
 		DataObject<GitInfo> commiter = extractInfo(index);
 		index += commiter.len;
-		index++; // <LF>
+		++index; // <LF>
 
 		return new GitCommit(getSize(), getId(), tEntry.obj, pLst.obj,
 				author.obj, commiter.obj, Arrays.copyOfRange(array, index,
@@ -581,22 +582,22 @@ public class GitObjectReader {
 		index = getContentIndex() + 7; // "object" + <SP>
 		DataObject<String> hexObjId = extractSHA1String(index);
 		index += hexObjId.len;
-		index++; // <SP>
+		++index; // <SP>
 
 		index += 5; // "type" + <SP>
 		DataObject<String> type = extractWhileNotLF(index);
 		index += type.len;
-		index++; // <LF>
+		++index; // <LF>
 
 		index += 4; // "tag" + <SP>
 		DataObject<String> tagName = extractWhileNotLF(index);
 		index += tagName.len;
-		index++; // <LF>
+		++index; // <LF>
 
 		index += 7; // "tagger" + <SP>
 		DataObject<GitInfo> tagger = extractInfo(index);
 		index += tagger.len;
-		index++; // <LF>
+		++index; // <LF>
 
 		byte[] data = Arrays.copyOfRange(array, index, array.length);
 
@@ -614,7 +615,7 @@ public class GitObjectReader {
 	 * @throws Exception
 	 */
 	public GitObject builGitObject() throws Exception {
-		switch (type) {
+		switch (type) { // ca marche pas avec l'enumeration pourrie :'(
 		case "blob":
 			return buildBlob();
 		case "commit":
@@ -635,55 +636,5 @@ public class GitObjectReader {
 	 */
 	public void resetIndex() {
 		index = 0;
-	}
-
-	public static void main(String[] args) throws Exception {
-		// tests...
-		GitObjectReader gor;
-		/*
-		 * gor = new GitObjectReader("Annexes/tests/test_tree.bin");
-		 * 
-		 * 
-		 * GitTree gitTree = gor.buildTree();
-		 * System.out.println("Test TreeObject...");
-		 * System.out.println(String.format("Size : %d", gitTree.getSize()));
-		 * for (TreeEntry tEntry : gitTree.listEntry())
-		 * System.out.println(tEntry);
-		 * 
-		 * 
-		 * System.out.println("---------");
-		 * 
-		 * gor = new GitObjectReader("Annexes/tests/test_blob.bin");
-		 * 
-		 * GitBlob gitBlob = gor.buildBlob();
-		 * System.out.println("Test BlobObject...");
-		 * System.out.println(String.format("Size : %d", gitBlob.getSize()));
-		 * System.out.println(new String(gitBlob.getData()));
-		 * 
-		 * 
-		 * System.out.println("---------");
-		 * 
-		 * gor = new GitObjectReader("Annexes/tests/test_commit.bin");
-		 * System.out.println(gor.buildCommit());
-		 * 
-		 * gor = new GitObjectReader("Annexes/tests/test_commit2.bin");
-		 * System.out.println(gor.buildCommit());
-		 * 
-		 * System.out.println("---------");
-		 * 
-		 * gor = new GitObjectReader("Annexes/tests/test_tag.bin");
-		 * System.out.println(gor.builTag());
-		 * 
-		 * 
-		 * gor = new
-		 * GitObjectReader("Annexes/tests/d16d4a40cc0dec173124cae4feba0498f9dd01"
-		 * ); for (TreeEntry tEntry : gor.buildTree().listEntry())
-		 * System.out.println(tEntry);
-		 */
-		// gor = new
-		// GitObjectReader("C:\\Users\\Marv\\Desktop\\Cours\\HTML\\test_tag.bin");
-
-		// System.out.println(gor.builTag());
-
 	}
 }

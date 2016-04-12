@@ -21,8 +21,9 @@ public class GitBlob extends GitObject {
 	 *
 	 * @param sha1
 	 * @param size
+	 *            size of the file
 	 * @param index
-	 *            , it's the beginning of the data
+	 *            it's where the data start
 	 * @param path
 	 */
 	public GitBlob(String sha1, int size, int index, String path) {
@@ -43,7 +44,7 @@ public class GitBlob extends GitObject {
 	 * @param data
 	 */
 	public GitBlob(long size, String sha1, String path, byte[] data) {
-		this.size = (int) size;
+		this.size = (int) size; //ouais on est comme ca nous !! :p
 		this.path = path;
 		this.index = 0;
 		this.sha1 = sha1;
@@ -111,9 +112,8 @@ public class GitBlob extends GitObject {
 			byte[] arrayFileContent = BinaryFile.decompress(path);
 			return Arrays.copyOfRange(arrayFileContent, getIndex(),
 					arrayFileContent.length);
-		} else {
+		} else
 			return this.data;
-		}
 	}
 
 	/**

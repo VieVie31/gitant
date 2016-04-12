@@ -33,17 +33,17 @@ public class Main extends Application {
 	protected String[] searchGitObject(String path) throws Exception {
 		Queue<String> filePasTrie = new LinkedList<String>();
 		filePasTrie.add(path);
-		File[] cur;
-		File current = new File(path);
-		File git = new File(path);
+		File[] currentListFiles;
+		File currentFile = new File(path);
+		File gitRepository = new File(path);
 		int indexLongueur = 0;
 		boolean drap = false;
 		while (filePasTrie.size() != 0 && drap == false) {
-			current = new File(filePasTrie.element());
+			currentFile = new File(filePasTrie.element());
 
-			if (current.isDirectory()) {
-				cur = current.listFiles();
-				for (File f : cur) {
+			if (currentFile.isDirectory()) {
+				currentListFiles = currentFile.listFiles();
+				for (File f : currentListFiles) {
 					if (f.getAbsolutePath().contains(
 							osBarre + ".git" + osBarre + "objects" + osBarre)) {
 						indexLongueur = f.getAbsolutePath().indexOf(
@@ -51,7 +51,7 @@ public class Main extends Application {
 								+ ("git" + osBarre + "objects" + osBarre)
 										.length();
 
-						git = new File(f.getAbsolutePath().substring(0,
+						gitRepository = new File(f.getAbsolutePath().substring(0,
 								indexLongueur));
 
 						drap = true;
@@ -63,29 +63,32 @@ public class Main extends Application {
 			}
 		}
 		// Exception pas levee pour une raison inconnue
-		if (!git.getAbsolutePath().contains(".git"))
+		if (!gitRepository.getAbsolutePath().contains(".git")) {
+			MainWindow.errorMessageBox("ERROR !! :'(",
+					"Il n'existe pas de .git dans le repertoire");
 			throw new Exception("Il n'existe pas de .git dans le repertoire");
+		}
 
-		ArrayList<String> listg = new ArrayList<String>();
+		ArrayList<String> listGitObjects = new ArrayList<String>();
 		if (drap == true) {
-			for (File f : git.listFiles()) {
+			for (File f : gitRepository.listFiles()) {
 				if (f.isDirectory() && f.listFiles().length > 1) {
 					for (File ff : f.listFiles())
-						listg.add(ff.toString());
+						listGitObjects.add(ff.toString());
 				} else if (f.isDirectory() && f.listFiles().length == 1)
-					listg.add(f.listFiles()[0].toString());
+					listGitObjects.add(f.listFiles()[0].toString());
 			}
 		}
 
-		String listgit[] = new String[listg.size()];
+		String gitObjectArray[] = new String[listGitObjects.size()];
 
-		for (int i = 0; i < listg.size(); i++)
-			listgit[i] = listg.get(i);
+		for (int i = 0; i < listGitObjects.size(); ++i)
+			gitObjectArray[i] = listGitObjects.get(i);
 
-		if (listgit.length == 0)
+		if (gitObjectArray.length == 0)
 			throw new Exception();
 
-		return listgit;
+		return gitObjectArray;
 	}
 
 	/**
@@ -106,10 +109,6 @@ public class Main extends Application {
 
 	@Override
 	public void start(final Stage primaryStage) throws Exception {
-		/*
-		 * // appliquer du css avec : scene.getStylesheets(). add(getClass().
-		 * getResource("application.css"). toExternalForm());
-		 */
 		this.primaryStage = primaryStage;
 
 		Parent root;
@@ -178,9 +177,11 @@ public class Main extends Application {
 					File file = db.getFiles().get(0);
 
 					// si c'est un fichier simple on ne traite pas ces merdes...
-					if (file.isFile())
-						return; // faire une popup d'erreur ?
-					else {
+					if (file.isFile()) {
+						MainWindow.errorMessageBox("ERROR !! :'(", // abrutit va
+								"Draguer un repertoire, pas un ficher !!");
+						return;
+					} else {
 						try {
 							startMainWindow(file.getAbsolutePath());
 						} catch (Exception e) {

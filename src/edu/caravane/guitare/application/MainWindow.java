@@ -49,14 +49,16 @@ public class MainWindow extends Application {
 			.charAt(0) == 'W' ? "\\" : "/";
 	protected GitObjectsIndex gitObjectsIndex;
 
-	protected AnchorPane visionneuseAP; // integration de la visionneuse
+	// javafx objects used
+	@SuppressWarnings("rawtypes")
+	// oui on est des branleurs !! et alors ?
 	protected TableView objectTable;
+	protected AnchorPane visionneuseAP; // integration de la visionneuse
 	protected TextField searchEntry; // la barre de recherche
 	protected ListView<String> listParents;
 	protected SplitPane splitPane;
-	protected AnchorPane mainScene;
 	protected SplitPane splitPane2;
-	private boolean flag;
+	protected AnchorPane mainScene;
 
 	/**
 	 * This function pop-up an error message box with the title and error
@@ -69,7 +71,7 @@ public class MainWindow extends Application {
 	 * @param message
 	 *            of the error box
 	 */
-	public void errorMessageBox(String titre, String message) {
+	public static void errorMessageBox(String titre, String message) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle(titre);
 		alert.setContentText(message); // alert.setHeaderText("");
@@ -107,23 +109,22 @@ public class MainWindow extends Application {
 	 * the pack to create the original object when the object is recreate it
 	 * store the object into the git object index
 	 *
+	 * @author Sylvain
+	 *
 	 * @param pathPack
+	 *            the path of the pack file
 	 * @throws IOException
 	 * @throws DataFormatException
 	 */
 	public static void makePack(String pathPack) throws IOException,
 			DataFormatException {
-		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 		String[] path = pathPack.split(osBarre + ".git" + osBarre);
 		RepositoryBuilder builder = new RepositoryBuilder();
 		builder.setMustExist(true);
 		builder.setGitDir(new File(path[0] + osBarre + ".git" + osBarre));
 		Repository repository = builder.build();
 
-		File pa = new File(pathPack);
-		PackFile p = new PackFile(pa, 0);
-
-		for (MutableEntry mutableEntry : p) {
+		for (MutableEntry mutableEntry : new PackFile(new File(pathPack), 0)) {
 			GitObject obj = null;
 			String sha1 = mutableEntry.toObjectId().name();
 			ObjectId id = repository.resolve(sha1);
@@ -144,11 +145,13 @@ public class MainWindow extends Application {
 			case Constants.OBJ_TAG:
 				obj = new GitTag(loader.getSize(), sha1, new String(
 						loader.getCachedBytes()));
+				break;
 			default:
 				break;
 			}
 
-			goi.put(mutableEntry.toObjectId().name(), obj);
+			GitObjectsIndex.getInstance().put(mutableEntry.toObjectId().name(),
+					obj);
 		}
 	}
 
@@ -163,32 +166,33 @@ public class MainWindow extends Application {
 	protected void parcoursTree(GitTree tree) {
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 		ArrayList<String> keys = goi.getListOfAllObjectKeys();
-		for (TreeEntry te : tree.listEntry()) {
-			if (keys.contains(te.getSha1())) {
-				if (GitObjectType.BLOB.equals(goi.get(te.getSha1()).getType())) {
+		for (TreeEntry treeEntry : tree.listEntry()) {
+			if (keys.contains(treeEntry.getSha1())) {
+				if (GitObjectType.BLOB.equals(goi.get(treeEntry.getSha1())
+						.getType())) {
 					// Si c'est un blob, on lui donne son nom et le parent
-					GitBlob blob = (GitBlob) goi.get(te.getSha1());
+					GitBlob blob = (GitBlob) goi.get(treeEntry.getSha1());
 
 					if (!Arrays.asList(blob.getParentFiles()).contains(
-							te.getName()))
-						blob.addName(te.getName());
+							treeEntry.getName()))
+						blob.addName(treeEntry.getName());
 
 					if (!Arrays.asList(blob.getParentFiles()).contains(
 							tree.getId()))
 						blob.addParent(tree.getId());
 
-				} else if (GitObjectType.TREE.equals(goi.get(te.getSha1())
-						.getType())) {
+				} else if (GitObjectType.TREE.equals(goi.get(
+						treeEntry.getSha1()).getType())) {
 					// On regarde si c'est un arbre different de lui-meme pour
-					// ne pas
-					// boucler a l'infini
-					if (!tree.getId().equals(te.getSha1())) {
+					// ne pas boucler a l'infini
+					if (!tree.getId().equals(treeEntry.getSha1())) {
 						// On ajoute ces parents et on le parcours
-						GitTree treeSon = (GitTree) goi.get(te.getSha1());
+						GitTree treeSon = (GitTree) goi
+								.get(treeEntry.getSha1());
 
 						if (!Arrays.asList(treeSon.getParentFiles()).contains(
-								te.getName()))
-							treeSon.addName(te.getName());
+								treeEntry.getName()))
+							treeSon.addName(treeEntry.getName());
 
 						if (!Arrays.asList(treeSon.getParentFiles()).contains(
 								tree.getId()))
@@ -212,9 +216,7 @@ public class MainWindow extends Application {
 		GitObjectsIndex goi = GitObjectsIndex.getInstance();
 		ArrayList<String> sha1Keys = goi.getListOfAllObjectKeys();
 		for (String p : sha1Keys) {
-			if (GitObjectType.TAG.equals(goi.get(p).getType())) {// PAS TEST
-																	// POUR LES
-																	// TAGS !!!
+			if (GitObjectType.TAG.equals(goi.get(p).getType())) {
 				GitTag tag = (GitTag) goi.get(p);
 				// On recupere l'objet tagger
 				GitObject taggay = goi.get(tag.getObjHexId());
@@ -260,22 +262,17 @@ public class MainWindow extends Application {
 			listParents.setItems(hashParentsList); // l'afficher dans la
 													// ListView...
 		} catch (Exception e) {
-			System.out.println("Can't display the parent(s) hash : \n"
-					.concat(hash));
 			errorMessageBox("ERROR DISPLAY",
 					"Can't display the parent(s) hash :".concat(hash));
 		}
 
 		// pour afficher dans la visionneuse
 		try {
-			Visionneuse.getInstance().display(hash);
+			Visionneuse.display(hash);
 		} catch (Exception e) {
-			System.out.println("Can't display the object : \n".concat(hash));
-			System.out.println(e);
 			errorMessageBox("ERROR DISPLAY",
 					"Can't display the object :".concat(hash));
 		}
-		System.out.println("");
 	}
 
 	/**
@@ -311,7 +308,6 @@ public class MainWindow extends Application {
 	 *
 	 * @author Eloan, VieVie31
 	 */
-	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Parent root;
 		root = FXMLLoader.load(getClass().getResource("MainScene.fxml"));

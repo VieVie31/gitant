@@ -167,17 +167,17 @@ public class GitCommit extends GitObject {
 
 		Pattern name = Pattern.compile("[A-Z][a-z]+ [A-Z][a-z]+");
 		Matcher aName = name.matcher(datab[i]);
-		while (aName.find()) {
+		while (aName.find())
 			author = aName.group();
-		}
+		
 
 		Pattern mail = Pattern.compile("<.*>");
-		;
+		
 		Matcher aMail = mail.matcher(datab[i]);
-		while (aMail.find()) {
+		while (aMail.find())
 			author += " : "
 					+ aMail.group().substring(1, aMail.group().length() - 1);
-		}
+		
 
 		Pattern date = Pattern.compile("[0-9]* \\+[0-9]*");
 		Matcher aDate = date.matcher(datab[i]);
@@ -191,17 +191,17 @@ public class GitCommit extends GitObject {
 
 		Pattern Name = Pattern.compile("[A-Z][a-z]+ [A-Z][a-z]+");
 		Matcher cName = Name.matcher(datab[i]);
-		while (cName.find()) {
+		while (cName.find())
 			commiter = cName.group();
-		}
+		
 
 		Pattern Mail = Pattern.compile("<.*>");
-		;
+		
 		Matcher cMail = Mail.matcher(datab[i]);
-		while (cMail.find()) {
+		while (cMail.find())
 			commiter += " : "
 					+ cMail.group().substring(1, cMail.group().length() - 1);
-		}
+		
 
 		Pattern Date = Pattern.compile("[0-9]* \\+[0-9]*");
 		Matcher cDate = Date.matcher(datab[i]);

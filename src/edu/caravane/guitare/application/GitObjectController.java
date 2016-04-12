@@ -5,6 +5,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import edu.caravane.guitare.gitobject.GitObject;
 import edu.caravane.guitare.gitobject.GitObjectsIndex;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -75,114 +76,101 @@ public class GitObjectController {
 							objectTable.setItems(sortedData);
 						}
 
-						searchEntry
-								.textProperty()
-								.addListener(
-										(observable, oldValue, newValue) -> {
-											filteredData.setPredicate(person -> {
-												// If filter text is empty,
-												// display objects.
-												if (newValue == null
-														|| newValue.isEmpty()) {
-													return true;
-												}
+						StringProperty textProperty = searchEntry
+								.textProperty();
 
-												String lowerCaseFilter = newValue
-														.toLowerCase();
+						textProperty.addListener((observable, oldValue,
+								newValue) -> {
+							filteredData
+									.setPredicate(person -> {
+										// If filter text is empty,
+										// display objects.
+										if (newValue == null
+												|| newValue.isEmpty()) {
+											return true;
+										}
 
-												if (lowerCaseFilter
-														.contains(":")) {
-													String col = lowerCaseFilter
-															.substring(
-																	0,
-																	lowerCaseFilter
-																			.indexOf(":"));
-													String search = lowerCaseFilter.substring(
+										String lowerCaseFilter = newValue
+												.toLowerCase();
+
+										if (lowerCaseFilter.contains(":")) {
+											String col = lowerCaseFilter
+													.substring(
+															0,
 															lowerCaseFilter
-																	.indexOf(":") + 1,
+																	.indexOf(":"));
+											String search = lowerCaseFilter
+													.substring(lowerCaseFilter
+															.indexOf(":") + 1,
 															lowerCaseFilter
 																	.length());
 
-													if (person.getId()
-															.toLowerCase()
-															.contains(search)
-															&& (col.equals("id") || col
-																	.equals("sha1"))) {
-														return true; // Filter
-																		// matches
-																		// sha1.
-													} else if (person.getType()
-															.toString()
-															.toLowerCase()
-															.contains(search)
-															&& col.equals("type")) {
-														return true; // Filter
-																		// matches
-																		// type.
-													} else if (person
-															.getNames()[0]
-															.toLowerCase()
-															.contains(search)
-															&& col.equals("nom")) {
-														return true; // Filter
-																		// matches
-																		// name.
-													} else if (Integer
-															.toString(
-																	person.getSize())
-															.toLowerCase()
-															.contains(search)
-															&& col.equals("size")) {
-														return true; // Filter
-																		// matches
-																		// size.
-													}
+											if (person.getId().toLowerCase()
+													.contains(search)
+													&& (col.equals("id") || col
+															.equals("sha1"))) {
+												return true; // Filter
+																// matches
+																// sha1.
+											} else if (person.getType()
+													.toString().toLowerCase()
+													.contains(search)
+													&& col.equals("type")) {
+												return true; // Filter
+																// matches
+																// type.
+											} else if (person.getNames()[0]
+													.toLowerCase().contains(
+															search)
+													&& col.equals("nom")) {
+												return true; // Filter
+																// matches
+																// name.
+											} else if (Integer
+													.toString(person.getSize())
+													.toLowerCase()
+													.contains(search)
+													&& col.equals("size")) {
+												return true; // Filter
+																// matches
+																// size.
+											}
 
-													return false; // Does not
-																	// match.
-												} else {
-													if (person
-															.getId()
-															.toLowerCase()
-															.contains(
-																	lowerCaseFilter)) {
-														return true; // Filter
-																		// matches
-																		// sha1.
-													} else if (person
-															.getType()
-															.toString()
-															.toLowerCase()
-															.contains(
-																	lowerCaseFilter)) {
-														return true; // Filter
-																		// matches
-																		// type.
-													} else if (person
-															.getNames()[0]
-															.toLowerCase()
-															.contains(
-																	lowerCaseFilter)) {
-														return true; // Filter
-																		// matches
-																		// name.
-													} else if (Integer
-															.toString(
-																	person.getSize())
-															.toLowerCase()
-															.contains(
-																	lowerCaseFilter)) {
-														return true; // Filter
-																		// matches
-																		// size.
-													}
+											return false; // Does not
+															// match.
+										} else {
+											if (person.getId().toLowerCase()
+													.contains(lowerCaseFilter)) {
+												return true; // Filter
+																// matches
+																// sha1.
+											} else if (person.getType()
+													.toString().toLowerCase()
+													.contains(lowerCaseFilter)) {
+												return true; // Filter
+																// matches
+																// type.
+											} else if (person.getNames()[0]
+													.toLowerCase().contains(
+															lowerCaseFilter)) {
+												return true; // Filter
+																// matches
+																// name.
+											} else if (Integer
+													.toString(person.getSize())
+													.toLowerCase()
+													.contains(lowerCaseFilter)) {
+												return true; // Filter
+																// matches
+																// size.
+											}
 
-													return false; // Does not
-																	// match.
-												}
+											return false; // Does not
+															// match.
+										}
 
-											});
-										});
+									});
+						});
 
 					}
 
