@@ -4,16 +4,23 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import javafx.fxml.*;
-import javafx.stage.*;
-import javafx.scene.*;
-import javafx.event.*;
-import javafx.scene.input.*;
-import javafx.scene.layout.*;
+
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 public class Main extends Application {
 	protected Stage primaryStage;
+	// FIXME: troisième fois qu'on trouve le même code moche.. mon dieur...
 	protected static final String osBarre = System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/";
 
 	/**

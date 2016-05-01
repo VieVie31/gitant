@@ -7,15 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.zip.DataFormatException;
 
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
-
 import javax.imageio.ImageIO;
 
 import edu.caravane.guitare.gitobject.GitBlob;
@@ -25,6 +16,14 @@ import edu.caravane.guitare.gitobject.GitObjectType;
 import edu.caravane.guitare.gitobject.GitObjectsIndex;
 import edu.caravane.guitare.gitobject.GitTag;
 import edu.caravane.guitare.gitobject.GitTree;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.AnchorPane;
 
 public class Visionneuse extends Parent {
 	protected static Visionneuse visionneuse;
@@ -182,7 +181,8 @@ public class Visionneuse extends Parent {
 				textArea.setText(new String(((GitBlob) (gitObject)).getData()));
 				visionneuse.getChildren().add(textArea);
 			}
-		} else if (gitObject.getType().equals(GitObjectType.TREE)) {
+			// on peut utiliser == avec les enums
+		} else if (gitObject.getType() == GitObjectType.TREE) {
 			textArea.setText(new String(((GitTree) (gitObject)).toString()));
 			visionneuse.getChildren().add(textArea);
 		} else if (gitObject.getType().equals(GitObjectType.TAG)) {

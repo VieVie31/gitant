@@ -54,6 +54,7 @@ public class GitObjectController {
 
 	@FXML
 	private void initialize() {
+		// FIXME: Vous réalisez bien que -> c'est une notation java 8 ?
 		SHA1.setCellValueFactory(cellData -> cellData.getValue().sha1Property());
 		Type.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
 		Nom.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
@@ -79,6 +80,9 @@ public class GitObjectController {
 						StringProperty textProperty = searchEntry.textProperty();
 						// Vous savez que c'est du java 8 l'opérateur -> ?
 						textProperty.addListener((observable, oldValue, newValue) -> {
+							// FIXME: vous ne pensez pas qu'un prédicat qui fait
+							// >80 lignes pourrait avoir ça propre méthode ?
+							// ne serai-ce que pour une meilleur lisibilité....
 							filteredData.setPredicate(person -> {
 								// If filter text is empty,
 								// display objects.

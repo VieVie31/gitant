@@ -1,5 +1,6 @@
 package edu.caravane.guitare.gitobject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +9,8 @@ import java.util.zip.DataFormatException;
 public class GitObjectReader { // remake this class as a static package of
 								// methods ?
 	// FIXME: mais que c'est moche...
+	// Si vraiment vous voulez le séparateur vous pouver le trouver avec:
+	// System.getProperty("file.separator")
 	protected final static String osBarre = System.getProperty("os.name").charAt(0) == 'W' ? "\\\\" : "/";
 	protected String id;
 	protected byte[] array;
@@ -40,8 +43,11 @@ public class GitObjectReader { // remake this class as a static package of
 	public GitObjectReader(String path) throws IOException, DataFormatException {
 		this.path = path;
 
-		String[] str = path.split(osBarre);
-		id = str[str.length - 2] + str[str.length - 1];
+		// FIXME avouez que c'est bien plus lisible que votre osBarre !!
+		File fpath = new File(path);
+		id = fpath.getParentFile().getName() + fpath.getName();
+		// String[] str = path.split(osBarre);
+		// id = str[str.length - 2] + str[str.length - 1];
 
 		array = BinaryFile.decompress(path);
 		index = 0;
@@ -600,16 +606,19 @@ public class GitObjectReader { // remake this class as a static package of
 	 * @throws Exception
 	 */
 	public GitObject builGitObject() throws Exception {
-		switch (type) { // ca marche pas avec l'enumeration pourrie :'(
-		case "blob":
+		// FIXME: j'ai "corrigé l'enum pourrie" pour que ça fonctionne ;)
+		switch (GitObjectType.findFromName(type)) {
+		case BLOB:
 			return buildBlob();
-		case "commit":
+		case COMMIT:
 			return buildCommit();
-		case "tag":
+		case TAG:
 			return builTag();
-		case "tree":
+		case TREE:
 			return buildTree();
 		default: // bein c'est pas cense arriver bande de debiles !!
+			// FIXME: le jour où vous rajouterai une valeur possible dans votre
+			// enum vous passerez ici...
 			throw new Exception();
 		}
 	}

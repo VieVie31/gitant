@@ -211,6 +211,7 @@ public class GitCommit extends GitObject {
 	}
 
 	public String toString() {
+		// StringBuilder est votre ami
 		String s = String.format("tree : %s\n", treeId);
 		for (String st : parentListId)
 			s += String.format("parent : %s\n", st);

@@ -16,4 +16,19 @@ public enum GitObjectType {
 	public String toString() {
 		return this.name;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public static GitObjectType findFromName(String name) {
+		GitObjectType[] values = GitObjectType.values();
+		for (int i = 0; i < values.length; i++) {
+			GitObjectType array_element = values[i];
+			if (array_element.getName().equals(name)) {
+				return array_element;
+			}
+		}
+		return null;
+	}
 }

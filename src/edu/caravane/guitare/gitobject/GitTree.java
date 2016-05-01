@@ -1,6 +1,6 @@
 package edu.caravane.guitare.gitobject;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class GitTree extends GitObject {
 	protected static GitObjectType type = GitObjectType.TREE;
@@ -95,6 +95,9 @@ public class GitTree extends GitObject {
 	 */
 	private void setData(byte[] data) {
 		this.lstEntr = new ArrayList<TreeEntry>();
+		// FIXME: le StringBuffer est une structure ThreadSafe.
+		// Si vous n'avez pas besoin de cette sécurité, préférez les
+		// StringBuilder
 		StringBuffer buffer = new StringBuffer();
 		StringBuffer lineBuffer = new StringBuffer();
 		boolean trad = false;
@@ -137,10 +140,13 @@ public class GitTree extends GitObject {
 	}
 
 	public String toString() {
-		String s = "Tree : " + sha1 + "\nChildren : \n";
+		// un string builder c'est mieux pour concatener les chaines de
+		// caractère.
+		StringBuilder sb = new StringBuilder();
+		sb.append("Tree : ").append(sha1).append("\nChildren : \n");
 		for (TreeEntry te : lstEntr)
-			s += te.toString() + "\n";
-		return s;
+			sb.append(te.toString()).append("\n");
+		return sb.toString();
 	}
 
 }
