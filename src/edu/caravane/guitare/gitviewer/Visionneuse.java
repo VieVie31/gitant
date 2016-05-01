@@ -67,8 +67,7 @@ public class Visionneuse extends Parent {
 	 * @author TheHaricover
 	 */
 	public static void setWidth(double width) {
-		visionneuseAP.widthProperty().subtract(visionneuseAP.getWidth())
-				.add(width);
+		visionneuseAP.widthProperty().subtract(visionneuseAP.getWidth()).add(width);
 	}
 
 	/**
@@ -78,8 +77,7 @@ public class Visionneuse extends Parent {
 	 * @author TheHaricover
 	 */
 	public static void setHeight(double height) {
-		visionneuseAP.heightProperty().subtract(visionneuseAP.getHeight())
-				.add(height);
+		visionneuseAP.heightProperty().subtract(visionneuseAP.getHeight()).add(height);
 	}
 
 	/**
@@ -87,8 +85,7 @@ public class Visionneuse extends Parent {
 	 *
 	 * @author TheHaricover
 	 */
-	public static void resize(String hash) throws IOException,
-			DataFormatException {
+	public static void resize(String hash) throws IOException, DataFormatException {
 		if (displayedNode == null)
 			return;
 		if (displayedNode instanceof TextArea) {
@@ -115,8 +112,7 @@ public class Visionneuse extends Parent {
 	 *
 	 * @author TheHaricover
 	 */
-	public static void display(String hash) throws IOException,
-			DataFormatException {
+	public static void display(String hash) throws IOException, DataFormatException {
 		GitObject gitObject = GitObjectsIndex.getInstance().get(hash);
 		display(gitObject);
 	}
@@ -126,8 +122,7 @@ public class Visionneuse extends Parent {
 	 *
 	 * @author TheHaricover
 	 */
-	public static void display(GitObject gitObject) throws IOException,
-			DataFormatException {
+	public static void display(GitObject gitObject) throws IOException, DataFormatException {
 		Visionneuse visionneuse = Visionneuse.getInstance();
 		visionneuse.getChildren().clear();
 
@@ -144,16 +139,14 @@ public class Visionneuse extends Parent {
 
 		if (gitObject.getType().equals(GitObjectType.BLOB)) {
 			String nom = gitObject.nameProperty().get().toLowerCase();
-			if (nom.contains(".bmp") || nom.contains(".png")
-					|| nom.contains(".jpeg") || nom.contains(".jpg")
+			if (nom.contains(".bmp") || nom.contains(".png") || nom.contains(".jpeg") || nom.contains(".jpg")
 					|| nom.contains(".gif")) {
 				byte[] data = ((GitBlob) gitObject).getData();
 				textArea.setText(new String(data));
 
 				try {
 					// saving temporary the data
-					String tmpFileName = String.format("%d.tmp",
-							System.currentTimeMillis());
+					String tmpFileName = String.format("%d.tmp", System.currentTimeMillis());
 					FileOutputStream fos = new FileOutputStream(tmpFileName);
 					fos.write(data);
 					fos.close();
@@ -162,8 +155,7 @@ public class Visionneuse extends Parent {
 						BufferedImage bf = ImageIO.read(new File(tmpFileName));
 						WritableImage wr = null;
 						if (bf != null) {
-							wr = new WritableImage(bf.getWidth(),
-									bf.getHeight());
+							wr = new WritableImage(bf.getWidth(), bf.getHeight());
 							PixelWriter pw = wr.getPixelWriter();
 							for (int x = 0; x < bf.getWidth(); x++) {
 								for (int y = 0; y < bf.getHeight(); y++) {

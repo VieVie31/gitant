@@ -68,14 +68,12 @@ public abstract class GitObject implements GitObjectInterface {
 	}
 
 	public StringProperty typeProperty() {
-		StringProperty type = new SimpleStringProperty(this.getType()
-				.toString());
+		StringProperty type = new SimpleStringProperty(this.getType().toString());
 		return type;
 	}
 
 	public StringProperty sizeProperty() {
-		StringProperty size = new SimpleStringProperty(Integer.toString(this
-				.getSize()));
+		StringProperty size = new SimpleStringProperty(Integer.toString(this.getSize()));
 		return size;
 	}
 

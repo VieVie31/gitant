@@ -40,8 +40,7 @@ public class BinaryFile {
 	 * @throws IOException
 	 * @throws DataFormatException
 	 */
-	public static byte[] decompress(byte[] data) throws IOException,
-			DataFormatException {
+	public static byte[] decompress(byte[] data) throws IOException, DataFormatException {
 		Inflater inflater = new Inflater();
 		inflater.setInput(data);
 
@@ -68,8 +67,7 @@ public class BinaryFile {
 	 * @throws IOException
 	 * @throws DataFormatException
 	 */
-	public static byte[] decompress(String path) throws IOException,
-			DataFormatException {
+	public static byte[] decompress(String path) throws IOException, DataFormatException {
 		return decompress(read(path));
 	}
 }

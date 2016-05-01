@@ -124,8 +124,7 @@ public class GitTree extends GitObject {
 						int entrySha = entry.indexOf(32, entryName + 1);
 						String name = entry.substring(entryName + 1, entrySha);
 						String sha1 = entry.substring(entrySha + 1);
-						int octalMode = Integer.parseInt(entry.substring(0,
-								entryName));
+						int octalMode = Integer.parseInt(entry.substring(0, entryName));
 						lstEntr.add(new TreeEntry(octalMode, name, sha1));
 						lineBuffer.setLength(0);
 					}
