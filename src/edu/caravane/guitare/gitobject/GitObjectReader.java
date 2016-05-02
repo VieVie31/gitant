@@ -1,5 +1,6 @@
 package edu.caravane.guitare.gitobject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,8 +8,10 @@ import java.util.zip.DataFormatException;
 
 public class GitObjectReader { // remake this class as a static package of
 								// methods ?
-	protected final static String osBarre = System.getProperty("os.name")
-			.charAt(0) == 'W' ? "\\\\" : "/";
+	// FIXME: mais que c'est moche...
+	// Si vraiment vous voulez le séparateur vous pouver le trouver avec:
+	// System.getProperty("file.separator")
+	protected final static String osBarre = System.getProperty("os.name").charAt(0) == 'W' ? "\\\\" : "/";
 	protected String id;
 	protected byte[] array;
 	protected int index;
@@ -40,8 +43,11 @@ public class GitObjectReader { // remake this class as a static package of
 	public GitObjectReader(String path) throws IOException, DataFormatException {
 		this.path = path;
 
-		String[] str = path.split(osBarre);
-		id = str[str.length - 2] + str[str.length - 1];
+		// FIXME avouez que c'est bien plus lisible que votre osBarre !!
+		File fpath = new File(path);
+		id = fpath.getParentFile().getName() + fpath.getName();
+		// String[] str = path.split(osBarre);
+		// id = str[str.length - 2] + str[str.length - 1];
 
 		array = BinaryFile.decompress(path);
 		index = 0;
@@ -63,11 +69,11 @@ public class GitObjectReader { // remake this class as a static package of
 	protected DataObject<String> extractWhileNotSP(int index) {
 		int i = index;
 
+		// FIXME: ?? un commentaire c'est bien aussi
 		while (array[i++] != (byte) ' ')
 			;
 
-		return new DataObject<String>(new String(Arrays.copyOfRange(array,
-				index, i - 1)), index, i - index - 1);
+		return new DataObject<String>(new String(Arrays.copyOfRange(array, index, i - 1)), index, i - index - 1);
 	}
 
 	/**
@@ -86,25 +92,22 @@ public class GitObjectReader { // remake this class as a static package of
 		while (array[i++] != (byte) '\n')
 			;
 
-		return new DataObject<String>(new String(Arrays.copyOfRange(array,
-				index, i - 1)), index, i - index - 1);
+		return new DataObject<String>(new String(Arrays.copyOfRange(array, index, i - 1)), index, i - index - 1);
 	}
 
-/**
-	 * This function return a safeString.
-	 * A safe string is a sequence of bytes not containing the ASCII charcter
-	 * byte values :
-	 * 		<NULL> (0x00), <LF> (0x0a), '<' (0x3c), or '>' (0x3e),
-	 * and the sequence may not begin or end with any bytes with the following
-	 * ASCII charcter byte values :
-	 * 		<SP> (0x20), ',' (0x2c), ':' (0x3a), ';' (0x3b),
-	 * 		'<'  (0x3c), '>' (0x3e), '"' (0x22), "'" (0x27).
-	 * PS: usually a safe string cann't begin with '.' (0x2e), but for some
-	 * reason ( magical !! :p ), it'll can... :D
+	/**
+	 * This function return a safeString. A safe string is a sequence of bytes
+	 * not containing the ASCII charcter byte values : <NULL> (0x00),
+	 * <LF> (0x0a), '<' (0x3c), or '>' (0x3e), and the sequence may not begin or
+	 * end with any bytes with the following ASCII charcter byte values :
+	 * <SP> (0x20), ',' (0x2c), ':' (0x3a), ';' (0x3b), '<' (0x3c), '>' (0x3e),
+	 * '"' (0x22), "'" (0x27). PS: usually a safe string cann't begin with '.'
+	 * (0x2e), but for some reason ( magical !! :p ), it'll can... :D
 	 *
 	 * @author VieVie31
 	 *
-	 * @param  index position for starting to decode
+	 * @param index
+	 *            position for starting to decode
 	 * @return a DataObject containing the safeString
 	 */
 	protected DataObject<String> extractSafeString(int index) throws Exception {
@@ -123,8 +126,7 @@ public class GitObjectReader { // remake this class as a static package of
 				!byteArrayContainsOneOfThose(forbiden, array[i++]))
 			;
 
-		return new DataObject<String>(new String(Arrays.copyOfRange(array,
-				index, i - 1)), index, i - index - 1);
+		return new DataObject<String>(new String(Arrays.copyOfRange(array, index, i - 1)), index, i - index - 1);
 	}
 
 	/**
@@ -203,12 +205,10 @@ public class GitObjectReader { // remake this class as a static package of
 		int i = index;
 
 		for (; i < index + 40; i++)
-			if ((array[i] > '9' || array[i] < '0')
-					&& (array[i] < 'a' || array[i] > 'f'))
+			if ((array[i] > '9' || array[i] < '0') && (array[i] < 'a' || array[i] > 'f'))
 				throw new Exception(); // message d'erreur plus tard
 
-		return new DataObject<String>(new String(Arrays.copyOfRange(array,
-				index, index + 40)), index, 40);
+		return new DataObject<String>(new String(Arrays.copyOfRange(array, index, index + 40)), index, 40);
 	}
 
 	/**
@@ -242,8 +242,7 @@ public class GitObjectReader { // remake this class as a static package of
 	 * @return a tree entry
 	 * @throws Exception
 	 */
-	protected DataObject<TreeEntry> extractTreeEntry(int index)
-			throws Exception {
+	protected DataObject<TreeEntry> extractTreeEntry(int index) throws Exception {
 		int i = index;
 
 		DataObject<Integer> chmod;
@@ -260,8 +259,7 @@ public class GitObjectReader { // remake this class as a static package of
 
 		sha1 = extractSHA1Binary(i);
 
-		return new DataObject<TreeEntry>(new TreeEntry(chmod.obj, name.obj,
-				sha1.obj), index, i + sha1.len - index);
+		return new DataObject<TreeEntry>(new TreeEntry(chmod.obj, name.obj, sha1.obj), index, i + sha1.len - index);
 	}
 
 	/**
@@ -275,8 +273,7 @@ public class GitObjectReader { // remake this class as a static package of
 	 * @return an ArrayList made of TreeEntry
 	 * @throws Exception
 	 */
-	protected ArrayList<TreeEntry> extractTreeEntries(int index)
-			throws Exception {
+	protected ArrayList<TreeEntry> extractTreeEntries(int index) throws Exception {
 		ArrayList<TreeEntry> tList = new ArrayList<TreeEntry>();
 
 		int i = index;
@@ -309,8 +306,9 @@ public class GitObjectReader { // remake this class as a static package of
 		int hours = tzOffset.obj / 100;
 		tzOffset.obj = hours * 3600 + mins * 60; // convert to seconds
 
-		return new DataObject<Integer>(tzOffset.obj
-				* ((array[index] == '+') ? 1 : -1), // take the sign
+		return new DataObject<Integer>(tzOffset.obj * ((array[index] == '+') ? 1 : -1), // take
+																						// the
+																						// sign
 				index, 1 + tzOffset.len); // +1 for the sign
 	}
 
@@ -334,9 +332,7 @@ public class GitObjectReader { // remake this class as a static package of
 		++i; // for <SP>
 		DataObject<Integer> tzOffset = extractTzOffset(i);
 
-		return new DataObject<GitDate>(
-				new GitDate(timestamp.obj, tzOffset.obj), index, i
-						+ tzOffset.len - index);
+		return new DataObject<GitDate>(new GitDate(timestamp.obj, tzOffset.obj), index, i + tzOffset.len - index);
 	}
 
 	/**
@@ -363,8 +359,7 @@ public class GitObjectReader { // remake this class as a static package of
 		DataObject<GitDate> date = extractDate(i);
 		i += date.len + 1; // date.len + <LF>
 
-		return new DataObject<GitInfo>(
-				new GitInfo(name.obj, mail.obj, date.obj), index, i - index);
+		return new DataObject<GitInfo>(new GitInfo(name.obj, mail.obj, date.obj), index, i - index);
 	}
 
 	/**
@@ -378,8 +373,7 @@ public class GitObjectReader { // remake this class as a static package of
 	 * @throws Exception
 	 *             if a problem occured
 	 */
-	protected DataObject<ArrayList<String>> extractCommitParents(int index)
-			throws Exception {
+	protected DataObject<ArrayList<String>> extractCommitParents(int index) throws Exception {
 		int i = index;
 
 		ArrayList<String> parents = new ArrayList<String>();
@@ -511,8 +505,7 @@ public class GitObjectReader { // remake this class as a static package of
 		if (!GitObjectType.TREE.equals(getType()))
 			throw new Exception(); // message plus tard
 
-		return new GitTree(getSize(), getId(),
-				extractTreeEntries(getContentIndex()));
+		return new GitTree(getSize(), getId(), extractTreeEntries(getContentIndex()));
 	}
 
 	/**
@@ -561,9 +554,8 @@ public class GitObjectReader { // remake this class as a static package of
 		index += commiter.len;
 		++index; // <LF>
 
-		return new GitCommit(getSize(), getId(), tEntry.obj, pLst.obj,
-				author.obj, commiter.obj, Arrays.copyOfRange(array, index,
-						array.length));
+		return new GitCommit(getSize(), getId(), tEntry.obj, pLst.obj, author.obj, commiter.obj,
+				Arrays.copyOfRange(array, index, array.length));
 	}
 
 	/**
@@ -601,8 +593,7 @@ public class GitObjectReader { // remake this class as a static package of
 
 		byte[] data = Arrays.copyOfRange(array, index, array.length);
 
-		return new GitTag(getSize(), getId(), hexObjId.obj, type.obj,
-				tagName.obj, tagger.obj, data);
+		return new GitTag(getSize(), getId(), hexObjId.obj, type.obj, tagName.obj, tagger.obj, data);
 	}
 
 	/**
@@ -615,16 +606,19 @@ public class GitObjectReader { // remake this class as a static package of
 	 * @throws Exception
 	 */
 	public GitObject builGitObject() throws Exception {
-		switch (type) { // ca marche pas avec l'enumeration pourrie :'(
-		case "blob":
+		// FIXME: j'ai "corrigé l'enum pourrie" pour que ça fonctionne ;)
+		switch (GitObjectType.findFromName(type)) {
+		case BLOB:
 			return buildBlob();
-		case "commit":
+		case COMMIT:
 			return buildCommit();
-		case "tag":
+		case TAG:
 			return builTag();
-		case "tree":
+		case TREE:
 			return buildTree();
 		default: // bein c'est pas cense arriver bande de debiles !!
+			// FIXME: le jour où vous rajouterai une valeur possible dans votre
+			// enum vous passerez ici...
 			throw new Exception();
 		}
 	}

@@ -23,8 +23,7 @@ public class GitTag extends GitObject {
 	 * @param tagger
 	 * @param data
 	 */
-	public GitTag(int size, String sha1, String objHexId, String tagType,
-			String tagName, GitInfo tagger, byte[] data) {
+	public GitTag(int size, String sha1, String objHexId, String tagType, String tagName, GitInfo tagger, byte[] data) {
 		this.tagName = tagName;
 		this.size = size;
 		this.sha1 = sha1;

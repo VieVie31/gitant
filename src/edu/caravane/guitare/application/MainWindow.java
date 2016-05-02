@@ -1,24 +1,5 @@
 package edu.caravane.guitare.application;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
-import javafx.fxml.*;
-import javafx.stage.*;
-import javafx.scene.*;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,10 +24,29 @@ import edu.caravane.guitare.gitobject.GitTag;
 import edu.caravane.guitare.gitobject.GitTree;
 import edu.caravane.guitare.gitobject.TreeEntry;
 import edu.caravane.guitare.gitviewer.Visionneuse;
+import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 public class MainWindow extends Application {
-	protected static final String osBarre = System.getProperty("os.name")
-			.charAt(0) == 'W' ? "\\" : "/";
+	// FIXME: mais que c'est moche...
+	protected static final String osBarre = System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/";
 	protected GitObjectsIndex gitObjectsIndex;
 
 	// javafx objects used
@@ -116,8 +116,7 @@ public class MainWindow extends Application {
 	 * @throws IOException
 	 * @throws DataFormatException
 	 */
-	public static void makePack(String pathPack) throws IOException,
-			DataFormatException {
+	public static void makePack(String pathPack) throws IOException, DataFormatException {
 		String[] path = pathPack.split(osBarre + ".git" + osBarre);
 		RepositoryBuilder builder = new RepositoryBuilder();
 		builder.setMustExist(true);
@@ -132,26 +131,22 @@ public class MainWindow extends Application {
 
 			switch (loader.getType()) {
 			case Constants.OBJ_BLOB:
-				obj = new GitBlob(loader.getSize(), sha1, "",
-						loader.getCachedBytes());
+				obj = new GitBlob(loader.getSize(), sha1, "", loader.getCachedBytes());
 				break;
 			case Constants.OBJ_COMMIT:
-				obj = new GitCommit(loader.getSize(), sha1, new String(
-						loader.getCachedBytes()));
+				obj = new GitCommit(loader.getSize(), sha1, new String(loader.getCachedBytes()));
 				break;
 			case Constants.OBJ_TREE:
 				obj = new GitTree(loader.getSize(), sha1, loader.getBytes());
 				break;
 			case Constants.OBJ_TAG:
-				obj = new GitTag(loader.getSize(), sha1, new String(
-						loader.getCachedBytes()));
+				obj = new GitTag(loader.getSize(), sha1, new String(loader.getCachedBytes()));
 				break;
 			default:
 				break;
 			}
 
-			GitObjectsIndex.getInstance().put(mutableEntry.toObjectId().name(),
-					obj);
+			GitObjectsIndex.getInstance().put(mutableEntry.toObjectId().name(), obj);
 		}
 	}
 
@@ -168,34 +163,27 @@ public class MainWindow extends Application {
 		ArrayList<String> keys = goi.getListOfAllObjectKeys();
 		for (TreeEntry treeEntry : tree.listEntry()) {
 			if (keys.contains(treeEntry.getSha1())) {
-				if (GitObjectType.BLOB.equals(goi.get(treeEntry.getSha1())
-						.getType())) {
+				if (GitObjectType.BLOB.equals(goi.get(treeEntry.getSha1()).getType())) {
 					// Si c'est un blob, on lui donne son nom et le parent
 					GitBlob blob = (GitBlob) goi.get(treeEntry.getSha1());
 
-					if (!Arrays.asList(blob.getParentFiles()).contains(
-							treeEntry.getName()))
+					if (!Arrays.asList(blob.getParentFiles()).contains(treeEntry.getName()))
 						blob.addName(treeEntry.getName());
 
-					if (!Arrays.asList(blob.getParentFiles()).contains(
-							tree.getId()))
+					if (!Arrays.asList(blob.getParentFiles()).contains(tree.getId()))
 						blob.addParent(tree.getId());
 
-				} else if (GitObjectType.TREE.equals(goi.get(
-						treeEntry.getSha1()).getType())) {
+				} else if (GitObjectType.TREE.equals(goi.get(treeEntry.getSha1()).getType())) {
 					// On regarde si c'est un arbre different de lui-meme pour
 					// ne pas boucler a l'infini
 					if (!tree.getId().equals(treeEntry.getSha1())) {
 						// On ajoute ces parents et on le parcours
-						GitTree treeSon = (GitTree) goi
-								.get(treeEntry.getSha1());
+						GitTree treeSon = (GitTree) goi.get(treeEntry.getSha1());
 
-						if (!Arrays.asList(treeSon.getParentFiles()).contains(
-								treeEntry.getName()))
+						if (!Arrays.asList(treeSon.getParentFiles()).contains(treeEntry.getName()))
 							treeSon.addName(treeEntry.getName());
 
-						if (!Arrays.asList(treeSon.getParentFiles()).contains(
-								tree.getId()))
+						if (!Arrays.asList(treeSon.getParentFiles()).contains(tree.getId()))
 							treeSon.addParent(tree.getId());
 						parcoursTree(treeSon); // Recursivite powa
 					}
@@ -255,23 +243,20 @@ public class MainWindow extends Application {
 			ObservableList<String> hashParentsList;
 			hashParentsList = FXCollections.observableArrayList();
 
-			for (String s : GitObjectsIndex.getInstance().get(hash)
-					.getParentFiles())
+			for (String s : GitObjectsIndex.getInstance().get(hash).getParentFiles())
 				hashParentsList.add(s);
 
 			listParents.setItems(hashParentsList); // l'afficher dans la
 													// ListView...
 		} catch (Exception e) {
-			errorMessageBox("ERROR DISPLAY",
-					"Can't display the parent(s) hash :".concat(hash));
+			errorMessageBox("ERROR DISPLAY", "Can't display the parent(s) hash :".concat(hash));
 		}
 
 		// pour afficher dans la visionneuse
 		try {
 			Visionneuse.display(hash);
 		} catch (Exception e) {
-			errorMessageBox("ERROR DISPLAY",
-					"Can't display the object :".concat(hash));
+			errorMessageBox("ERROR DISPLAY", "Can't display the object :".concat(hash));
 		}
 	}
 
@@ -287,8 +272,7 @@ public class MainWindow extends Application {
 	 *            of the columns to return
 	 * @return the column if found null else
 	 */
-	private <T> TableColumn<T, ?> getTableColumnByName(TableView<T> tableView,
-			String name) {
+	private <T> TableColumn<T, ?> getTableColumnByName(TableView<T> tableView, String name) {
 		for (TableColumn<T, ?> column : tableView.getColumns())
 			if (column.getText().equals(name))
 				return column;
@@ -331,49 +315,43 @@ public class MainWindow extends Application {
 		splitPane2 = (SplitPane) root.lookup("#splitPane2");
 
 		// la liste des parents du fichier recherche...
-		listParents.addEventFilter(MouseEvent.MOUSE_CLICKED,
-				new EventHandler<MouseEvent>() {
-					@Override
-					public void handle(MouseEvent event) {
-						if (event.getClickCount() < 2)
-							return;
+		listParents.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() < 2)
+					return;
 
-						String hash = listParents.getItems().get(
-								listParents.getSelectionModel()
-										.getSelectedIndex());
+				String hash = listParents.getItems().get(listParents.getSelectionModel().getSelectedIndex());
 
-						displayAllInfo(hash);
-					}
+				displayAllInfo(hash);
+			}
 
-				});
+		});
 
-		objectTable.addEventFilter(MouseEvent.MOUSE_CLICKED,
-				new EventHandler<MouseEvent>() {
-					/**
-					 * This function associate the action of the double click on
-					 * a cell int the TableView to display his parents hash and
-					 * display it in the viewer... If the display or the parents
-					 * listing throws an exception, the exception will be
-					 * catched but an error dialog message will pop-up
-					 *
-					 * @author VieVie31, Eloan
-					 */
-					@Override
-					public void handle(MouseEvent event) {
-						if (event.getClickCount() > 1) { // double clicked
-							// recuperer les hash en fonction de la ou on a
-							// clicke
-							// en tenant compte du fait que les colomnes aient
-							// pu permuter...
-							String hash = (String) getTableColumnByName(
-									objectTable, "SHA-1").getCellData(
-									objectTable.getSelectionModel()
-											.getSelectedIndex());
+		objectTable.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			/**
+			 * This function associate the action of the double click on a cell
+			 * int the TableView to display his parents hash and display it in
+			 * the viewer... If the display or the parents listing throws an
+			 * exception, the exception will be catched but an error dialog
+			 * message will pop-up
+			 *
+			 * @author VieVie31, Eloan
+			 */
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() > 1) { // double clicked
+					// recuperer les hash en fonction de la ou on a
+					// clicke
+					// en tenant compte du fait que les colomnes aient
+					// pu permuter...
+					String hash = (String) getTableColumnByName(objectTable, "SHA-1")
+							.getCellData(objectTable.getSelectionModel().getSelectedIndex());
 
-							displayAllInfo(hash);
-						}
-					}
-				});
+					displayAllInfo(hash);
+				}
+			}
+		});
 
 		/**
 		 * This listener is used to call the resize function of the visionneuse
@@ -383,13 +361,11 @@ public class MainWindow extends Application {
 		 */
 		visionneuseAP.widthProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(
-					ObservableValue<? extends Number> observableValue,
-					Number oldSceneHeight, Number newSceneHeight) {
+			public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight,
+					Number newSceneHeight) {
 				// Visionneuse.setWidth(primaryStage.getWidth());
-				String hash = (String) getTableColumnByName(objectTable,
-						"SHA-1").getCellData(
-						objectTable.getSelectionModel().getSelectedIndex());
+				String hash = (String) getTableColumnByName(objectTable, "SHA-1")
+						.getCellData(objectTable.getSelectionModel().getSelectedIndex());
 				try {
 					Visionneuse.resize(hash);
 				} catch (Exception e) {
@@ -404,23 +380,19 @@ public class MainWindow extends Application {
 		 *
 		 * @author TheHaricover
 		 */
-		visionneuseAP.heightProperty().addListener(
-				new ChangeListener<Number>() {
-					@Override
-					public void changed(
-							ObservableValue<? extends Number> observableValue,
-							Number oldSceneHeight, Number newSceneHeight) {
-						// Visionneuse.setWidth(primaryStage.getWidth());
-						String hash = (String) getTableColumnByName(
-								objectTable, "SHA-1").getCellData(
-								objectTable.getSelectionModel()
-										.getSelectedIndex());
-						try {
-							Visionneuse.resize(hash);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
+		visionneuseAP.heightProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight,
+					Number newSceneHeight) {
+				// Visionneuse.setWidth(primaryStage.getWidth());
+				String hash = (String) getTableColumnByName(objectTable, "SHA-1")
+						.getCellData(objectTable.getSelectionModel().getSelectedIndex());
+				try {
+					Visionneuse.resize(hash);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 }

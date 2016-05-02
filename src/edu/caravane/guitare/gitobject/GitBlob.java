@@ -44,7 +44,7 @@ public class GitBlob extends GitObject {
 	 * @param data
 	 */
 	public GitBlob(long size, String sha1, String path, byte[] data) {
-		this.size = (int) size; //ouais on est comme ca nous !! :p
+		this.size = (int) size; // ouais on est comme ca nous !! :p
 		this.path = path;
 		this.index = 0;
 		this.sha1 = sha1;
@@ -110,8 +110,7 @@ public class GitBlob extends GitObject {
 	public byte[] getData() throws IOException, DataFormatException {
 		if (path.contains("object")) {
 			byte[] arrayFileContent = BinaryFile.decompress(path);
-			return Arrays.copyOfRange(arrayFileContent, getIndex(),
-					arrayFileContent.length);
+			return Arrays.copyOfRange(arrayFileContent, getIndex(), arrayFileContent.length);
 		} else
 			return this.data;
 	}

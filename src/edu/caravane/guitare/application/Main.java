@@ -4,18 +4,24 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import javafx.fxml.*;
-import javafx.stage.*;
-import javafx.scene.*;
-import javafx.event.*;
-import javafx.scene.input.*;
-import javafx.scene.layout.*;
+
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 public class Main extends Application {
 	protected Stage primaryStage;
-	protected static final String osBarre = System.getProperty("os.name")
-			.charAt(0) == 'W' ? "\\" : "/";
+	// FIXME: troisième fois qu'on trouve le même code moche.. mon dieur...
+	protected static final String osBarre = System.getProperty("os.name").charAt(0) == 'W' ? "\\" : "/";
 
 	/**
 	 * This function take a path and search in each folder recursively the first
@@ -44,15 +50,11 @@ public class Main extends Application {
 			if (currentFile.isDirectory()) {
 				currentListFiles = currentFile.listFiles();
 				for (File f : currentListFiles) {
-					if (f.getAbsolutePath().contains(
-							osBarre + ".git" + osBarre + "objects" + osBarre)) {
-						indexLongueur = f.getAbsolutePath().indexOf(
-								"git" + osBarre + "objects" + osBarre)
-								+ ("git" + osBarre + "objects" + osBarre)
-										.length();
+					if (f.getAbsolutePath().contains(osBarre + ".git" + osBarre + "objects" + osBarre)) {
+						indexLongueur = f.getAbsolutePath().indexOf("git" + osBarre + "objects" + osBarre)
+								+ ("git" + osBarre + "objects" + osBarre).length();
 
-						gitRepository = new File(f.getAbsolutePath().substring(0,
-								indexLongueur));
+						gitRepository = new File(f.getAbsolutePath().substring(0, indexLongueur));
 
 						drap = true;
 						break;
@@ -64,8 +66,7 @@ public class Main extends Application {
 		}
 		// Exception pas levee pour une raison inconnue
 		if (!gitRepository.getAbsolutePath().contains(".git")) {
-			MainWindow.errorMessageBox("ERROR !! :'(",
-					"Il n'existe pas de .git dans le repertoire");
+			MainWindow.errorMessageBox("ERROR !! :'(", "Il n'existe pas de .git dans le repertoire");
 			throw new Exception("Il n'existe pas de .git dans le repertoire");
 		}
 
